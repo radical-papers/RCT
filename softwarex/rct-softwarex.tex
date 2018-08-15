@@ -40,7 +40,7 @@ keyword 1 \sep keyword 2 \sep keyword 3
 
 \end{frontmatter}
 
-\linenumbers
+\linenumbers{}
 
 % The manuscript must be submitted in single column. The following
 % constraints apply: 
@@ -55,21 +55,74 @@ keyword 1 \sep keyword 2 \sep keyword 3
 % ---------------------------------------------------------------------------
 \section{Motivation and significance}\label{sec:motivation}
 
-Introduce the scientific background and the motivation for developing the
-software.
+{\em Guidelines for the authors:
+\begin{enumerate}
+	\item Introduce the scientific background and the motivation for
+		    developing the software.
+  \item Explain why the software is important, and describe the exact
+        (scientific) problem(s) it solves.
+	\item Indicate in what way the software has contributed (or how it will
+        contribute in the future) to the process of scientific discovery;
+        if available, this is to be supported by citing a research paper
+        using the software.
+  \item Provide a description of the experimental setting (how does the 
+        user use the software?).
+  \item Introduce related work in literature (cite or list algorithms 
+          used, other software etc.).
+\end{enumerate}}
 
-Explain why the software is important, and describe the exact (scientific)
-problem(s) it solves.
+The RADICAL Cyberinfrastructure tools (RCT)
 
-Indicate in what way the software has contributed (or how it will contribute
-in the future) to the process of scientific discovery; if available, this is
-to be supported by citing a research paper using the software.
-
-Provide a description of the experimental setting (how does the user use the
-software?).
-
-Introduce related work in literature (cite or list algorithms used, other
-software etc.).
+\begin{itemize}
+  \item Background:
+    \begin{itemize}
+      \item Growing importance of multi-task applications in multiple
+      research fields.
+      \item Need for scalability across several dimensions and
+      infrastructures.
+      \item Need for advanced capabilities like adaptivity, streaming,
+      steering, etc.
+      \item The importance of supporting execution of multi-task applications
+      on HPC infrastructures.
+      \item The rise of the pilot paradigm.
+    \end{itemize}
+  \item Motivations:
+    \begin{itemize}
+      \item Multi-task applications can be encoded into a variety of
+      workflows and be executed on a variety of infrastructures.
+      \item Users require flexible ways to encode workflows without having to
+      buy into a specific logical representation or concrete implementation
+      language.
+      \item Separation between workflow description, workflow management,
+      resource acquisition, workflow execution.
+      \item End-to-end, monolithic and encompassing solutions do not satisfy
+      these requirements.
+      \item Need for an ecosystem of software modules that can be composed
+      and configured depending on specific use cases.
+      \item Need for rapid development of domain-specific workflow engines
+      capable of supporting specific requirements without having to implement
+      capabilities for resource acquisition and execution management.
+      \item RCT satisfy these requirements.
+    \end{itemize}
+  \item Scientific relevance:
+    \begin{itemize}
+      \item Earth science: brief description and references
+      \item Climate science: brief description and references
+      \item Molecular biology: brief description and references
+      \item Polar science: brief description and references
+      \item \ldots
+    \end{itemize}
+  \item Settings:
+    \begin{itemize}
+      \item Python libraries supporting several deployment scenarios: local,
+      local/remote, remote, multiple remote.
+    \end{itemize}
+  \item Related work:
+    \begin{itemize}
+      \item Middleware for scientific computing. Derive from: RP paper, Pilot
+      paper, EnTK papers.
+    \end{itemize}
+\end{itemize}
 
 
 % ---------------------------------------------------------------------------
@@ -77,8 +130,16 @@ software etc.).
 % ---------------------------------------------------------------------------
 \section{Software description}\label{sec:description}
 
-Describe the software in as much as is necessary to establish a vocabulary
-needed to explain its impact.
+{\em Describe the software in as much as is necessary to establish a
+vocabulary needed to explain its impact.}
+
+\begin{itemize}
+  \item Currently, RTC implements four types of software system: (i)
+  workflow management system; (ii) pilot system; (iii) interoperability
+  interface; and (iv) profiler.
+  \item Building block design methodology
+  \item open source development model (github, tickets, documentation, etc.)
+\end{itemize}
 
 
 % ---------------------------------------------------------------------------
@@ -86,9 +147,15 @@ needed to explain its impact.
 % ---------------------------------------------------------------------------
 \subsection{Software Architecture}\label{sec:architecture}
 
-Give a short overview of the overall software architecture; provide a
+{\em Give a short overview of the overall software architecture; provide a
 pictorial component overview or similar (if possible). If necessary provide
-implementation details.
+implementation details.}
+
+\begin{itemize}
+  \item Create an overall architecture diagram for the whole RCT\@: EnTK, RP,
+  RS, RA\@. Compose this diagram from the existing diagram for each RCT
+  component, making it visually uniform.
+\end{itemize}
 
 
 % ---------------------------------------------------------------------------
@@ -96,7 +163,26 @@ implementation details.
 % ---------------------------------------------------------------------------
 \subsection{Software Functionalities}\label{sec:functionalities}
 
-Present the major functionalities of the software.
+{\em Present the major functionalities of the software.}
+
+\begin{itemize}
+  \item EnTK\@:
+  \begin{itemize}
+    \item Functionalities (VB)
+  \end{itemize}
+  \item RP\@: 
+  \begin{itemize}
+    \item Functionalities (AM)
+  \end{itemize}
+  \item RS\@:
+  \begin{itemize}
+    \item Functionalities (AM)
+  \end{itemize}
+  \item RA\@:)
+  \begin{itemize}
+    \item Functionalities (MT)
+  \end{itemize}
+\end{itemize}
 
 
 % ---------------------------------------------------------------------------
@@ -104,13 +190,20 @@ Present the major functionalities of the software.
 % ---------------------------------------------------------------------------
 \subsection{Sample code snippets analysis (optional)}\label{sec:code}
 
+\begin{itemize}
+  \item EnTK PST API
+  \item RP pilot and unit API
+  \item SAGA API
+  \item RA API
+\end{itemize}
 
 % ---------------------------------------------------------------------------
 % Section VI
 % ---------------------------------------------------------------------------
 \section{Illustrative Examples}\label{sec:examples}
 
-Provide at least one illustrative example to demonstrate the major functions.
+{\em Provide at least one illustrative example to demonstrate the major
+functions.
 
 Optional: you may include one explanatory video that will appear next to your
 article, in the right hand side panel. (Please upload any video as a single
@@ -120,31 +213,76 @@ maximum size, video is possible per article. Recommended video dimensions are
 and validate your .mp4 file at $
 http://elsevier-apps.sciverse.com/GadgetVideoPodcastPlayerWeb/verification$.
 This tool will display your video exactly in the same way as it will appear
-on ScienceDirect.).
+on ScienceDirect.).}
 
+\begin{itemize}
+  \item Simple EnTK application or one of the domain-specific workflows
+  (HTBAC?) with RA analysis?
+  \item Video of the execution, why not.
+\end{itemize}
 
 % ---------------------------------------------------------------------------
 % Section VII
 % ---------------------------------------------------------------------------
 \section{Impact}\label{sec:impact}
 
-\textbf{This is the main section of the article and the reviewers weight the
-description here appropriately}
+{\em \textbf{This is the main section of the article and the reviewers weight
+the description here appropriately}
 
-Indicate in what way new research questions can be pursued as a result of the
-software (if any).
+Guidelines for the authors:
+\begin{enumerate}
+  \item Indicate in what way new research questions can be pursued as a
+  result of the software (if any).
+  \item Indicate in what way, and to what extent, the pursuit of existing
+  research questions is improved (if so).
+  \item Indicate in what way the software has changed the daily practice of
+  its users (if so).
+  \item Indicate how widespread the use of the software is within and outside
+  the intended user group.
+  \item Indicate in what way the software is used in commercial settings
+  and/or how it led to the creation of spin-off companies (if so).
+\end{enumerate}}
 
-Indicate in what way, and to what extent, the pursuit of existing research
-questions is improved (if so).
-
-Indicate in what way the software has changed the daily practice of its users
-(if so).
-
-Indicate how widespread the use of the software is within and outside the
-intended user group.
-
-Indicate in what way the software is used in commercial settings and/or how
-it led to the creation of spin-off companies (if so).
+\begin{itemize}
+  \item Support of new research questions via RCT\@:
+  \begin{itemize}
+    \item General purpose pilot API, independent from domain, project,
+    infrastructure or middleware specific requirements.
+    \item General purpose task execution model: heterogeneous and.or
+    homogeneous set of tasks distributed across multiple
+    infrastructures/machines or distributed within a single machine. No
+    requirement for a specific distribution or communication pattern across
+    tasks.
+  \end{itemize}
+  \item Improved support of existing research question via RCT\@:
+  \begin{itemize}
+    \item Rapid codification of domain-specific applications due to isolation
+    of concerns between application logic and resource and execution
+    management.
+    \item Faster and simpler programmatic specification of tasks dependences
+    with the PST model.
+    \item User can control trade off between concurrency and duration of the
+    execution of multi-task applications (via pilots).
+    \item Strong and weak scaling on multiple HPC machines.
+  \end{itemize}
+  \item Impact on user practices:
+  \begin{itemize}
+    \item Writing domain-specific applications without having to
+    code/configure resource acquisition and execution management.
+    \item Rapid implementation of adaptive runtime strategies within
+    domain-specific applications.
+    \item Different modalities of deployment, including working for the user
+    workstation (or VM) without having to log into the computing
+    infrastructure.
+    \item Support of a large set of HPC machines via a unified and consistent
+    interface.
+  \end{itemize}
+  \item Adoption figures:
+  \begin{itemize}
+    \item Aggregated numbers for all RCT.
+    \item Break down figures?
+  \end{itemize}
+\end{itemize}
 
 
 % ---------------------------------------------------------------------------
@@ -152,7 +290,7 @@ it led to the creation of spin-off companies (if so).
 % ---------------------------------------------------------------------------
 \section{Conclusions}\label{sec:conclusions}
 
-Set out the conclusion of this original software publication.
+{\em Set out the conclusion of this original software publication.}
 
 
 % ---------------------------------------------------------------------------
@@ -160,7 +298,7 @@ Set out the conclusion of this original software publication.
 % ---------------------------------------------------------------------------
 \section*{Acknowledgements}
 
-Optionally thank people and institutes you need to acknowledge. 
+{\em Optionally thank people and institutes you need to acknowledge. }
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
@@ -188,9 +326,9 @@ Optionally thank people and institutes you need to acknowledge.
 % ---------------------------------------------------------------------------
 \section*{Current code version}\label{sec:src_version}
 
-Ancillary data table required for subversion of the codebase. Kindly replace
-examples in right column with the correct information about your current
-code, and leave the left column as it is.
+{\em Ancillary data table required for subversion of the codebase. Kindly
+replace examples in right column with the correct information about your
+current code, and leave the left column as it is.
 
 \begin{table}[!ht]
 \begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
@@ -233,7 +371,7 @@ Support email for questions                                      &
 \hline
 \end{tabular}
 \caption{Code metadata (mandatory)}\label{tab:src_metadata} 
-\end{table}
+\end{table}}
 
 
 % ---------------------------------------------------------------------------
@@ -241,9 +379,10 @@ Support email for questions                                      &
 % ---------------------------------------------------------------------------
 \section*{Current executable software version}\label{sec:bin_version}
 
-Ancillary data table required for sub version of the executable software:
-(x.1, x.2 etc.) kindly replace examples in right column with the correct
-information about your executables, and leave the left column as it is.
+{\em Ancillary data table required for sub version of the executable
+software: (x.1, x.2 etc.) kindly replace examples in right column with the
+correct information about your executables, and leave the left column as it
+is.
 
 \begin{table}[!ht]
 \begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
@@ -284,7 +423,7 @@ Support email for questions &
 \end{tabular}
 \caption{Software metadata (optional)}
 \label{tab:bin_metadata} 
-\end{table}
+\end{table}}
 
 \end{document}
 \endinput
