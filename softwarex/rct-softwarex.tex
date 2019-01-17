@@ -71,8 +71,6 @@ keyword 1 \sep keyword 2 \sep keyword 3
           used, other software etc.).
 \end{enumerate}}
 
-The RADICAL Cyberinfrastructure tools (RCT)
-
 \begin{itemize}
   \item Background:
     \begin{itemize}
@@ -134,12 +132,82 @@ The RADICAL Cyberinfrastructure tools (RCT)
 vocabulary needed to explain its impact.}
 
 \begin{itemize}
-  \item Currently, RTC implements four types of software system: (i)
-  workflow management system; (ii) pilot system; (iii) interoperability
-  interface; and (iv) profiler.
-  \item Building block design methodology
-  \item open source development model (github, tickets, documentation, etc.)
+  % \item Currently, RTC implements four types of software system: (i)
+  % workflow management system; (ii) pilot system; (iii) interoperability
+  % interface; and (iv) profiler.
+  % \item Building block design methodology
+  \item open source development model (github, tickets, documentation,
+  etc.)
 \end{itemize}
+
+The RADICAL Cyberinfrastructure tools (RCT)~\cite{web-rct} is a software
+suite composed of four main components: RADICAL-SAGA
+(RS)~\cite{merzky2015saga}, RADICAL-Pilot (RP)~\cite{merzky2018using} and
+RADICAL-Ensemble Toolkit (EnTK)~\cite{balasubramanian2018harnessing}.
+
+RS is a Python implementation of the OGF GFD.90 SAGA
+standard~\cite{goodale2006saga}, an high-level interface to access
+distributed infrastructure components like job schedulers, file transfer and
+resource provisioning services. RS enables interoperability across
+heterogeneous distributed infrastructures, improving on their usability and
+enhancing the sustainability of services and tools.
+
+RP is a Python implementation of the pilot paradigm and architectural
+pattern~\cite{turilli2018comprehensive}. Pilot systems enables users to
+submit pilot jobs to computing infrastructures and then use the resources
+acquired by the pilot to execute one or more tasks. These tasks are directly
+scheduled via the pilot, without having to queue in the infrastructure batch
+system. RP focuses on High Performance Computing (HPC), enabling the
+execution of heterogeneous workloads comprised of one or more scalar, MPI,
+OpenMP, multi-process, and multi-threaded tasks. These tasks can be executed
+on CPUs, GPUs and other accelerators, on the same pilot or across multiple
+pilots.
+
+EnTK is a workflow engine specialized in supporting applications composed by
+an ensemble of tasks, executed both concurrently and sequentially depending
+on their interdependences. EnTK promotes ensembles to a high-level
+programming abstraction, providing a programming interface and execution
+model specific to ensemble-based applications. EnTK is engineered for scale
+and a diversity of computing platforms and runtime systems, agnostic of the
+size, type and coupling of the tasks comprising the ensemble.
+
+% RA is Python implementation of a low-level library to parse, filter and
+% aggregate runtime traces of performance events. These events are timings of
+% routines, message passing, and memory and CPU/GPU usage. RA supporting
+% measuring duration for both single and multiple entities. For the latter,
+% concurrency is taken into account so to offer precise values for global
+% system behavior like total execution time and total resource utilization.
+% RA implements connectors for RS, RP and EnTK\@.
+
+RCT are designed to work both individually and as an integrated system. This
+requires a ``Building Block'' approach to their design and development, based
+on applying the traditional notions of modularity at component level. The
+Building Block approach derives from the work on Service-oriented
+Architecture and its Microservice variants, and the component-based software
+development approaches where computational and compositional elements are
+explicitly
+separated~\cite{batory1992design,garlan1995architectural,lenz1988software,clemens1998component,schneider2000components}.
+AirFlow, Oozie, Azkaban, Spark Streaming, Storm, or Kafka are examples of
+tools that have a design consistent with the building blocks approach.
+
+In our adaptation, the Building Block approach is based on four
+well-understood principles: self-sufficiency, interoperability,
+composability, and extensibility. A block is self-sufficient when its design
+does not depend on the specificity of other building blocks; interoperable
+when it can be used in diverse system architectures without semantic
+modifications; composable when its interfaces enable communication and
+coordination with other building blocks without syntactic modifications; and
+extensible when the building's block functionalities and entities can be
+extended to support new requirements or capabilities. 
+
+The building blocks approach does not reinvent modularity, it applies it at
+system level to enable composability among independent software components.
+Commonly, modularity is used at function or method level, depending on the
+programming paradigm. As an abstraction, modularity enables separation of
+concerns by encapsulating discrete functions into semantic units (i.e.,
+modules) exposed by means of a dedicated interface. Building blocks expands
+upon component-based engineering to apply separation of concerns---and
+therefore modularity---to each component of RCT\@.
 
 
 % ---------------------------------------------------------------------------
@@ -156,6 +224,48 @@ implementation details.}
   RS, RA\@. Compose this diagram from the existing diagram for each RCT
   component, making it visually uniform.
 \end{itemize}
+
+Traditionally, components of independent software systems have been difficult
+to compose and reuse. While interfaces can hide implementation details
+working as implementation-independent specifications of capabilities,
+composability still requires semantic uniformity across interfaces. For
+example, when executing multi-task applications, the notions of task or
+dependency among tasks have to be uniform across components in order for them
+to be composable. Obtaining this uniformity is challenging and largely
+unsupported by specific formal constructs both at language and specification
+level. Further, component-based engineering poses challenges in error
+handling, input/output validation, effective documentation and comprehensive
+testing.
+
+Architecturally, building blocks contributes to address these challenges by
+specifying state, event, error, and entities models for each block. Entities
+are explicitly represented in the block's interface and used as input for
+each exposed functionality. Each entity has a set of associated states,
+events and errors. The order of the state is guaranteed by the implementation
+(e.g., a task cannot be executed before being scheduled and scheduled before
+being bound to a resource) while events are unordered but always contained
+within two specific states. Errors are always associated to an entity, state
+and event. Communication is decoupled from coordination, creating specific
+blocks for the latter while being channel agnostic about the former.
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.49\textwidth]{figures/arch_rs.pdf}
+%     \caption{Caption.\label{fig:arch_rs}}
+% \end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\textwidth]{figures/arch_rp.pdf}
+    \caption{Caption.}\label{fig:arch_rp}
+\end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.49\textwidth]{figures/arch_entk.pdf}
+%     \caption{Caption.\label{fig:arch_entk}}
+% \end{figure}
+
 
 
 % ---------------------------------------------------------------------------
@@ -183,6 +293,23 @@ implementation details.}
     \item Functionalities (MT)
   \end{itemize}
 \end{itemize}
+
+% SAGA
+Given the heterogeneity of distributed infrastructures, SAGA provides a much
+needed interoperability layer that lowers the complexity and improves the
+simplicity of using distributed infrastructure whilst enhancing the
+sustainability of distributed applications, services and tools.
+
+% RP
+RP offers four unique features when compared to other pilot systems or tools
+that enable the execution of multi-task workloads on HPC systems: (1)
+concurrent execution of heterogeneous tasks on the same pilot; (2) support of
+all the major HPC batch systems; (3) support of more than twelve methods to
+launch tasks; and (4) a general purpose architecture. RP can execute single
+or multi core tasks within a single compute node, or across multiple nodes, 
+isolating the execution of each tasks into a dedicated process and enabling
+concurrent execution of heterogeneous tasks by design.
+
 
 
 % ---------------------------------------------------------------------------
@@ -312,7 +439,7 @@ Guidelines for the authors:
 % References
 % ---------------------------------------------------------------------------
 \bibliographystyle{elsarticle-num} 
-\bibliography{rct-software}
+\bibliography{rct-softwarex}
 
 
 % ---------------------------------------------------------------------------
