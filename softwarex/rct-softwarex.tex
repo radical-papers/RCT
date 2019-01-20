@@ -209,21 +209,23 @@ modules) exposed by means of a dedicated interface. Building blocks expands
 upon component-based engineering to apply separation of concerns---and
 therefore modularity---to each component of RCT\@.
 
-
 % ---------------------------------------------------------------------------
-% Section III
-% ---------------------------------------------------------------------------
-\subsection{Software Architecture}\label{sec:architecture}
+\subsection{Software Architecture}\label{ssec:architecture}
 
 {\em Give a short overview of the overall software architecture; provide a
 pictorial component overview or similar (if possible). If necessary provide
 implementation details.}
 
 \begin{itemize}
-  \item Create an overall architecture diagram for the whole RCT\@: EnTK, RP,
-  RS, RA\@. Compose this diagram from the existing diagram for each RCT
+  \item Create an overall architecture diagram for the whole RCT\@: RP and
+  EnTK\@. Compose this diagram from the existing diagram for each RCT
   component, making it visually uniform.
 \end{itemize}
+
+Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and
+capabilities. Here, we focus on RADICAL-Pilot (RP) and EnTK, first
+introducing each system individually, then showing how RCT has a whole can be
+composed to serve diverse use cases.
 
 Traditionally, components of independent software systems have been difficult
 to compose and reuse. While interfaces can hide implementation details
@@ -248,30 +250,33 @@ within two specific states. Errors are always associated to an entity, state
 and event. Communication is decoupled from coordination, creating specific
 blocks for the latter while being channel agnostic about the former.
 
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.49\textwidth]{figures/arch_rs.pdf}
-%     \caption{Caption.\label{fig:arch_rs}}
-% \end{figure}
+% ------------
+\subsubsection{RADICAL-Pilot}\label{sssec:arch_rp}
+
+Fig.~\ref{fig:arch-rp} shows the subsystems and components of
+RP () alongside the control and information flow among them. RP has four subsystems: Client, Agent and MongoDB\@. Client has two components  
 
 \begin{figure}
     \centering
     \includegraphics[width=0.49\textwidth]{figures/arch_rp.pdf}
-    \caption{Caption.}\label{fig:arch_rp}
+    \caption{Caption.}\label{fig:arch-rp}
 \end{figure}
 
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.49\textwidth]{figures/arch_entk.pdf}
-%     \caption{Caption.\label{fig:arch_entk}}
-% \end{figure}
+% ------------
+\subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\textwidth]{figures/arch_entk.pdf}
+    \caption{Caption.\label{fig:arch_entk}}
+\end{figure}
+
+% ------------
+\subsubsection{RADICAL Cybertools}\label{sssec:arch_rct}
 
 
 % ---------------------------------------------------------------------------
-% Section IV
-% ---------------------------------------------------------------------------
-\subsection{Software Functionalities}\label{sec:functionalities}
+\subsection{Software Functionalities}\label{ssec:functionalities}
 
 {\em Present the major functionalities of the software.}
 
@@ -310,12 +315,8 @@ or multi core tasks within a single compute node, or across multiple nodes,
 isolating the execution of each tasks into a dedicated process and enabling
 concurrent execution of heterogeneous tasks by design.
 
-
-
 % ---------------------------------------------------------------------------
-% Section V
-% ---------------------------------------------------------------------------
-\subsection{Sample code snippets analysis (optional)}\label{sec:code}
+\subsection{Sample code snippets analysis (optional)}\label{ssec:code}
 
 \begin{itemize}
   \item EnTK PST API
@@ -325,7 +326,7 @@ concurrent execution of heterogeneous tasks by design.
 \end{itemize}
 
 % ---------------------------------------------------------------------------
-% Section VI
+% Section III
 % ---------------------------------------------------------------------------
 \section{Illustrative Examples}\label{sec:examples}
 
@@ -349,7 +350,7 @@ on ScienceDirect.).}
 \end{itemize}
 
 % ---------------------------------------------------------------------------
-% Section VII
+% Section IV
 % ---------------------------------------------------------------------------
 \section{Impact}\label{sec:impact}
 
@@ -413,7 +414,7 @@ Guidelines for the authors:
 
 
 % ---------------------------------------------------------------------------
-% Section VIII
+% Section V
 % ---------------------------------------------------------------------------
 \section{Conclusions}\label{sec:conclusions}
 
