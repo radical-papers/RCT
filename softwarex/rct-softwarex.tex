@@ -216,11 +216,11 @@ therefore modularity---to each component of RCT\@.
 pictorial component overview or similar (if possible). If necessary provide
 implementation details.}
 
-\begin{itemize}
-  \item Create an overall architecture diagram for the whole RCT\@: RP and
-  EnTK\@. Compose this diagram from the existing diagram for each RCT
-  component, making it visually uniform.
-\end{itemize}
+% \begin{itemize}
+%   \item Create an overall architecture diagram for the whole RCT\@: RP and
+%   EnTK\@. Compose this diagram from the existing diagram for each RCT
+%   component, making it visually uniform.
+% \end{itemize}
 
 Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and
 capabilities. Here, we focus on RADICAL-Pilot (RP) and EnTK, first
@@ -250,26 +250,70 @@ within two specific states. Errors are always associated to an entity, state
 and event. Communication is decoupled from coordination, creating specific
 blocks for the latter while being channel agnostic about the former.
 
+All RCT are stand-alone, distributed systems. Architecturally, each tool
+consists of one or more subsystems, each with several components. Components
+are isolated into separate processes and some components are used only in
+specific deployment scenarios, depending on both application requirements and
+resource capabilities. Components are stateless and some of them can be
+instantiated concurrently to simultaneously manage multiple entities, like
+workflows, workloads, tasks or pilots. This enables scaling of throughput and
+tolerance to component failure.
+
+Concurrent components are coordinated via a dedicated communication mesh,
+which introduces runtime and infrastructure-specific overheads, but improves
+overall scalability of the system and lowers component complexity. Components
+can have different implementations; configuration files can tailor each RCT
+to specific resources types, workloads, or scaling requirements. Components
+exchange data about the entities specific to each RCT and data about the
+state of the components and subsystems. Each type of datum has dedicated
+modules and communication channel, separating communication from coordination
+while making explicit states and events of each entity.
+
 % ------------
 \subsubsection{RADICAL-Pilot}\label{sssec:arch_rp}
 
-Fig.~\ref{fig:arch-rp} shows the subsystems and components of
-RP () alongside the control and information flow among them. RP has four subsystems: Client, Agent and MongoDB\@. Client has two components  
+RP implements two main abstractions: Pilot and Compute Unit (CU). Pilots and
+CUs abstract away specificities of resources and workloads, making it
+possible to schedule workloads either concurrently or sequentially on
+resource placeholders. Pilots are placeholders for computing resources, where
+resources are represented independent from architecture and topological
+details. CUs are units of work (i.e., tasks), specified as an application
+executable alongside its resource and execution environment requirements.
+
+Fig.~\ref{fig:archs}a depicts RP's architecture with two subsystems (white
+boxes) and several components (green and yellow boxes). Green components are
+responsible for pilots and units; yellow components manage the communication
+among RP components. Subsystems can execute locally or remotely,
+communicating and coordinating over TCP/IP\@, and enabling multiple
+deployment scenarios. For example, users can run Client locally, and
+distribute MongoDB and one or more instances of Agent on remote computing
+infrastructures. Alternatively, users can run all RP components on a remote
+resource.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\textwidth]{figures/arch_rp.pdf}
-    \caption{Caption.}\label{fig:arch-rp}
+    \subfloat[ ]{{\includegraphics[width=0.585\textwidth]{figures/arch_rp.pdf} }}
+    \qquad
+    \subfloat[ ]{{\includegraphics[width=0.325\textwidth]{figures/arch_entk.pdf} }}
+    \caption{Caption.}\label{fig:archs}
 \end{figure}
+
+The first subsystem, called Client, has two main components: PilotManager has
+a main component called `Launcher'. The Launcher uses resource configuration
+files to define the number, placement, and properties of the Agent's
+components of each Pilot. Currently, configuration files are made available
+for essentially all US NSF and DOE production resources as well as Beowulf
+variants, but users can provide new files or alter existing configuration
+parameters at runtime, both for a single pilot or a whole RP session.
 
 % ------------
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.49\textwidth]{figures/arch_entk.pdf}
-    \caption{Caption.\label{fig:arch_entk}}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.49\textwidth]{figures/arch_entk.pdf}
+%     \caption{Caption.\label{fig:arch_entk}}
+% \end{figure}
 
 % ------------
 \subsubsection{RADICAL Cybertools}\label{sssec:arch_rct}
@@ -306,6 +350,13 @@ simplicity of using distributed infrastructure whilst enhancing the
 sustainability of distributed applications, services and tools.
 
 % RP
+As a runtime system, RP offers an API to describe both pilots and CUs,
+alongside classes and methods to manage acquisition of resources, scheduling
+of CUs on those resources, and the staging of input and output files.
+Reporting capabilities update the user about ongoing executions and profiling
+capabilities enable detailed postmortem analysis of workload executions and
+runtime behavior.
+
 RP offers four unique features when compared to other pilot systems or tools
 that enable the execution of multi-task workloads on HPC systems: (1)
 concurrent execution of heterogeneous tasks on the same pilot; (2) support of
