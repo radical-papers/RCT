@@ -281,43 +281,108 @@ details. CUs are units of work (i.e., tasks), specified as an application
 executable alongside its resource and execution environment requirements.
 
 Fig.~\ref{fig:archs}a depicts RP's architecture with two subsystems (white
-boxes) and several components (green and yellow boxes). Green components are
-responsible for pilots and units; yellow components manage the communication
-among RP components. Subsystems can execute locally or remotely,
-communicating and coordinating over TCP/IP\@, and enabling multiple
-deployment scenarios. For example, users can run Client locally, and
-distribute MongoDB and one or more instances of Agent on remote computing
-infrastructures. Alternatively, users can run all RP components on a remote
-resource.
+boxes) and several components (purple and yellow boxes). In each subsystem,
+purple components are responsible for pilots and units while yellow
+components manage the communication among RP components. Subsystems can
+execute locally or remotely, communicating and coordinating over TCP/IP\@,
+and enabling multiple deployment scenarios. For example, users can run Client
+locally, and distribute MongoDB and one or more instances of Agent on remote
+computing infrastructures. Alternatively, users can run all RP components on
+a local or remote resource.
 
 \begin{figure}
     \centering
-    \subfloat[ ]{{\includegraphics[width=0.585\textwidth]{figures/arch_rp.pdf} }}
+    \subfloat[ ]{{\includegraphics[width=0.58\textwidth]{figures/arch_rp.pdf} }}
     \qquad
-    \subfloat[ ]{{\includegraphics[width=0.325\textwidth]{figures/arch_entk.pdf} }}
-    \caption{Caption.}\label{fig:archs}
+    \subfloat[ ]{{\includegraphics[width=0.32\textwidth]{figures/arch_entk.pdf} }}
+    \caption{Caption. \mtnote{TODO\@: Fix EnTK AppManager}}\label{fig:archs}
 \end{figure}
 
-The first subsystem, called Client, has two main components: PilotManager has
+The first subsystem, called Client, has two main components designed to
+manage either pilots or units: PilotManager and UnitManager. PilotManager has
 a main component called `Launcher'. The Launcher uses resource configuration
 files to define the number, placement, and properties of the Agent's
 components of each Pilot. Currently, configuration files are made available
-for essentially all US NSF and DOE production resources as well as Beowulf
-variants, but users can provide new files or alter existing configuration
-parameters at runtime, both for a single pilot or a whole RP session.
+for all the HPC machines of the Extreme Science and Engineering Discovery
+Environment (XSEDE), Blue Waters at the National Center For supercomputing
+Applications (NCSA), Cheyenne at NCAR-Wyoming Supercomputing Center (NWSC),
+and Rhea, Titan and Summit at the Oak Ridge National Laboratory (ORNL). Users
+can provide new files or alter existing configuration parameters at runtime,
+both for a single pilot or a whole RP session.
+
+UnitManager has two main components: Scheduler and Stager Input. Scheduler
+schedules compute units onto one or more pilots, available on one or more
+resources. This enables late binding of units to resources, depending on
+their availability: units are bound to resources that satisfy their execution
+requirements only when these resources are actually available. The second
+component of UnitManager is Stager Input. Units may need input files for
+their execution, this module takes care to distribute these files to the
+resources on which each unit has been scheduled.
+
+The second subsystem of RP is called Agent and has four main components: one
+Stager Input and Stager Output for staging input and output data of compute
+units, Scheduler and Executer to schedule compute units on a pilot resources
+and execute those units on them. Multiple instances of the Stager and
+Executer components can coexist in a single Agent. Depending on the
+architecture of the resource, the Agent's components can individually be
+placed on cluster head nodes, MOM nodes, compute nodes, virtual machines, or
+any combination thereof. ZeroMQ communication bridges connect the Agent
+components, creating a network to support the transitions of the units
+through components.
+
+Data management \ldots\mtnote{Andre to write this paragraph about the
+architectural specifics of data management in RP, mentioning Stager Output in
+Client.}
+
+Each component of each subsystem of RP has a dedicated queue. Orange queue in
+Fig.~\ref{fig:archs}a are dedicated to pilots and unit entities while blue
+queues to the messages exchanged by the components dedicated to
+communication. Queuing entities enables managing them in bulk so to obtain
+performance at scale in a distributed systems. Further, queuing entities
+enables the use of concurrent components when using multiple physical
+supports (e.g., work nodes) or when leveraging component concurrency for
+performance optimization.
+
+\mtnote{Introduce MongoDB and the role it plays for communication and
+coordination.}
 
 % ------------
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
 
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.49\textwidth]{figures/arch_entk.pdf}
-%     \caption{Caption.\label{fig:arch_entk}}
-% \end{figure}
+EnTK sits between the user and one or more target infrastructures,
+abstracting resource management and execution management from the user.
+Fig.~\ref{fig:archs}b shows the subsystem (white), its components (purple)
+and subcomponents (green) of EnTK\@. AppManager, WFProcessor and TaskManager
+respectively enable API, Workflow Management, and Workload Management.
+
+AppManager enables users to describe ensemble-based applications descriptions
+in terms of pipelines, stages and tasks. Pipelines are sequences or stages
+and stages are sets of tasks. Accordingly, at execution time, the order of
+the stages in the pipeline is granted by design while tasks in each stage can
+be executed concurrently, depending on resource availability. 
+
+AppManager also retrieves information from the user about target
+infrastructures, initializes EnTK, and holds the global state of the
+application during execution. In this way, AppManager is the sole stateful
+component of EnTK, enabling the restart of the other components upon failure
+without interrupting the execution of the ensemble-based application.
+
+AppMnager uses third-party runtime systems (RTS) to acquires resources,
+isolating RTS into a stand-alone subsystem and therefore enabling
+fault-tolerance. When the RTS fails or becomes unresponsive, EnTK can tear it
+down and bring it back, loosing only those tasks that were in execution at
+the time of the RTS failure. Currently, EnTK support only RADICAL-Pilot as
+RTS but it is designed to use other task-based RTS as, for example, Dask or
+Celery.
+
+WFProcessor uses the Enqueue and Dequeue subcomponents to queue and dequeue
+tasks pulled from AppManager. TaskManager uses ExecManager to schedule tasks
+on the RTS and keep track of the state of each task during execution.
 
 % ------------
 \subsubsection{RADICAL Cybertools}\label{sssec:arch_rct}
 
+\mtnote{Describe BB and individual + aggregated execution models}
 
 % ---------------------------------------------------------------------------
 \subsection{Software Functionalities}\label{ssec:functionalities}
