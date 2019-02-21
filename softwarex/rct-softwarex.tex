@@ -349,40 +349,46 @@ coordination.}
 % ------------
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
 
-EnTK sits between the user and one or more target infrastructures,
-abstracting resource management and execution management from the user.
-Fig.~\ref{fig:archs}b shows the subsystem (white), its components (purple)
-and subcomponents (green) of EnTK\@. AppManager, WFProcessor and TaskManager
-respectively enable API, Workflow Management, and Workload Management.
+EnTK implements three main abstractions: task, stage and pipeline. Tasks
+contain information regarding an executable, its software environment and its
+data dependences. Stages are set of tasks where tasks have no mutual
+dependences and can therefore execute concurrently, depending on resource
+availability. Pipelines are lists of stages where a stage \(i\) can be
+executed only after stage \(i-1\) has been executed.
 
-AppManager enables users to describe ensemble-based applications descriptions
-in terms of pipelines, stages and tasks. Pipelines are sequences or stages
-and stages are sets of tasks. Accordingly, at execution time, the order of
-the stages in the pipeline is granted by design while tasks in each stage can
-be executed concurrently, depending on resource availability. 
+The task abstraction identifies an executable as a program, not as an
+instruction of a program. This is important: EnTK enables concurrent and
+sequential execution at program-level, not at instruction level.
+Instruction-level parallelism is still possible within each program run by an
+EnTK task, enabling concurrent execution of multi-threaded, multi-process and
+MPI programs. Note that. at the moment, EnTK requires a runtime system (RTS)
+that support the same task abstraction.
 
-AppManager also retrieves information from the user about target
-infrastructures, initializes EnTK, and holds the global state of the
-application during execution. In this way, AppManager is the sole stateful
-component of EnTK, enabling the restart of the other components upon failure
-without interrupting the execution of the ensemble-based application.
+Fig.~\ref{fig:archs}b shows the architecture of EnTK. The EnTK system (white)
+has three components (purple), each with subcomponents dedicated to the
+management of EnTK's entities (green) or coordination of the entities'
+execution (yellow). The three components are AppManager, WFProcessor and
+TaskManager that enable workflow specification, workflow execution
+management, and workload management.
 
-AppMnager uses third-party runtime systems (RTS) to acquires resources,
-isolating RTS into a stand-alone subsystem and therefore enabling
-fault-tolerance. When the RTS fails or becomes unresponsive, EnTK can tear it
-down and bring it back, loosing only those tasks that were in execution at
-the time of the RTS failure. Currently, EnTK support only RADICAL-Pilot as
-RTS but it is designed to use other task-based RTS as, for example, Dask or
-Celery.
+AppManager exposes an API for the development of ensemble-based applications
+in terms of tasks, stages and pipelines, and for specifying resource
+requirements for the application execution. AppManager initializes EnTK and
+holds the global state of the application at runtime. AppManager is the sole
+stateful component of EnTK, allowing to restart other components upon
+failure, without interrupting the execution of the ensemble-based
+application.
 
 WFProcessor uses the Enqueue and Dequeue subcomponents to queue and dequeue
 tasks pulled from AppManager. TaskManager uses ExecManager to schedule tasks
 on the RTS and keep track of the state of each task during execution.
+TaskManager users ResManageer as an interface to the chosen RTS. RTS have to
+provide capabilities to acquire resources and schedule tasks on those
+resources for execution. ResManager isolates RTS from EnTK, enabling
+restarting of the RTS without loosing information about tasks that have been
+already executed. Currently, EnTK support only RADICAL-Pilot as RTS but it is
+designed to use other task-based RTS as, for example, Coasters or HTCondor.
 
-% ------------
-\subsubsection{RADICAL Cybertools}\label{sssec:arch_rct}
-
-\mtnote{Describe BB and individual + aggregated execution models}
 
 % ---------------------------------------------------------------------------
 \subsection{Software Functionalities}\label{ssec:functionalities}
@@ -412,7 +418,9 @@ on the RTS and keep track of the state of each task during execution.
 Given the heterogeneity of distributed infrastructures, SAGA provides a much
 needed interoperability layer that lowers the complexity and improves the
 simplicity of using distributed infrastructure whilst enhancing the
-sustainability of distributed applications, services and tools.
+sustainability of distributed applications, services and
+tools.\mtnote{probably not to be included as SAGA has been already described
+in a standalone SoftwareX publication.}
 
 % RP
 As a runtime system, RP offers an API to describe both pilots and CUs,
@@ -422,14 +430,54 @@ Reporting capabilities update the user about ongoing executions and profiling
 capabilities enable detailed postmortem analysis of workload executions and
 runtime behavior.
 
+RP enables the execution of tasks with several dimensions of heterogeneity on
+one or more pilots instantiated on one or more resources. The defining
+capability of a pilot system is to decouple resource acquisition from task
+execution. Infrastructures exposing resources via a batch system allow users
+to submit their tasks as jobs. Jobs wait in the batch system's queue and when
+the requested resources became available for the requested amount of time, a
+job is scheduled for execution. Thus, each task of a multi-task application
+has to wait in the batch system's queue to be executed, incurring in delays
+that can become rapidly unfeasible.
+
+Pilot systems allow for queuing a single job via the batch system and, once
+this job becomes active, it executes a system application that enables the
+direct scheduling of tasks on the acquired resources, without waiting in the
+batch system's queue. In this way, pilot systems can enable high throughput
+computing (HTC) on infrastructures designed to enable high performance
+computing (HPC). Note that pilot systems do not game the HPC infrastructure:
+pilot jobs are bound by the required resources and wait in the queue as every
+other job, therefore abiding to the system usage policies.
+
 RP offers four unique features when compared to other pilot systems or tools
-that enable the execution of multi-task workloads on HPC systems: (1)
+that enable the execution of multi-task applications on HPC systems: (1)
 concurrent execution of heterogeneous tasks on the same pilot; (2) support of
 all the major HPC batch systems; (3) support of more than twelve methods to
 launch tasks; and (4) a general purpose architecture. RP can execute single
-or multi core tasks within a single compute node, or across multiple nodes, 
+or multi core tasks within a single compute node, or across multiple nodes,
 isolating the execution of each tasks into a dedicated process and enabling
 concurrent execution of heterogeneous tasks by design.
+
+% EnTK
+EnTK is a workflow engine specifically designed to execute ensemble-based
+applications. These applications are composed by ensemble of tasks that may
+have dependences both among tasks and ensembles. These dependences express a
+relationship of priority at execution time. These dependences may be
+determined by input/output data and control flow requirements: For example,
+two tasks may have to be executed sequentially when the output of the first
+task is the input of the second task; and two tasks (or ensembles) may have
+to be executed sequentially when the output of the first tasks determines
+whether executing the second task is of interest.
+
+Consistently, EnTK provides adaptive capabilities and dedicated constructs to
+pause, resume and stop pipelines at execution time. Adaptive applications
+change the ensemble specifications at runtime, creating new pipelines, stages
+and tasks, or changing the properties of those already described. Further, pipelines and stages can be paused while waiting to perform \textit{ad hoc} computations. This enable the implementation of high-level application patterns as, for example, simulation-analysis, replica exchange and \ldots
+
+% Execution Model
+
+\mtnote{Describe BB and individual + aggregated execution models}
+
 
 % ---------------------------------------------------------------------------
 \subsection{Sample code snippets analysis (optional)}\label{ssec:code}
@@ -437,8 +485,6 @@ concurrent execution of heterogeneous tasks by design.
 \begin{itemize}
   \item EnTK PST API
   \item RP pilot and unit API
-  \item SAGA API
-  \item RA API
 \end{itemize}
 
 % ---------------------------------------------------------------------------
@@ -462,8 +508,10 @@ on ScienceDirect.).}
 \begin{itemize}
   \item Simple EnTK application or one of the domain-specific workflows
   (HTBAC?) with RA analysis?
-  \item Video of the execution, why not.
+  \item Video of the execution because, why not?
 \end{itemize}
+
+
 
 % ---------------------------------------------------------------------------
 % Section IV
