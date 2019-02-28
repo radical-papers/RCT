@@ -472,7 +472,10 @@ whether executing the second task is of interest.
 Consistently, EnTK provides adaptive capabilities and dedicated constructs to
 pause, resume and stop pipelines at execution time. Adaptive applications
 change the ensemble specifications at runtime, creating new pipelines, stages
-and tasks, or changing the properties of those already described. Further, pipelines and stages can be paused while waiting to perform \textit{ad hoc} computations. This enable the implementation of high-level application patterns as, for example, simulation-analysis, replica exchange and \ldots
+and tasks, or changing the properties of those already described. Further,
+pipelines and stages can be paused while waiting to perform \textit{ad hoc}
+computations. This enable the implementation of high-level application
+patterns as, for example, simulation-analysis, replica exchange and \ldots
 
 % Execution Model
 
@@ -524,57 +527,131 @@ the description here appropriately}
 Guidelines for the authors:
 \begin{enumerate}
   \item Indicate in what way new research questions can be pursued as a
-  result of the software (if any).
+        result of the software (if any).
   \item Indicate in what way, and to what extent, the pursuit of existing
-  research questions is improved (if so).
+        research questions is improved (if so).
   \item Indicate in what way the software has changed the daily practice of
-  its users (if so).
+        its users (if so).
   \item Indicate how widespread the use of the software is within and outside
-  the intended user group.
+        the intended user group.
   \item Indicate in what way the software is used in commercial settings
-  and/or how it led to the creation of spin-off companies (if so).
+        and/or how it led to the creation of spin-off companies (if so).
 \end{enumerate}}
 
-\begin{itemize}
-  \item Support of new research questions via RCT\@:
-  \begin{itemize}
-    \item General purpose pilot API, independent from domain, project,
-    infrastructure or middleware specific requirements.
-    \item General purpose task execution model: heterogeneous and.or
-    homogeneous set of tasks distributed across multiple
-    infrastructures/machines or distributed within a single machine. No
-    requirement for a specific distribution or communication pattern across
-    tasks.
-  \end{itemize}
-  \item Improved support of existing research question via RCT\@:
-  \begin{itemize}
-    \item Rapid codification of domain-specific applications due to isolation
-    of concerns between application logic and resource and execution
-    management.
-    \item Faster and simpler programmatic specification of tasks dependences
-    with the PST model.
-    \item User can control trade off between concurrency and duration of the
-    execution of multi-task applications (via pilots).
-    \item Strong and weak scaling on multiple HPC machines.
-  \end{itemize}
-  \item Impact on user practices:
-  \begin{itemize}
-    \item Writing domain-specific applications without having to
-    code/configure resource acquisition and execution management.
-    \item Rapid implementation of adaptive runtime strategies within
-    domain-specific applications.
-    \item Different modalities of deployment, including working for the user
-    workstation (or VM) without having to log into the computing
-    infrastructure.
-    \item Support of a large set of HPC machines via a unified and consistent
-    interface.
-  \end{itemize}
-  \item Adoption figures:
-  \begin{itemize}
-    \item Aggregated numbers for all RCT.
-    \item Break down figures?
-  \end{itemize}
-\end{itemize}
+% \begin{itemize}
+%   \item Support of new research questions via RCT\@:
+%   \begin{itemize}
+%     \item General purpose pilot API, independent from domain, project,
+%     infrastructure or middleware specific requirements.
+%     \item General purpose task execution model: heterogeneous and.or
+%     homogeneous set of tasks distributed across multiple
+%     infrastructures/machines or distributed within a single machine. No
+%     requirement for a specific distribution or communication pattern across
+%     tasks.
+%   \end{itemize}
+%   \item Improved support of existing research question via RCT\@:
+%   \begin{itemize}
+%     \item Rapid codification of domain-specific applications due to
+%     isolation of concerns between application logic and resource and
+%     execution management.
+%     \item Faster and simpler programmatic specification of tasks
+%     dependences with the PST model.
+%     \item User can control trade off between concurrency and duration of
+%     the execution of multi-task applications (via pilots).
+%     \item Strong and weak scaling on multiple HPC machines.
+%   \end{itemize}
+%   \item Impact on user practices:
+%   \begin{itemize}
+%     \item Writing domain-specific applications without having to
+%     code/configure resource acquisition and execution management.
+%     \item Rapid implementation of adaptive runtime strategies within
+%     domain-specific applications.
+%     \item Different modalities of deployment, including working for the
+%     user workstation (or VM) without having to log into the computing
+%     infrastructure.
+%     \item Support of a large set of HPC machines via a unified and
+%     consistent interface.
+%   \end{itemize}
+%   \item Adoption figures:
+%   \begin{itemize}
+%     \item Aggregated numbers for all RCT.
+%     \item Break down figures?
+%   \end{itemize}
+% \end{itemize}
+
+RCT have significant impact on several scientific projects, both as
+individual and integrated systems. RCT are a testbed for engineering
+research, mostly focused on foundational abstractions~\cite{}, architectural
+paradigms~\cite{}, application patterns~\cite{}, and performance analysis of
+distributed middleware on diverse computing infrastructures~\cite{}. RCT also
+support several users worldwide, including individual researcher, research
+laboratories and whole institutions. These users form a global community of
+domain scientists and system engineers that actively contribute to the open
+source development of RCT~\cite{}.
+
+In the past five years, RCT has enabled the development of scientific
+applications in multiple and diverse domains, including software engineering,
+chemical physics, materials science, hearth science, climate science, drug
+discovery and particle physics. RADICAL-SAGA and RADICAL-Pilot supports
+several use cases, spanning functional and scientific domains. RADICAL-SAGA
+is mostly integrated into end-to-end middleware solutions while RADICAL-Pilot
+is used both as standalone system and integrated with other systems.
+
+RADICAL-SAGA enables the Production ANd Distributed Analysis (PanDA) system
+to submit batch jobs to Titan and Summit, the two leadership class machines
+managed by the Oak Ridge Leadership Computing Facility (OLCF) at the Oak
+Ridge National Laboratory (ORNL)~\cite{}. PanDA is the workload management
+system used by the ATLAS project to execute hundred of millions of jobs a
+year on both grid and High Performance Computing (HPC)
+infrastructures~\cite{}. Only on ORNL, PanDA uses RADICAL-SAGA to analysis
+more than eight million events a week.
+
+RADICAL-SAGA was also used to develop Science Gateways as part of the
+Distributed Application Runtime Environment (DARE) framework. These gateways
+supported several projects, including DECIDE and neuGRID \mtnote{others?}, to
+study the early diagnosis of Alzheimer and other neurodegenerative diseases.
+In that capacity RADICAL-SAGA enabled submission of jobs to distributed
+computing infrastructures managed by the European Grid Initiative (EGI),
+interconnected via GEANT, the pan-European research and education network
+that interconnects Europe’s National Research and Education Networks.
+
+\mtnote{Other projects we should mention?}
+
+As seen in Sec.~\ref{ssec:architecture}, RADICAL-PILOT uses RADICAL-SAGA to
+submit pilots to a large array of resources, including HPC and grid systems
+of the Extreme Science and Engineering Discovery Environment
+(XSEDE)~\citep{towns2014xsede}, and the HPC machines Cheyenne at NCAR-Wyoming
+Supercomputing Center (NWSC)~\citep{web-cheyenne}; Blue Waters at the
+National Center For supercomputing Applications
+(NCSA)~\citep{web-bluewaters}; Rhea, Titan and Summit at the Oak Ridge
+National Laboratory (ORNL)~\citep{web-olcf-resources}; and SuperMUC at the
+Leibniz Supercomputing Centre (LSC) of the Bavarian Academy of
+Sciences~\citep{web-supermuc}.
+
+Currently, RADICAL-Pilot (RP) supports fourteen projects across the USA and
+Europe, for a total of \mtnote{insert number} collaborators. Since its first
+release in \mtnote{add month and year}, RP has supported a total of
+\mtnote{insert number} projects and \mtnote{insert number} collaborators. Of
+these, \mtnote{insert number} projects used RP has a standalone system to
+support the execution of multi-task applications on single and/or multiple
+computing infrastructures. 
+
+Among the most representative projects supported by RP as a standalone
+system, the Abstractions and Integrated Middleware for Extreme-Scale Science
+(AIMES) project enabled extreme-scale distributed computing via dynamic
+federation of heterogeneous computing infrastructures. We used RP to execute
+millions of tasks on both HPC and HTC resources, studying the federated
+behavior of multiple infrastructures and progressing the foundational
+understanding of the pilot abstraction and of the architectural pattern
+underlying pilot systems.
+
+\mtnote{Choose what other projects to add here for RP}
+
+When EnTK, RP and RADICAL-SAGA are integrated into an end-to-end system, RCT
+support the development of domain specific workflow (DSW) frameworks and
+applications. DSW are \ldots
+
+Currently, DSW frameworks like ICEBERG~\cite{}, HTBAC, RepEx, and EXTASY support the execution of workflows that share a specific coordination pattern. \ldots
 
 
 % ---------------------------------------------------------------------------
