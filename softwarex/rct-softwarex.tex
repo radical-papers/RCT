@@ -585,35 +585,37 @@ research, mostly focused on foundational abstractions~\cite{}, architectural
 paradigms~\cite{}, application patterns~\cite{}, and performance analysis of
 distributed middleware on diverse computing infrastructures~\cite{}. RCT also
 support several users worldwide, including individual researcher, research
-laboratories and whole institutions. These users form a global community of
-domain scientists and system engineers that actively contribute to the open
-source development of RCT~\cite{}.
+laboratories and whole institutions~\cite{}. These users form a worldwide
+community of domain scientists and system engineers that actively contribute
+to the open source development of RCT.
 
 In the past five years, RCT has enabled the development of scientific
 applications in multiple and diverse domains, including software engineering,
 chemical physics, materials science, hearth science, climate science, drug
-discovery and particle physics. RADICAL-SAGA and RADICAL-Pilot supports
-several use cases, spanning functional and scientific domains. RADICAL-SAGA
-is mostly integrated into end-to-end middleware solutions while RADICAL-Pilot
-is used both as standalone system and integrated with other systems.
+discovery and particle physics. Currently, RADICAL-SAGA and RADICAL-Pilot
+supports \mtnote{add number} use cases, spanning functional and scientific
+domains. RADICAL-SAGA is mostly integrated into end-to-end middleware
+solutions while RADICAL-Pilot is used both as standalone system and
+integrated with other systems.
 
 RADICAL-SAGA enables the Production ANd Distributed Analysis (PanDA) system
 to submit batch jobs to Titan and Summit, the two leadership class machines
 managed by the Oak Ridge Leadership Computing Facility (OLCF) at the Oak
 Ridge National Laboratory (ORNL)~\cite{}. PanDA is the workload management
-system used by the ATLAS project to execute hundred of millions of jobs a
+system used by the ATLAS experiment to execute hundred of millions of jobs a
 year on both grid and High Performance Computing (HPC)
 infrastructures~\cite{}. Only on ORNL, PanDA uses RADICAL-SAGA to analysis
 more than eight million events a week.
 
-RADICAL-SAGA was also used to develop Science Gateways as part of the
-Distributed Application Runtime Environment (DARE) framework. These gateways
-supported several projects, including DECIDE and neuGRID \mtnote{others?}, to
-study the early diagnosis of Alzheimer and other neurodegenerative diseases.
-In that capacity RADICAL-SAGA enabled submission of jobs to distributed
-computing infrastructures managed by the European Grid Initiative (EGI),
-interconnected via GEANT, the pan-European research and education network
-that interconnects Europe’s National Research and Education Networks.
+Between \mtnote{add year} and \mtnote{add year}, RADICAL-SAGA was used to
+develop Science Gateways as part of the Distributed Application Runtime
+Environment (DARE) framework. These gateways supported several projects,
+including DECIDE and neuGRID \mtnote{others?}, to study the early diagnosis
+of Alzheimer and other neurodegenerative diseases. In that capacity
+RADICAL-SAGA enabled submission of jobs to distributed computing
+infrastructures managed by the European Grid Initiative (EGI), interconnected
+via GEANT, the pan-European research and education network that interconnects
+Europe’s National Research and Education Networks.
 
 \mtnote{Other projects we should mention?}
 
@@ -629,12 +631,11 @@ Leibniz Supercomputing Centre (LSC) of the Bavarian Academy of
 Sciences~\citep{web-supermuc}.
 
 Currently, RADICAL-Pilot (RP) supports fourteen projects across the USA and
-Europe, for a total of \mtnote{insert number} collaborators. Since its first
-release in \mtnote{add month and year}, RP has supported a total of
-\mtnote{insert number} projects and \mtnote{insert number} collaborators. Of
-these, \mtnote{insert number} projects used RP has a standalone system to
-support the execution of multi-task applications on single and/or multiple
-computing infrastructures. 
+Europe, for a total of \mtnote{insert number} users. Since its first release
+in 2013, RP has supported a total of \mtnote{insert number} projects and
+around 100 active users. Of these, \mtnote{insert number} projects used RP
+has a standalone system to support the execution of multi-task applications
+on single and/or multiple computing infrastructures.
 
 Among the most representative projects supported by RP as a standalone
 system, the Abstractions and Integrated Middleware for Extreme-Scale Science
@@ -645,14 +646,84 @@ behavior of multiple infrastructures and progressing the foundational
 understanding of the pilot abstraction and of the architectural pattern
 underlying pilot systems.
 
-\mtnote{Choose what other projects to add here for RP}
+\mtnote{What other projects to add here for RP?}
 
 When EnTK, RP and RADICAL-SAGA are integrated into an end-to-end system, RCT
 support the development of domain specific workflow (DSW) frameworks and
 applications. DSW are \ldots
 
-Currently, DSW frameworks like ICEBERG~\cite{}, HTBAC, RepEx, and EXTASY support the execution of workflows that share a specific coordination pattern. \ldots
+We developed four DSW frameworks called
+EXTASY~\cite{balasubramanian2016extasy}, RepEx~\cite{treikalis2016repex},
+HTBAC~\cite{dakka2018high}, and ICEBERG~\cite{}. ExTASY supports several
+advanced sampling methods (e.g., DM-d-MD and CoCo) in biomolecular
+simulations, using the EnTK API to provide the simulation-analysis execution
+pattern. RepEx enables multiple replica-exchange methods which vary in the
+coordination patterns across replicas like, for example, global
+synchronization barrier or or pair-wise synchronization. RepEx supports
+multi-dimensional exchange schemes, both synchronous and
+asynchronous~\cite{radak2015characterization}, separating performance and
+functional layers while providing simple and easy methods to extend
+interfaces. HTBAC implements multiple pipelines of heterogeneous tasks,
+wherein both pipelines and tasks within a pipeline can change at runtime.
+HTBAC runs on several HPC machines, including ORNL's and NCSA's
+leadership-class machines. ICEBERG supports scalable image analysis
+applications using multiple concurrent pipelines.
 
+ExTASY, RepEx, HTBAC and ICEBERG benefit from integrating \rct{} by not
+having to reimplement workflow processing, efficient task management and
+interoperable task execution capabilities on distinct and heterogeneous
+platforms. This, in turn, enables both a focus on and ease of ``last mile
+customization'' for the DSW\@.
+
+RCT is a small operation with at most two developers working on the systems
+at the same time. In order to implement the aforementioned capabilities while
+supporting more than ten concurrent projects at every point in time, we
+adopted a specific methodology for the design, development and maintenance of
+RCT. This methodology is based on the building block approach, defined in
+Ref.~\cite{bb} and briefly outlined in Sec.~\ref{}, the use of git for
+distributed version control of the code base, and a tailored project
+management process.
+
+The building block approach helps to create systems that can support use
+cases both individually and as integrated, end-to-end solution. This is
+important when supporting projects with multiple, distinct use cases. For
+example, ICEBERG has to support five use cases, each investigating a specific
+problem in the domain of polar science. Four of these use cases require the
+concurrent execution of pipelines but one requires only the execution of bag
+of tasks. The first four cases can use EnTK while the latter only
+RADICAL-Pilot. Importantly, all use cases can be served by the ICEBERG
+framework with a minor change in the private API to call EnTK or RP,
+depending on the use cases and therefore without any engineering overheads.
+
+Git enables the project to benefit from an distributed open source
+development model. Code is publicly available and everyone can contribute new
+code by opening a pull request. This has the double benefit of helping to
+build a global community around RCT but also to facilitate the integration of
+new lead developers. As RCT are developed in an academic context, changes in
+available development effort alongside the technical quality of that effort
+need to be accounted for in the development model. To this end, documentation
+is managed via the wiki functionality of GitHub, Sphinx and Read the Docs.
+Embedding documentation in the code allows to facilitate the adoption of the
+code base while maintaining high quality, up to date documentation. Wiki
+enables distributed editing of high-level, design and project-related
+documentation.
+
+The project management process of RCT is based on the notion of `action'.
+Each action is assigned to one or multiple owners and reviewed in weekly
+meetings. Actions are implemented as GitHub tickets, facilitating integration
+with pull requests and wiki-based documentation. Tickets labeling uses a
+predefined taxonomy, shared among the RCT repositories. Tickets' labels and
+metadata are pulled regularly into a database to support statistical
+analysis. The insight is used to determine code hot spots, priority among
+feature requests and critical user issues. In turn, this enables allocation
+of development effort and planning for upcoming feature development and
+releases.
+
+Overall, these processes and insight have an impact on how to approach the
+development of middleware for supporting scientific research. Based on more
+than ten years of experience, our approach show a sustainable and effect way
+to organize software development, promote community adoption and leverage the
+specific characteristics of the academic financial model.
 
 % ---------------------------------------------------------------------------
 % Section V
