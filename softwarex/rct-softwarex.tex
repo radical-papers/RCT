@@ -42,12 +42,21 @@ keyword 1 \sep keyword 2 \sep keyword 3
 
 \linenumbers{}
 
-% The manuscript must be submitted in single column. The following
-% constraints apply: 
-% Word count: max. 3000.
-% a.	Excluding: title, authors, affiliations, references, metadata tables.
-% b.	Including: abstract, running text, captions, footnotes.
-% c.	Max. 6 figures.
+{\em The manuscript must be submitted in single column. The following constraints apply:
+\begin{enumerate}
+  \item Word count: max. 3000. Excluding: title, authors, affiliations,
+        references, metadata tables; Including: abstract, running text,
+        captions, footnotes.
+  \item Max. 6 figures.
+  \item The manuscript must have line numbers.
+  \item At least one of the two mandatory metadata tables located at the end
+        of the article template must be filled in and included in the
+        manuscript.
+  \item To submit your code/software you can: Point to an external location
+        (repository, archive, etc.) where the code is publicly available.
+        Clearly mark the address to retrieve the code in the metadata tables
+        included in the manuscript.
+\end{enumerate}}
 
 
 % ---------------------------------------------------------------------------
@@ -141,7 +150,7 @@ vocabulary needed to explain its impact.}
 \end{itemize}
 
 The RADICAL Cyberinfrastructure tools (RCT)~\cite{web-rct} is a software
-suite composed of four main components: RADICAL-SAGA
+suite composed of three main components: RADICAL-SAGA
 (RS)~\cite{merzky2015saga}, RADICAL-Pilot (RP)~\cite{merzky2018using} and
 RADICAL-Ensemble Toolkit (EnTK)~\cite{balasubramanian2018harnessing}.
 
@@ -192,22 +201,24 @@ tools that have a design consistent with the building blocks approach.
 
 In our adaptation, the Building Block approach is based on four
 well-understood principles: self-sufficiency, interoperability,
-composability, and extensibility. A block is self-sufficient when its design
-does not depend on the specificity of other building blocks; interoperable
-when it can be used in diverse system architectures without semantic
-modifications; composable when its interfaces enable communication and
-coordination with other building blocks without syntactic modifications; and
-extensible when the building's block functionalities and entities can be
-extended to support new requirements or capabilities. 
-
-The building blocks approach does not reinvent modularity, it applies it at
-system level to enable composability among independent software components.
-Commonly, modularity is used at function or method level, depending on the
-programming paradigm. As an abstraction, modularity enables separation of
-concerns by encapsulating discrete functions into semantic units (i.e.,
-modules) exposed by means of a dedicated interface. Building blocks expands
-upon component-based engineering to apply separation of concerns---and
-therefore modularity---to each component of RCT\@.
+composability, and extensibility. 
+%
+% A block is self-sufficient when its design does not depend on the
+% specificity of other building blocks; interoperable when it can be used in
+% diverse system architectures without semantic modifications; composable
+% when its interfaces enable communication and coordination with other
+% building blocks without syntactic modifications; and extensible when the
+% building's block functionalities and entities can be extended to support
+% new requirements or capabilities.
+%
+% The building blocks 
+This approach does not reinvent modularity, it applies it at system level to
+enable composability among independent software systems. As an abstraction,
+modularity enables separation of concerns by encapsulating discrete functions
+into semantic units exposed by means of a dedicated interface. As such,
+modularity can be used at function or method level, depending on the
+programming paradigm and the facilities offered by programming languages, or
+at system-level, depending on the interface exposed by each system.
 
 % ---------------------------------------------------------------------------
 \subsection{Software Architecture}\label{ssec:architecture}
@@ -222,33 +233,29 @@ implementation details.}
 %   component, making it visually uniform.
 % \end{itemize}
 
-Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and
-capabilities. Here, we focus on RADICAL-Pilot (RP) and EnTK, first
-introducing each system individually, then showing how RCT has a whole can be
-composed to serve diverse use cases.
+% Traditionally, components of independent software systems have been
+% difficult to compose and reuse. While interfaces can hide implementation
+% details working as implementation-independent specifications of
+% capabilities, composability still requires semantic uniformity across
+% interfaces. For example, when executing multi-task applications, the
+% notions of task or dependency among tasks have to be uniform across
+% components in order for them to be composable. Obtaining this uniformity is
+% challenging and largely unsupported by specific formal constructs both at
+% language and specification level. Further, component-based engineering
+% poses challenges in error handling, input/output validation, effective
+% documentation and comprehensive testing.
 
-Traditionally, components of independent software systems have been difficult
-to compose and reuse. While interfaces can hide implementation details
-working as implementation-independent specifications of capabilities,
-composability still requires semantic uniformity across interfaces. For
-example, when executing multi-task applications, the notions of task or
-dependency among tasks have to be uniform across components in order for them
-to be composable. Obtaining this uniformity is challenging and largely
-unsupported by specific formal constructs both at language and specification
-level. Further, component-based engineering poses challenges in error
-handling, input/output validation, effective documentation and comprehensive
-testing.
-
-Architecturally, building blocks contributes to address these challenges by
-specifying state, event, error, and entities models for each block. Entities
-are explicitly represented in the block's interface and used as input for
-each exposed functionality. Each entity has a set of associated states,
-events and errors. The order of the state is guaranteed by the implementation
-(e.g., a task cannot be executed before being scheduled and scheduled before
-being bound to a resource) while events are unordered but always contained
-within two specific states. Errors are always associated to an entity, state
-and event. Communication is decoupled from coordination, creating specific
-blocks for the latter while being channel agnostic about the former.
+% Architecturally, building blocks contributes to address the challenges of
+% composability among independent software systems by specifying state,
+% event, error, and entities models for each system. Entities are explicitly
+% represented in the block's interface and used as input for each exposed
+% functionality. Each entity has a set of associated states, events and
+% errors. The order of the state is guaranteed by the implementation (e.g., a
+% task cannot be executed before being scheduled and scheduled before being
+% bound to a resource) while events are unordered but always contained within
+% two specific states. Errors are always associated to an entity, state and
+% event. Communication is decoupled from coordination, creating specific
+% blocks for the latter while being channel agnostic about the former.
 
 All RCT are stand-alone, distributed systems. Architecturally, each tool
 consists of one or more subsystems, each with several components. Components
@@ -265,9 +272,14 @@ overall scalability of the system and lowers component complexity. Components
 can have different implementations; configuration files can tailor each RCT
 to specific resources types, workloads, or scaling requirements. Components
 exchange data about the entities specific to each RCT and data about the
-state of the components and subsystems. Each type of datum has dedicated
+state of the components and subsystems. Each type of data has dedicated
 modules and communication channel, separating communication from coordination
 while making explicit states and events of each entity.
+
+Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and
+capabilities. Here, we focus on RP and EnTK, first introducing each system
+individually, then showing how RCT has a whole can be composed to serve
+diverse use cases.
 
 % ------------
 \subsubsection{RADICAL-Pilot}\label{sssec:arch_rp}
@@ -343,8 +355,9 @@ enables the use of concurrent components when using multiple physical
 supports (e.g., work nodes) or when leveraging component concurrency for
 performance optimization.
 
-\mtnote{Introduce MongoDB and the role it plays for communication and
-coordination.}
+\mtnote{Andre: Introduce MongoDB and the role it plays for communication and
+coordination? I know it is on its way out but at the moment it is in the
+diagram.}
 
 % ------------
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
@@ -514,7 +527,9 @@ on ScienceDirect.).}
   \item Video of the execution because, why not?
 \end{itemize}
 
-
+\mtnote{Use a use case that requires a bag of heterogeneous tasks. Show how
+this example can become one state of a workflow and how this workflow is
+supported by EnTK.}
 
 % ---------------------------------------------------------------------------
 % Section IV
@@ -669,7 +684,7 @@ HTBAC runs on several HPC machines, including ORNL's and NCSA's
 leadership-class machines. ICEBERG supports scalable image analysis
 applications using multiple concurrent pipelines.
 
-ExTASY, RepEx, HTBAC and ICEBERG benefit from integrating \rct{} by not
+ExTASY, RepEx, HTBAC and ICEBERG benefit from integrating RCT by not
 having to reimplement workflow processing, efficient task management and
 interoperable task execution capabilities on distinct and heterogeneous
 platforms. This, in turn, enables both a focus on and ease of ``last mile
