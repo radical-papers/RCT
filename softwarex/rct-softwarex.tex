@@ -80,56 +80,57 @@ keyword 1 \sep keyword 2 \sep keyword 3
           used, other software etc.).
 \end{enumerate}}
 
-\begin{itemize}
-  \item Background:
-    \begin{itemize}
-      \item Growing importance of multi-task applications in multiple
-      research fields.
-      \item Need for scalability across several dimensions and
-      infrastructures.
-      \item Need for advanced capabilities like adaptivity, streaming,
-      fault-tolerance, etc.
-      \item The importance of supporting execution of [homo|hetero]geneous
-      multi-task applications on HPC infrastructures.
-      \item The rise of the pilot paradigm.
-    \end{itemize}
-  \item Motivations:
-    \begin{itemize}
-      \item Multi-task applications can be encoded into a variety of
-      workflows and be executed on a variety of infrastructures.
-      \item Users require flexible ways to encode workflows without having to
-      buy into a specific logical representation or concrete implementation
-      language.
-      \item Separation between workflow description, workflow management,
-      resource acquisition, workflow execution.
-      \item End-to-end, monolithic and encompassing solutions do not satisfy
-      these requirements.
-      \item Need for an ecosystem of software modules that can be composed
-      and configured depending on specific use cases.
-      \item Need for rapid development of domain-specific workflow engines
-      capable of supporting specific requirements without having to implement
-      capabilities for resource acquisition and execution management.
-      \item RCT satisfy these requirements.
-    \end{itemize}
-  \item Scientific relevance:
-    \begin{itemize}
-      \item Earth science: brief description and references
-      \item Climate science: brief description and references
-      \item Molecular biology: brief description and references
-      \item Polar science: brief description and references
-      \item \ldots
-    \end{itemize}
-  \item Settings:
-    \begin{itemize}
-      \item Python libraries supporting several deployment scenarios: local,
-      local/remote, remote, multiple remote.
-    \end{itemize}
-  \item Related work:
-    \begin{itemize}
-      \item Middleware for scientific computing. Derive from: RP paper, Pilot
-      paper, EnTK papers.
-    \end{itemize}
-\end{itemize}
+% \begin{itemize}
+%   \item Background:
+%     \begin{itemize}
+%       \item Growing importance of multi-task applications in multiple
+%       research fields.
+%       \item Need for scalability across several dimensions and
+%       infrastructures.
+%       \item Need for advanced capabilities like adaptivity, streaming,
+%       fault-tolerance, etc.
+%       \item The importance of supporting execution of [homo|hetero]geneous
+%       multi-task applications on HPC infrastructures.
+%       \item The rise of the pilot paradigm.
+%     \end{itemize}
+%   \item Motivations:
+%     \begin{itemize}
+%       \item Multi-task applications can be encoded into a variety of
+%       workflows and be executed on a variety of infrastructures.
+%       \item Users require flexible ways to encode workflows without having
+%       to buy into a specific logical representation or concrete
+%       implementation language.
+%       \item Separation between workflow description, workflow management,
+%       resource acquisition, workflow execution.
+%       \item End-to-end, monolithic and encompassing solutions do not
+%       satisfy these requirements.
+%       \item Need for an ecosystem of software modules that can be composed
+%       and configured depending on specific use cases.
+%       \item Need for rapid development of domain-specific workflow engines
+%       capable of supporting specific requirements without having to
+%       implement capabilities for resource acquisition and execution
+%       management.
+%       \item RCT satisfy these requirements.
+%     \end{itemize}
+%   \item Scientific relevance:
+%     \begin{itemize}
+%       \item Earth science: brief description and references
+%       \item Climate science: brief description and references
+%       \item Molecular biology: brief description and references
+%       \item Polar science: brief description and references
+%       \item \ldots
+%     \end{itemize}
+%   \item Settings:
+%     \begin{itemize}
+%       \item Python libraries supporting several deployment scenarios:
+%       local, local/remote, remote, multiple remote.
+%     \end{itemize}
+%   \item Related work:
+%     \begin{itemize}
+%       \item Middleware for scientific computing. Derive from: RP paper,
+%       Pilot paper, EnTK papers.
+%     \end{itemize}
+% \end{itemize}
 
 
 % ---------------------------------------------------------------------------
@@ -291,6 +292,8 @@ resource placeholders. Pilots are placeholders for computing resources, where
 resources are represented independent from architecture and topological
 details. CUs are units of work (i.e., tasks), specified as an application
 executable alongside its resource and execution environment requirements.
+Note that a task is not a function, method, thread or process but a program
+that can be run as a self-contained executable.
 
 Fig.~\ref{fig:archs}a depicts RP's architecture with two subsystems (white
 boxes) and several components (purple and yellow boxes). In each subsystem,
@@ -408,24 +411,24 @@ designed to use other task-based RTS as, for example, Coasters or HTCondor.
 
 {\em Present the major functionalities of the software.}
 
-\begin{itemize}
-  \item EnTK\@:
-  \begin{itemize}
-    \item Functionalities (VB)
-  \end{itemize}
-  \item RP\@: 
-  \begin{itemize}
-    \item Functionalities (AM)
-  \end{itemize}
-  \item RS\@:
-  \begin{itemize}
-    \item Functionalities (AM)
-  \end{itemize}
-  \item RA\@:)
-  \begin{itemize}
-    \item Functionalities (MT)
-  \end{itemize}
-\end{itemize}
+% \begin{itemize}
+%   \item EnTK\@:
+%   \begin{itemize}
+%     \item Functionalities (VB)
+%   \end{itemize}
+%   \item RP\@: 
+%   \begin{itemize}
+%     \item Functionalities (AM)
+%   \end{itemize}
+%   \item RS\@:
+%   \begin{itemize}
+%     \item Functionalities (AM)
+%   \end{itemize}
+%   \item RA\@:)
+%   \begin{itemize}
+%     \item Functionalities (MT)
+%   \end{itemize}
+% \end{itemize}
 
 % SAGA
 Given the heterogeneity of distributed infrastructures, SAGA provides a much
@@ -529,7 +532,90 @@ on ScienceDirect.).}
 
 \mtnote{Use a use case that requires a bag of heterogeneous tasks. Show how
 this example can become one state of a workflow and how this workflow is
-supported by EnTK.}
+supported by EnTK\@. REPEX, EXTASY candidate examples.}
+
+Multiple scientific domains can benefit from executing many-task applications
+at scale, especially at the scale enabled by leadership-class HPC
+machines~\cite{many-task-apps}. Independent of the domain for which these
+applications are developed, their execution requires to run a single task, a
+bag of tasks, or a workflow. It is important to note that, in this context,
+task refers to a program in the form of a self-contained executable like, for
+example, GROMACS, NAMD, AMBER, AthenaMP, SPECFEM and many others. Multi-task
+applications requires to concurrently run multiple instances of programs,
+using scale to reduce the total time to completion of the whole execution.
+
+As seen in Sec.~\ref{sec:description}, RTC support the execution of a single
+task, a bag of tasks, and workflows expressed as a set or a sequence of
+pipelines with stages and tasks. Because of the separation between manging
+the concurrent and consecutive execution of tasks and the computation
+performance by each task, RTC support multi-task application independent
+from the scientific domain in which they are used. From RTC point of view,
+every execution reduces exclusively to manging the execution of single or
+multiple sets of black boxes.
+
+RADICAL-Pilot (RP) executes set of tasks. The degree of concurrency of the
+execution depends on the amount of available resources. Consider for example
+a many-task application for the simulation of molecular dynamics with an
+ensemble of 128 simulations, each requiring 24 CPU cores as those used in
+Ref.~\cite{balasubramanian2016extasy}. The user can use RP API to describe a
+pilot job with 3072 cores (Code~\ref{code:pilot}), 128 tasks
+(Code~\ref{code:units}) and two managers to coordinate the acquisition of the
+pilot resources via RADICAL-SAGA on an HPC machine (Code~\ref{code:pmgr}) and
+the execution of the 128 tasks on those resources (Code~\ref{code:umgr}).
+
+Fig.~\ref{fig:archs}a's numbers illustrate the resource acquisition and
+task execution process. PilotManager queues the pilot description on one of
+the available Launcher in RP client (Fig.~\ref{fig:archs}a.1). That Launcher
+uses RADICAL-SAGA to schedule the pilot as a job on the target resource via
+the resource's batch System (Fig.~\ref{fig:archs}a.2--3). The pilot job waits
+in the resource management system queue and, once scheduled, bootstraps the
+pilot's AgentMnager and Updater (Fig.~\ref{fig:archs}a.4). AgentManager forks
+the StagerInput, Scheduler, Executor and StagerOutput components and the
+Updater notifies RP Client's Notifier that RP Agent is ready to execute tasks
+(Fig.~\ref{fig:archs}a.5--7).
+
+Upon notification, UnitManager queues all the available tasks onto RP
+Client's Scheduler that, in turns, queues those tasks into the StagerInput,
+depending on the chosen scheduling algorithm (Fig.~\ref{fig:archs}a.8--10).
+If required, StagerInput stages the tasks' input files to the target resource
+and then tasks are queued to the Updater and passed to the chosen RP Agent's
+AgentManager (Fig.~\ref{fig:archs}a.11--13). At that point, tasks are passed
+to a StagerInput where input files are linked and made available to each
+task, and then queued to the RP Agent's Scheduler (Fig.~\ref{fig:archs}a.14).
+Scheduler places tasks on suitable partitions of the pilot's resources and
+then queue to the Executor so that, when those partitions of resource becomes
+available, tasks are executed (Fig.~\ref{fig:archs}a.14). Executor sets up
+the environment required by each task and then forks each task for execution
+(Fig.~\ref{fig:archs}a.14). This is why tasks are black boxes to RP\@; also
+note that Scheduler and Executor can place and fork heterogeneous tasks,
+i.e., task requiring different type and amount core/GPUs and different
+execution time.
+
+RP cannot manage dependences among tasks. For RP, every task is assumed to be
+ready for execution. For example, assume a typical simulation-analysis
+workflow for molecular dynamics with a simulation stage and an analysis stage
+that depends upon the completion of the simulation stage. Each stage consists
+of a set of tasks but RP cannot distinguish between the two. EnTK enables
+this distinguishing: each stage is submitted to RP for execution, respecting
+their priority relation.
+
+Fig.~\ref{fig:archs}b's numbers illustrate the execution of workflows in
+EnTK\@. Users instantiate an AppManager (Code~\ref{code:appnam}), define a
+set of resources on which to run their workflow (Code~\ref{code:entk-res}),
+describe that workflow in terms of pipelines, stages and tasks
+(Code~\ref{code:pst}) and execute it (Code~\ref{code:pst}). AppManager passes
+a copy of the workflow description to WFProcessor that, based on the
+priorities between stages and tasks, uses Enquerer to queue tasks that are
+ready for execution to the task manager (Fig.~\ref{fig:archs}b.1--2).
+Meanwhile, ResManager users the chosen runtime system to acquire the
+requested resources (Fig.~\ref{fig:archs}b.3) and, once available,
+TaskManagers uses those resources to execute the queued tasks
+(Fig.~\ref{fig:archs}b.4). ExecManager uses queues to communicate the state
+of each task execution to AppManager. Based on this information, AppManager
+copies tasks to WFProcessors when tasks dependences are satisfied. Note that
+AppManager is the only stateful component of EnTK\@: both WFProcessor and
+ExecManager can fail without loss of information about the
+execution.\mtnote{Vivek to expand upon the dequeuer.}
 
 % ---------------------------------------------------------------------------
 % Section IV
@@ -736,9 +822,17 @@ releases.
 
 Overall, these processes and insight have an impact on how to approach the
 development of middleware for supporting scientific research. Based on more
-than ten years of experience, our approach show a sustainable and effect way
-to organize software development, promote community adoption and leverage the
-specific characteristics of the academic financial model.
+than ten years of experience, our approach show a sustainable and effective
+way to organize software development, promote community adoption and leverage
+the specific characteristics of the academic financial model. This signs the
+transition from a development model based on end-to-end, monolithic solutions
+with stringent requirements on infrastructures' software stack, to a model
+based on small, independent and composable systems, each with a well-defined
+capability. Note that these systems must be composable with third-party
+systems, i.e., systems developed independently by different development
+teams. This approach enables a model of sustainability based on smaller and
+shorter funding sources but requires a certain convergence in the vision of
+diverse groups competing in the same research field.
 
 % ---------------------------------------------------------------------------
 % Section V
