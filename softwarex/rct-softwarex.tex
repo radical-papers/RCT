@@ -788,15 +788,23 @@ applications usage of RP as a standalone system, and the realization that an
 increasing number of HPC applications were adopting the ensemble computational
 model to overcome limitations of single task applications to achieve
 significant performance gains on large-scale parallel machines, in 2015 we
-designed and implemented the Ensemble Toolkit (EnTK) as the latest addition to
-RCT.
+designed and implemented the Ensemble Toolkit
+(EnTK)~\citep{balasubramanian2016extasy} as the latest addition to RCT.
 
-When EnTK, RP and RADICAL-SAGA are integrated into an end-to-end system, RCT
-support the development of domain specific workflow (DSW) frameworks and
-applications. DSW are \ldots
+
+EnTK has enabled the development of domain specific workflow (DSW) frameworks
+and applications. DSW are \ldots provide a specific higher-level functionality
+Although, driven by specific application needs, each DSW is characterized by a
+unique execution and coordination pattern and can serve multiple applications.
+The four ensemble-based DSW developed using EnTK and \rct{} in general are:
+ExTASY, RepEx, HTBAC and ICEBERG (Fig.~\ref{fig:radical-bb}).
+
+% When EnTK, RP and RADICAL-SAGA are integrated into an end-to-end
+% system, RCT support the development of domain specific workflow (DSW)
+% frameworks and applications. 
 
 We developed four DSW frameworks called
-EXTASY~\cite{balasubramanian2016extasy}, RepEx~\cite{treikalis2016repex},
+EXTASY~\cite{balasubraman,ian2016extasy}, RepEx~\cite{treikalis2016repex},
 HTBAC~\cite{dakka2018high}, and ICEBERG~\cite{}. ExTASY supports several
 advanced sampling methods (e.g., DM-d-MD and CoCo) in biomolecular
 simulations, using the EnTK API to provide the simulation-analysis execution
