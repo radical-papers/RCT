@@ -187,14 +187,14 @@ suite composed of three main components: RADICAL-SAGA
 RADICAL-Ensemble Toolkit (EnTK)~\cite{balasubramanian2018harnessing}.
 
 RS is a Python implementation of the OGF GFD.90 SAGA
-standard~\cite{goodale2006saga}, an high-level interface to access
+standard~\cite{goodale2006saga}, a high-level interface to access
 distributed infrastructure components like job schedulers, file transfer and
 resource provisioning services. RS enables interoperability across
 heterogeneous distributed infrastructures, improving on their usability and
 enhancing the sustainability of services and tools.
 
 RP is a Python implementation of the pilot paradigm and architectural
-pattern~\cite{turilli2018comprehensive}. Pilot systems enables users to
+pattern~\cite{turilli2018comprehensive}. Pilot systems enable users to
 submit pilot jobs to computing infrastructures and then use the resources
 acquired by the pilot to execute one or more tasks. These tasks are directly
 scheduled via the pilot, without having to queue in the infrastructure batch
@@ -204,13 +204,16 @@ OpenMP, multi-process, and multi-threaded tasks. These tasks can be executed
 on CPUs, GPUs and other accelerators, on the same pilot or across multiple
 pilots.
 
-EnTK is a workflow engine specialized in supporting applications composed by
-an ensemble of tasks, executed both concurrently and sequentially depending
-on their interdependences. EnTK promotes ensembles to a high-level
-programming abstraction, providing a programming interface and execution
-model specific to ensemble-based applications. EnTK is engineered for scale
-and a diversity of computing platforms and runtime systems, agnostic of the
-size, type and coupling of the tasks comprising the ensemble.
+% EnTK is a workflow engine specialized in supporting applications composed by
+% an ensemble of tasks, executed both concurrently and sequentially depending
+% on their interdependences. 
+
+EnTK supports the concurrent or sequential execution of an ensemble of tasks
+or pipelines of tasks. EnTK promotes ensembles to a high-level programming
+abstraction, providing a programming interface and execution model specific to
+ensemble-based applications. EnTK is engineered for scale and a diversity of
+computing platforms and runtime systems, agnostic of the size, type and
+coupling of the tasks comprising the ensemble.
 
 % RA is Python implementation of a low-level library to parse, filter and
 % aggregate runtime traces of performance events. These events are timings of
@@ -222,7 +225,7 @@ size, type and coupling of the tasks comprising the ensemble.
 
 RCT are designed to work both individually and as an integrated system. This
 requires a ``Building Block'' approach to their design and development, based
-on applying the traditional notions of modularity at component level. The
+on applying the traditional notions of modularity at system level. The
 Building Block approach derives from the work on Service-oriented
 Architecture and its Microservice variants, and the component-based software
 development approaches where computational and compositional elements are
@@ -310,7 +313,7 @@ while making explicit states and events of each entity.
 
 Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and
 capabilities. Here, we focus on RP and EnTK, first introducing each system
-individually, then showing how RCT has a whole can be composed to serve
+individually, then showing how RCT as a whole can be composed to serve
 diverse use cases.
 
 % ------------
@@ -575,12 +578,12 @@ example, GROMACS, NAMD, AMBER, AthenaMP, SPECFEM and many others. Multi-task
 applications requires to concurrently run multiple instances of programs,
 using scale to reduce the total time to completion of the whole execution.
 
-As seen in Sec.~\ref{sec:description}, RTC support the execution of a single
+As seen in Sec.~\ref{sec:description}, RCT support the execution of a single
 task, a bag of tasks, and workflows expressed as a set or a sequence of
 pipelines with stages and tasks. Because of the separation between manging
 the concurrent and consecutive execution of tasks and the computation
-performance by each task, RTC support multi-task application independent
-from the scientific domain in which they are used. From RTC point of view,
+performance by each task, RCT support multi-task application independent
+from the scientific domain in which they are used. From RCT point of view,
 every execution reduces exclusively to manging the execution of single or
 multiple sets of black boxes.
 
