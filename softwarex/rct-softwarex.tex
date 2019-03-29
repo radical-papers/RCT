@@ -116,10 +116,10 @@ scientific computing.
 % {\em Describe the software in as much as is necessary to establish a
 % vocabulary needed to explain its impact.}
 
-The RADICAL Cyberinfrastructure tools (RCT)~\cite{web-rct} is a software
-suite composed of three main components: RADICAL-SAGA
-(RS)~\cite{merzky2015saga}, RADICAL-Pilot (RP)~\cite{merzky2018using} and
-RADICAL-Ensemble Toolkit (EnTK)~\cite{balasubramanian2018harnessing}.
+The RADICAL Cyberinfrastructure tools (RCT)~\cite{web-rct} have three main
+components: RADICAL-SAGA (RS)~\cite{merzky2015saga}, RADICAL-Pilot
+(RP)~\cite{merzky2018using} and RADICAL-Ensemble Toolkit
+(EnTK)~\cite{balasubramanian2018harnessing}.
 
 RS is a Python implementation of the Open Grid Forum SAGA standard 
 GFD.90~\cite{goodale2006saga}, a high-level interface to distributed
@@ -132,31 +132,34 @@ RP is a Python implementation of the pilot paradigm and architectural
 pattern~\cite{turilli2018comprehensive}. Pilot systems enable users to submit
 pilot jobs to computing infrastructures and then use the resources acquired
 by the pilot to execute one or more tasks. These tasks are directly scheduled
-via the pilot, without having to queue in the infrastructure batch system. RP
-focuses on High Performance Computing (HPC) resources, enabling the execution of
-heterogeneous workloads comprised of one or more scalar, MPI, OpenMP,
-multi-process, and multi-threaded tasks. These tasks can be executed on CPUs,
-GPUs and other accelerators, on the same pilot or across multiple pilots.
+via the pilot, without having to queue in the infrastructure's batch system.
+RP focuses on High Performance Computing (HPC) resources, enabling the
+concurrent and consecutive execution of heterogeneous workloads comprised of
+one or more scalar, MPI, OpenMP, multi-process, and multi-threaded tasks.
+These tasks can be executed on CPUs, GPUs and other accelerators, on the same
+pilot or across multiple pilots.
 
-EnTK supports the concurrent or sequential execution of an ensemble of tasks
-or pipelines of tasks. EnTK promotes ensembles to a high-level programming
-abstraction, providing a programming interface and execution model specific
-to ensemble-based applications. EnTK is engineered for scale and a diversity
-of computing platforms and runtime systems, agnostic of the size, type and
-coupling of the tasks comprising the ensemble. 
+EnTK supports the concurrent or sequential execution of tasks that can be in
+an arbitrary priority relation (i.e., ensemble or pipelines of tasks). EnTK
+promotes ensembles of tasks to a high-level abstraction, providing a
+programming interface and execution model specific to ensemble-based
+applications. EnTK is engineered for scale and a diversity of computing
+platforms and runtime systems, agnostic of the size, type and coupling of the
+tasks comprising the ensemble.
 \amnote{This is likely confusing if the reader does not know what
-an 'ensmble' is?}
+an 'ensemble' is?}\mtnote{better?}
 
-RCT are designed to work both individually and as an integrated system. This
-requires a ``Building Block'' approach to their design and development, based
-on applying the traditional notions of modularity at system level. The
-Building Block approach derives from the work on Service-oriented
-Architecture and its Microservice variants, and the component-based software
-development approaches where computational and compositional elements are
-explicitly
+RCT are designed to work both individually and as an integrated system, with
+or without third party systems. This requires a ``Building Block'' approach
+to their design and development, based on applying the traditional notions of
+modularity at system level. The Building Block approach derives from the work
+on Service-oriented Architecture and its Microservice variants, and the
+component-based software development approaches where computational and
+compositional elements are explicitly
 separated~\cite{batory1992design,garlan1995architectural,lenz1988software,clemens1998component,schneider2000components}.
 AirFlow, Oozie, Azkaban, Spark Streaming, Storm, or Kafka are examples of
-tools that have a design consistent with the building blocks approach.
+tools that have a design consistent with the building blocks approach and
+that have been integrated with RCT~\cite{}.
 
 In our adaptation, the Building Block approach is based on four
 well-understood principles: self-sufficiency, interoperability,
@@ -193,13 +196,13 @@ to specific resources types, workloads, or scaling requirements. Components
 exchange data about the entities specific to each RCT and data about the
 state of the components and subsystems. Each type of data has dedicated
 modules and communication channel, separating communication from coordination
-while making explicit states and events of each entity.
-\amnote{what does 'making' mean here?}
+with explicit states and events for each entity.
+\amnote{what does 'making' mean here?}\mtnote{better?}
 
 Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and
-capabilities. Here, we focus on RP and EnTK, first introducing each system
-individually, then showing how RCT as a whole can be composed to serve
-diverse use cases.
+capabilities. In the rest of the paper, we focus on RP and EnTK, first
+introducing each system individually, then showing how RCT as a whole can be
+composed to serve diverse use cases.
 
 % ------------
 \subsubsection{RADICAL-Pilot}\label{sssec:arch_rp}
@@ -212,87 +215,74 @@ where resources are represented independent from architecture and topological
 details. CUs are units of work (i.e., tasks), specified as an application
 executable alongside its resource and execution environment requirements.
 Note that a task is not a function, method, thread or process but a program
-that is run as a self-contained executable.
+that runs as a self-contained executable.
 
 Fig.~\ref{fig:archs}a depicts RP's architecture with two subsystems (white
 boxes) and several components (purple and yellow boxes). In each subsystem,
-purple components are responsible for managing pilots and units while yellow
-components manage the communication among RP components. Subsystems can
-execute locally or remotely, communicating and coordinating over TCP/IP\@,
-and enabling multiple deployment scenarios. For example, users can run Client
-locally, and distribute MongoDB and one or more instances of Agent on remote
-computing infrastructures. Alternatively, users can run all RP components on
-a local or remote resource.
+purple components manage pilots and CUs while yellow components manage the
+communication among components. Subsystems can execute locally or remotely,
+communicating and coordinating over TCP/IP, and enabling multiple deployment
+scenarios. For example, users can run Client locally, and distribute MongoDB
+and one or more instances of Agent on remote computing infrastructures.
+Alternatively, users can run all components on a local or remote resource.
 
 \begin{figure}
     \centering
-    \subfloat[ ]{{\includegraphics[width=0.58\textwidth]{figures/arch_rp.pdf} }}
+    \subfloat[ ]{{\includegraphics[width=0.555\textwidth]{figures/arch_rp.pdf} }}
     \qquad
-    \subfloat[ ]{{\includegraphics[width=0.32\textwidth]{figures/arch_entk.pdf} }}
+    \subfloat[ ]{{\includegraphics[width=0.34\textwidth]{figures/arch_entk.pdf} }}
     \caption{Caption. \mtnote{TODO\@: Fix EnTK AppManager}}\label{fig:archs}
 \end{figure}
 
-The first subsystem, called Client, has two main components designed to
-manage pilots (PilotManager) and units (UnitManager). PilotManager has
-a main component called `Launcher'. The Launcher uses resource configuration
-files to define the number, placement, and properties of the Agent's
-components of each Pilot. Currently, configuration files are made available
-for all the HPC machines of the Extreme Science and Engineering Discovery
-Environment (XSEDE), Blue Waters at the National Center For supercomputing
-Applications (NCSA), Cheyenne at NCAR-Wyoming Supercomputing Center (NWSC),
-and Rhea, Titan and Summit at the Oak Ridge National Laboratory (ORNL). Users
-can provide new files or alter existing configuration parameters at runtime,
-both for a single pilot or a whole RP session.
+The first subsystem, called Client, has two main components: PilotManager and
+UnitManager. PilotManager manages pilots and has a main component called
+`Launcher'. Launcher uses resource configuration files to define the number,
+placement, and properties of the Agent's components of each pilot. Currently,
+configuration files are made available for all the HPC machines of the
+Extreme Science and Engineering Discovery Environment (XSEDE), Blue Waters at
+the National Center For supercomputing Applications (NCSA), Cheyenne at
+NCAR-Wyoming Supercomputing Center (NWSC), and Rhea, Titan and Summit at the
+Oak Ridge National Laboratory (ORNL). Users can provide new files or alter
+existing configuration parameters at runtime, both for a single pilot or a
+whole RP session.
 
-UnitManager has two main components: Scheduler and Stager Input. Scheduler
-schedules compute units onto one or more pilots, available on one or more
-resources. This enables late binding of units to resources, depending on
-their availability: units are bound to resources that satisfy their execution
-requirements only when these resources are actually available. The second
-component of UnitManager is Stager Input. Units may need input files for
-their execution, this module distributes these files to the
-resources on which each unit has been scheduled.
+UnitManager manages CUs and has two main components: Scheduler and
+StagerInput. Scheduler schedules CUs onto one or more pilots, available on
+one or more machines. This enables late binding of CUs to resources,
+depending on their availability. CUs are bound to resources that satisfy
+their execution requirements only when these resources are actually
+available. StagerInput distributes the input files that CU may need for their
+execution to the machines on which each CU has been scheduled.
 
-The second subsystem of RP is called Agent and has four main components: one
-Stager Input and Stager Output for staging input and output data of compute
-units, Scheduler and Executer to schedule compute units on a pilot resources
-and execute those units on them. Multiple instances of the Stager and
-Executer components can coexist in a single Agent. Depending on the
-architecture of the resource, the Agent's components can individually be
-placed on cluster head nodes, MOM nodes, compute nodes, virtual machines, or
-any combination thereof. ZeroMQ communication bridges connect the Agent
-components, creating a network to support the transitions of the units
-through components.
+The second subsystem of RP is called `Agent' and has four main components:
+StagerInput and StagerOutput for staging CUs' input and output data,
+Scheduler and Executer to schedule CUs on a pilot resources and execute those
+CUs on them. Multiple instances of the Stager and Executer components can
+coexist in a single Agent. Depending on the architecture of the target
+machine, Agent's components can individually be placed on cluster head nodes,
+MOM/batch nodes, compute nodes, virtual machines, or any combination thereof.
+ZeroMQ communication bridges connect the Agent components, creating a network
+to support the transitions of CUs through components.
 
 Data management in RP focuses on providing input files to CUs before their
 execution, and on moving output files to later CUs, or back into the user
-environment.  On HPC resources which provide node local storage, RP can also
-stage to that storage to improve task I/O.  Data can be exclusive to CUs, or can
-be shared between CUs.
+environment. On HPC resources which provide both local and network storage,
+RP can select the most appropriate storage, depending on CUs I/O
+requirements.  Data can be exclusive to CUs, or can be shared between CUs.
 
-\ldots\mtnote{Andre to write this paragraph about the
-architectural specifics of data management in RP, mentioning Stager Output in
-Client.}\amnote{Does the above work?}
+Each component of each subsystem of RP has a dedicated queue to feed entities
+into that component. Orange Queues in Fig.~\ref{fig:archs}a are dedicated to
+pilots and CUs, blue Queues to the messages exchanged by communication
+components. All Queues support bulk communication to obtain performance at
+scale in a distributed systems. Further, queues enable load balancing among
+concurrent components. Note that concurrent components are used for
+performance optimization at scale.
 
-Each component of each subsystem of RP has a dedicated queue feeding entities
-into that component. Orange Queues in
-Fig.~\ref{fig:archs}a are dedicated to pilots and unit entities, blue
-Queues to the messages exchanged by communication components.
-All Queues support bulk communication to obtain
-performance at scale in a distributed systems. Further, the Queues
-enable load balancing between concurrent components (concurrent components are
-used when using multiple physical for performance optimization).
-
-A special Queue instance is rendered as collection in a MongoDB database.  That
-collection is used to communicate between the client and agent subsystems,
-whilemaintaining the Queue semantics used for all other Queues in
-Fig.~\ref{fig:archs}a.  Since the MongoDB entries are (other then the ZMQ
-messages from the other Queue instances) persistemt, that database is also used
-to store data for post mortem analysis.
-
-\mtnote{Andre: Introduce MongoDB and the role it plays for communication and
-coordination? I know it is on its way out but at the moment it is in the
-diagram.}\amnote{Does the above work?}
+A special queue instance is rendered as collection in a MongoDB database.
+That collection is used to communicate between Client and Agent, while
+preserving the semantics used for all other queues in Fig.~\ref{fig:archs}a.
+Since the MongoDB entries are persistent, that database is also used to store
+data for \textit{post mortem} profiling and analysis.
 
 % ------------
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
