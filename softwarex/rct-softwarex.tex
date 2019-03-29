@@ -121,8 +121,8 @@ suite composed of three main components: RADICAL-SAGA
 (RS)~\cite{merzky2015saga}, RADICAL-Pilot (RP)~\cite{merzky2018using} and
 RADICAL-Ensemble Toolkit (EnTK)~\cite{balasubramanian2018harnessing}.
 
-RS is a Python implementation of the OGF GFD.90 SAGA
-standard~\cite{goodale2006saga}, a high-level interface to access distributed
+RS is a Python implementation of the Open Grid Forum SAGA standard 
+GFD.90~\cite{goodale2006saga}, a high-level interface to distributed
 infrastructure components like job schedulers, file transfer and resource
 provisioning services. RS enables interoperability across heterogeneous
 distributed infrastructures, improving on their usability and enhancing the
@@ -133,7 +133,7 @@ pattern~\cite{turilli2018comprehensive}. Pilot systems enable users to submit
 pilot jobs to computing infrastructures and then use the resources acquired
 by the pilot to execute one or more tasks. These tasks are directly scheduled
 via the pilot, without having to queue in the infrastructure batch system. RP
-focuses on High Performance Computing (HPC), enabling the execution of
+focuses on High Performance Computing (HPC) resources, enabling the execution of
 heterogeneous workloads comprised of one or more scalar, MPI, OpenMP,
 multi-process, and multi-threaded tasks. These tasks can be executed on CPUs,
 GPUs and other accelerators, on the same pilot or across multiple pilots.
@@ -143,7 +143,9 @@ or pipelines of tasks. EnTK promotes ensembles to a high-level programming
 abstraction, providing a programming interface and execution model specific
 to ensemble-based applications. EnTK is engineered for scale and a diversity
 of computing platforms and runtime systems, agnostic of the size, type and
-coupling of the tasks comprising the ensemble.
+coupling of the tasks comprising the ensemble. 
+\amnote{This is likely confusing if the reader does not know what
+an 'ensmble' is?}
 
 RCT are designed to work both individually and as an integrated system. This
 requires a ``Building Block'' approach to their design and development, based
@@ -176,7 +178,7 @@ interface exposed by each system.
 
 All RCT are stand-alone, distributed systems. Architecturally, each tool
 consists of one or more subsystems, each with several components. Components
-are isolated into separate processes and some components are used only in
+are isolated into individual processes and some components are used only in
 specific deployment scenarios, depending on both application requirements and
 resource capabilities. Components are stateless and some of them can be
 instantiated concurrently to simultaneously manage multiple entities, like
@@ -192,6 +194,7 @@ exchange data about the entities specific to each RCT and data about the
 state of the components and subsystems. Each type of data has dedicated
 modules and communication channel, separating communication from coordination
 while making explicit states and events of each entity.
+\amnote{what does 'making' mean here?}
 
 Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and
 capabilities. Here, we focus on RP and EnTK, first introducing each system
@@ -204,16 +207,16 @@ diverse use cases.
 RP implements two main abstractions: Pilot and Compute Unit (CU). Pilots and
 CUs abstract away specificities of resources and workloads, making it
 possible to schedule workloads either concurrently or sequentially on
-resource placeholders. Pilots are placeholders for computing resources, where
-resources are represented independent from architecture and topological
+resource placeholders. Pilots are such placeholders for computing resources,
+where resources are represented independent from architecture and topological
 details. CUs are units of work (i.e., tasks), specified as an application
 executable alongside its resource and execution environment requirements.
 Note that a task is not a function, method, thread or process but a program
-that can be run as a self-contained executable.
+that is run as a self-contained executable.
 
 Fig.~\ref{fig:archs}a depicts RP's architecture with two subsystems (white
 boxes) and several components (purple and yellow boxes). In each subsystem,
-purple components are responsible for pilots and units while yellow
+purple components are responsible for managing pilots and units while yellow
 components manage the communication among RP components. Subsystems can
 execute locally or remotely, communicating and coordinating over TCP/IP\@,
 and enabling multiple deployment scenarios. For example, users can run Client
@@ -230,7 +233,7 @@ a local or remote resource.
 \end{figure}
 
 The first subsystem, called Client, has two main components designed to
-manage either pilots or units: PilotManager and UnitManager. PilotManager has
+manage pilots (PilotManager) and units (UnitManager). PilotManager has
 a main component called `Launcher'. The Launcher uses resource configuration
 files to define the number, placement, and properties of the Agent's
 components of each Pilot. Currently, configuration files are made available
@@ -247,7 +250,7 @@ resources. This enables late binding of units to resources, depending on
 their availability: units are bound to resources that satisfy their execution
 requirements only when these resources are actually available. The second
 component of UnitManager is Stager Input. Units may need input files for
-their execution, this module takes care to distribute these files to the
+their execution, this module distributes these files to the
 resources on which each unit has been scheduled.
 
 The second subsystem of RP is called Agent and has four main components: one
@@ -261,40 +264,53 @@ any combination thereof. ZeroMQ communication bridges connect the Agent
 components, creating a network to support the transitions of the units
 through components.
 
-Data management \ldots\mtnote{Andre to write this paragraph about the
-architectural specifics of data management in RP, mentioning Stager Output in
-Client.}
+Data management in RP focuses on providing input files to CUs before their
+execution, and on moving output files to later CUs, or back into the user
+environment.  On HPC resources which provide node local storage, RP can also
+stage to that storage to improve task I/O.  Data can be exclusive to CUs, or can
+be shared between CUs.
 
-Each component of each subsystem of RP has a dedicated queue. Orange queue in
-Fig.~\ref{fig:archs}a are dedicated to pilots and unit entities while blue
-queues to the messages exchanged by the components dedicated to
-communication. Queuing entities enables managing them in bulk so to obtain
-performance at scale in a distributed systems. Further, queuing entities
-enables the use of concurrent components when using multiple physical
-supports (e.g., work nodes) or when leveraging component concurrency for
-performance optimization.
+\ldots\mtnote{Andre to write this paragraph about the
+architectural specifics of data management in RP, mentioning Stager Output in
+Client.}\amnote{Does the above work?}
+
+Each component of each subsystem of RP has a dedicated queue feeding entities
+into that component. Orange Queues in
+Fig.~\ref{fig:archs}a are dedicated to pilots and unit entities, blue
+Queues to the messages exchanged by communication components.
+All Queues support bulk communication to obtain
+performance at scale in a distributed systems. Further, the Queues
+enable load balancing between concurrent components (concurrent components are
+used when using multiple physical for performance optimization).
+
+A special Queue instance is rendered as collection in a MongoDB database.  That
+collection is used to communicate between the client and agent subsystems,
+whilemaintaining the Queue semantics used for all other Queues in
+Fig.~\ref{fig:archs}a.  Since the MongoDB entries are (other then the ZMQ
+messages from the other Queue instances) persistemt, that database is also used
+to store data for post mortem analysis.
 
 \mtnote{Andre: Introduce MongoDB and the role it plays for communication and
 coordination? I know it is on its way out but at the moment it is in the
-diagram.}
+diagram.}\amnote{Does the above work?}
 
 % ------------
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
 
 EnTK implements three main abstractions: task, stage and pipeline. Tasks
 contain information regarding an executable, its software environment and its
-data dependences. Stages are set of tasks where tasks have no mutual
+data dependences. Stages are a set of tasks where the tasks have no mutual
 dependences and can therefore execute concurrently, depending on resource
 availability. Pipelines are lists of stages where a stage \(i\) can be
-executed only after stage \(i-1\) has been executed.
+executed only after stage \(i-1\) has completed.
 
 The task abstraction identifies an executable as a program, not as an
-instruction of a program. This is important: EnTK enables concurrent and
+instruction of a program. \amnote{what is an 'instruction of a program'?} This is important: EnTK enables concurrent and
 sequential execution at program-level, not at instruction level.
 Instruction-level parallelism is still possible within each program run by an
 EnTK task, enabling concurrent execution of multi-threaded, multi-process and
 MPI programs. Note that. at the moment, EnTK requires a runtime system (RTS)
-that support the same task abstraction.
+that support the same task abstraction for task execution.
 
 Fig.~\ref{fig:archs}b shows the architecture of EnTK. The EnTK system (white)
 has three components (purple), each with subcomponents dedicated to the
@@ -314,7 +330,7 @@ application.
 WFProcessor uses the Enqueue and Dequeue subcomponents to queue and dequeue
 tasks pulled from AppManager. TaskManager uses ExecManager to schedule tasks
 on the RTS and keep track of the state of each task during execution.
-TaskManager users ResManageer as an interface to the chosen RTS. RTS have to
+TaskManager uses ResManageer as an interface to the chosen RTS. RTS have to
 provide capabilities to acquire resources and schedule tasks on those
 resources for execution. ResManager isolates RTS from EnTK, enabling
 restarting of the RTS without loosing information about tasks that have been
@@ -332,15 +348,15 @@ needed interoperability layer that lowers the complexity and improves the
 simplicity of using distributed infrastructure whilst enhancing the
 sustainability of distributed applications, services and
 tools.\mtnote{probably not to be included as SAGA has been already described
-in a standalone SoftwareX publication.}
+in a standalone SoftwareX publication.}\amnote{agree}
 
 % RP
 As a runtime system, RP offers an API to describe both pilots and CUs,
 alongside classes and methods to manage acquisition of resources, scheduling
 of CUs on those resources, and the staging of input and output files.
-Reporting capabilities update the user about ongoing executions and profiling
-capabilities enable detailed postmortem analysis of workload executions and
-runtime behavior.
+Reporting capabilities and notifications update the user about ongoing
+executions and profiling capabilities enable detailed postmortem analysis of
+workload executions and runtime behavior.
 
 RP enables the execution of tasks with several dimensions of heterogeneity on
 one or more pilots instantiated on one or more resources. The defining
@@ -373,7 +389,8 @@ concurrent execution of heterogeneous tasks by design.
 % EnTK
 EnTK is a workflow engine specifically designed to execute ensemble-based
 applications. These applications are composed by ensemble of tasks that may
-have dependences both among tasks and ensembles. These dependences express a
+have dependences both among tasks and ensembles.\amnote{ah, here is the
+ensemble definition :-)} These dependences express a
 relationship of priority at execution time. These dependences may be
 determined by input/output data and control flow requirements: For example,
 two tasks may have to be executed sequentially when the output of the first
@@ -384,7 +401,7 @@ whether executing the second task is of interest.
 Consistently, EnTK provides adaptive capabilities and dedicated constructs to
 pause, resume and stop pipelines at execution time. Adaptive applications
 change the ensemble specifications at runtime, creating new pipelines, stages
-and tasks, or changing the properties of those already described. Further,
+and tasks, or changing the properties of those already defined. Further,
 pipelines and stages can be paused while waiting to perform \textit{ad hoc}
 computations. This enable the implementation of high-level application
 patterns as, for example, simulation-analysis, replica exchange and \ldots
