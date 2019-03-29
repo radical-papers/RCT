@@ -703,6 +703,7 @@ teams. This approach enables a model of sustainability based on smaller and
 shorter funding sources but requires a certain convergence in the vision of
 diverse groups competing in the same research field.
 
+
 % ---------------------------------------------------------------------------
 % Section V
 % ---------------------------------------------------------------------------
@@ -743,9 +744,9 @@ diverse groups competing in the same research field.
 % ---------------------------------------------------------------------------
 \section*{Current code version}\label{sec:src_version}
 
-{\em Ancillary data table required for subversion of the codebase. Kindly
-replace examples in right column with the correct information about your
-current code, and leave the left column as it is.
+% {\em Ancillary data table required for subversion of the codebase. Kindly
+% replace examples in right column with the correct information about your
+% current code, and leave the left column as it is.
 
 \begin{table}[!ht]
 \begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
@@ -754,41 +755,49 @@ current code, and leave the left column as it is.
 \textbf{Code metadata description}                               & 
 \textbf{Please fill in this column}                              \\
 \hline
+%
 C1                                                               & 
 Current code version                                             & 
-For example v42                                                  \\
+0.60                                                             \\
 \hline
+%
 C2                                                               & 
 Permanent link to code/repository used for this code version     & 
-For example: $https://github.com/mozart/mozart2$                 \\
+\url{https://github.com/radical-cybertools}                      \\
 \hline
+%
 C3                                                               & 
 Legal Code License                                               & 
-List one of the approved licenses                                \\
+MIT License (MIT)                                                \\
 \hline
+%
 C4                                                               & 
 Code versioning system used                                      & 
-For example svn, git, mercurial, etc. put none if none           \\
+git                                                              \\
 \hline
+%
 C5                                                               & 
 Software code languages, tools, and services used                & 
-For example C++, python, r, MPI, OpenCL, etc.                    \\
+python, shell, C                                                 \\
 \hline
+%
 C6                                                               & 
 Compilation requirements, operating environments \& dependencies & 
-                                                                 \\
+virtualenv, pip or conda                                         \\
 \hline
+%
 C7                                                               & 
-If available Link to developer documentation/manual              & 
-For example: $http://mozart.github.io/documentation/$            \\
+Developer documentation/manual              & 
+\url{https://radicalpilot.readthedocs.io/}                       \\
 \hline
+%
 C8                                                               & 
 Support email for questions                                      & 
-                                                                 \\
+\url{radical-cybertools@googlegroups.com}                        \\
 \hline
 \end{tabular}
-\caption{Code metadata (mandatory)}\label{tab:src_metadata} 
-\end{table}}
+\caption{Code metadata}\label{tab:src_metadata} 
+\end{table}
 
 
 % ---------------------------------------------------------------------------
@@ -796,51 +805,58 @@ Support email for questions                                      &
 % ---------------------------------------------------------------------------
 \section*{Current executable software version}\label{sec:bin_version}
 
-{\em Ancillary data table required for sub version of the executable
-software: (x.1, x.2 etc.) kindly replace examples in right column with the
-correct information about your executables, and leave the left column as it
-is.
+% {\em Ancillary data table required for sub version of the executable
+% software: (x.1, x.2 etc.) kindly replace examples in right column with the
+% correct information about your executables, and leave the left column as it
+% is.
 
 \begin{table}[!ht]
 \begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
 \hline
-\textbf{Nr.} & 
+\textbf{Nr.}                                        & 
 \textbf{(Executable) software metadata description} & 
-\textbf{Please fill in this column} \\
+\textbf{Please fill in this column}                 \\
 \hline
-S1 & 
-Current software version & 
-For example 1.1, 2.4 etc. \\
+%
+S1                                                  & 
+Current software version                            & 
+0.60.0                                              \\
 \hline
-S2 & 
-Permanent link to executables of this version  & 
-For example: $https://github.com/combogenomics/$ $DuctApe/releases/tag/DuctApe-0.16.4$ 
-\\
+%
+S2                                                  & 
+Permanent link to executables of this version       & 
+\url{https://pypi.org/project/radical.pilot/}       \\
 \hline
-S3 & 
-Legal Software License & 
-List one of the approved licenses \\
+%
+S3                                                  & 
+Legal Software License                              & 
+MIT License (MIT)                                   \\
 \hline
-S4 & 
-Computing platforms/Operating Systems & 
-For example Android, BSD, iOS, Linux, OS X, Microsoft Windows, Unix-like , IBM z/OS, distributed/web based etc. \\
+%
+S4                                                  & 
+Computing platforms/Operating Systems               & 
+GNU/Linux operating systems                         \\
 \hline
-S5 & 
-Installation requirements \& dependencies & 
-\\
+%
+S5                                                  & 
+Installation requirements \& dependencies           & 
+virtualenv, pip or conda                            \\
 \hline
-S6 & 
-If available, link to user manual - if formally published include a reference to the publication in the reference list & 
-For example: $http://mozart.github.io/documentation/$ \\
+%
+S6                                                  & 
+User manual and publications                        & 
+User manual: \url{https://radicalpilot.readthedocs.io/}; 
+Publications: Refs~\cite{}                          \\
 \hline
-S7 & 
-Support email for questions & 
-\\
+%
+S7                                                  & 
+Support email for questions                         & 
+\url{radical-cybertools@googlegroups.com}           \\
 \hline
 \end{tabular}
-\caption{Software metadata (optional)}
+\caption{Software metadata}
 \label{tab:bin_metadata} 
-\end{table}}
+\end{table}
 
 \end{document}
 \endinput
