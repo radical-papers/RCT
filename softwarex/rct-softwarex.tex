@@ -24,12 +24,22 @@
 \address{Your institute, some address}
 
 \begin{abstract}
-Ca. 100 words
+% Ca. 100 words
+RADICAL-Cybertools (RCT) are a set of software systems developed to support
+efficient and effective scientific computing. RCT enable executing many-task
+applications at extreme scale and on a variety of computing infrastructures,
+including the leadership-class machines managed by ORNL, NCSA and TACC. RCT
+allow rapid development of applications for software engineering, chemical
+physics, materials science, health science, climate science, drug discovery
+and particle physics. RCT are building blocks, designed to work as
+stand-alone systems, integrated among themselves or integrated with
+third-party systems. Between 2013 and 2019, RCT enabled innovative science
+consuming hundreds of millions of core hours.
 \end{abstract}
 
 \begin{keyword}
 %% keywords here, in the form: keyword \sep keyword
-keyword 1 \sep keyword 2 \sep keyword 3
+Middleware \sep Pilot System \sep Workflow Engine
 
 %% PACS codes here, in the form: \PACS code \sep code
 
@@ -294,20 +304,21 @@ dependences and can therefore execute concurrently, depending on resource
 availability. Pipelines are lists of stages where a stage \(i\) can be
 executed only after stage \(i-1\) has completed.
 
-The task abstraction identifies an executable as a program, not as an
-instruction of a program. \amnote{what is an 'instruction of a program'?} This is important: EnTK enables concurrent and
-sequential execution at program-level, not at instruction level.
-Instruction-level parallelism is still possible within each program run by an
-EnTK task, enabling concurrent execution of multi-threaded, multi-process and
-MPI programs. Note that. at the moment, EnTK requires a runtime system (RTS)
-that support the same task abstraction for task execution.
+As for RP, a task is an executable, i.e., a program. \amnote{what is an
+'instruction of a program'?}\mtnote{Not sure. Changed, alongside the rest of
+the paragraph. Any better?} This is important: EnTK enables concurrent and
+sequential execution at program-level, not at function or method level.
+Parallelism is still possible within each program run by an EnTK task,
+enabling concurrent execution of multi-threaded, multi-process and MPI
+programs. Note that, at the moment, EnTK requires a runtime system (RTS) that
+support the same task abstraction for task execution.
 
-Fig.~\ref{fig:archs}b shows the architecture of EnTK. The EnTK system (white)
-has three components (purple), each with subcomponents dedicated to the
-management of EnTK's entities (green) or coordination of the entities'
-execution (yellow). The three components are AppManager, WFProcessor and
-TaskManager that enable workflow specification, workflow execution
-management, and workload management.
+Fig.~\ref{fig:archs}b shows the architecture of EnTK (white) with three
+components (purple), each with subcomponents dedicated to the management of
+EnTK's entities (green) or coordination of the entities' execution (yellow).
+The three components are AppManager, WFProcessor and TaskManager that enable
+workflow specification, workflow execution management, and workload
+management.
 
 AppManager exposes an API for the development of ensemble-based applications
 in terms of tasks, stages and pipelines, and for specifying resource
@@ -324,28 +335,27 @@ TaskManager uses ResManageer as an interface to the chosen RTS. RTS have to
 provide capabilities to acquire resources and schedule tasks on those
 resources for execution. ResManager isolates RTS from EnTK, enabling
 restarting of the RTS without loosing information about tasks that have been
-already executed. Currently, EnTK support only RADICAL-Pilot as RTS but it is
-designed to use other task-based RTS as, for example, Coasters or HTCondor.
+already executed. Currently, EnTK support only RP as RTS but it is designed
+to use other task-based RTS as, for example, Coasters or HTCondor.
 
 % ---------------------------------------------------------------------------
 \subsection{Software Functionalities}\label{ssec:functionalities}
 
 % {\em Present the major functionalities of the software.}
 
-% SAGA
-Given the heterogeneity of distributed infrastructures, SAGA provides a much
-needed interoperability layer that lowers the complexity and improves the
-simplicity of using distributed infrastructure whilst enhancing the
-sustainability of distributed applications, services and
-tools.\mtnote{probably not to be included as SAGA has been already described
-in a standalone SoftwareX publication.}\amnote{agree}
+% SAGA Given the heterogeneity of distributed infrastructures, SAGA provides
+% a much needed interoperability layer that lowers the complexity and
+% improves the simplicity of using distributed infrastructure whilst
+% enhancing the sustainability of distributed applications, services and
+% tools.\mtnote{probably not to be included as SAGA has been already
+% described in a standalone SoftwareX publication.}\amnote{agree}
 
 % RP
 As a runtime system, RP offers an API to describe both pilots and CUs,
 alongside classes and methods to manage acquisition of resources, scheduling
 of CUs on those resources, and the staging of input and output files.
 Reporting capabilities and notifications update the user about ongoing
-executions and profiling capabilities enable detailed postmortem analysis of
+executions, and profiling capabilities enable detailed postmortem analysis of
 workload executions and runtime behavior.
 
 RP enables the execution of tasks with several dimensions of heterogeneity on
@@ -354,7 +364,7 @@ capability of a pilot system is to decouple resource acquisition from task
 execution. Infrastructures exposing resources via a batch system allow users
 to submit their tasks as jobs. Jobs wait in the batch system's queue and when
 the requested resources became available for the requested amount of time, a
-job is scheduled for execution. Thus, each task of a multi-task application
+job is scheduled for execution. Thus, each task of a many-task application
 has to wait in the batch system's queue to be executed, incurring in delays
 that can become rapidly unfeasible.
 
@@ -368,7 +378,7 @@ pilot jobs are bound by the required resources and wait in the queue as every
 other job, therefore abiding to the system usage policies.
 
 RP offers four unique features when compared to other pilot systems or tools
-that enable the execution of multi-task applications on HPC systems: (1)
+that enable the execution of many-task applications on HPC systems: (1)
 concurrent execution of heterogeneous tasks on the same pilot; (2) support of
 all the major HPC batch systems; (3) support of more than twelve methods to
 launch tasks; and (4) a general purpose architecture. RP can execute single
@@ -380,25 +390,26 @@ concurrent execution of heterogeneous tasks by design.
 EnTK is a workflow engine specifically designed to execute ensemble-based
 applications. These applications are composed by ensemble of tasks that may
 have dependences both among tasks and ensembles.\amnote{ah, here is the
-ensemble definition :-)} These dependences express a
-relationship of priority at execution time. These dependences may be
-determined by input/output data and control flow requirements: For example,
-two tasks may have to be executed sequentially when the output of the first
-task is the input of the second task; and two tasks (or ensembles) may have
-to be executed sequentially when the output of the first tasks determines
-whether executing the second task is of interest.
+ensemble definition :-)}\mtnote{Right. see my previous editing, it should be
+consistent with this def.} These dependences express a relationship of
+priority at execution time and may be determined by input/output data and
+control flow requirements. For example, two tasks may have to be executed
+sequentially when the output of the first task is the input of the second
+task; and two tasks (or ensembles) may have to be executed sequentially when
+the output of the first tasks determines whether executing the second task is
+of interest.
 
 Consistently, EnTK provides adaptive capabilities and dedicated constructs to
-pause, resume and stop pipelines at execution time. Adaptive applications
-change the ensemble specifications at runtime, creating new pipelines, stages
-and tasks, or changing the properties of those already defined. Further,
-pipelines and stages can be paused while waiting to perform \textit{ad hoc}
-computations. This enable the implementation of high-level application
-patterns as, for example, simulation-analysis, replica exchange and \ldots
+pause, resume and stop pipelines at runtime. Adaptive applications change the
+ensemble specifications, creating new pipelines, stages and tasks, or
+changing the properties of those already defined. Further, pipelines and
+stages can be paused while waiting to perform \textit{ad hoc} computations.
+This enables the implementation of high-level application patterns as, for
+example, simulation-analysis or replica exchange.
 
 % Execution Model
 
-\mtnote{Describe BB and individual + aggregated execution models}
+% \mtnote{Describe BB and individual + aggregated execution models}
 
 
 % ---------------------------------------------------------------------------
@@ -423,34 +434,33 @@ patterns as, for example, simulation-analysis, replica exchange and \ldots
 % This tool will display your video exactly in the same way as it will appear
 % on ScienceDirect.).}
 
-\mtnote{Use a use case that requires a bag of heterogeneous tasks. Show how
-this example can become one state of a workflow and how this workflow is
-supported by EnTK\@. REPEX, EXTASY candidate examples.}
+% \mtnote{Use a use case that requires a bag of heterogeneous tasks. Show how
+% this example can become one state of a workflow and how this workflow is
+% supported by EnTK\@. REPEX, EXTASY candidate examples.}
 
 Multiple scientific domains can benefit from executing many-task applications
 at scale, especially at the scale enabled by leadership-class HPC
 machines~\cite{raicu2008many,iosup2011performance}. Independent of the domain
 for which these applications are developed, their execution requires to run a
-single task, a bag of tasks, or a workflow. It is important to note that, in
-this context, task refers to a program in the form of a self-contained
-executable like, for example, GROMACS, NAMD, AMBER, AthenaMP, SPECFEM and
-many others. Multi-task applications requires to concurrently run multiple
+single task, a bag of tasks, or a workflow. In this context, tasks refers to
+programs like, for example, GROMACS, NAMD, AMBER, AthenaMP, SPECFEM and many
+others. Many-task applications requires to concurrently run multiple
 instances of programs, using scale to reduce the total time to completion of
 the whole execution.
 
 As seen in Sec.~\ref{sec:description}, RCT support the execution of a single
 task, a bag of tasks, and workflows expressed as a set or a sequence of
 pipelines with stages and tasks. Because of the separation between manging
-the concurrent and consecutive execution of tasks and the computation
-performance by each task, RCT support multi-task application independent from
+the concurrent and consecutive execution of tasks, and the computation
+performance by each task, RCT support many-task application independent from
 the scientific domain in which they are used. From RCT point of view, every
 execution reduces exclusively to manging the execution of single or multiple
-sets of black boxes.
+sets of programs in the form of black boxes.
 
-RADICAL-Pilot (RP) executes set of tasks. The degree of concurrency of the
-execution depends on the amount of available resources. Consider for example
-a many-task application for the simulation of molecular dynamics with an
-ensemble of 128 simulations, each requiring 24 CPU cores as those used in
+RP executes set of tasks. The degree of concurrency of the execution depends
+on the amount of available resources. Consider for example a many-task
+application for the simulation of molecular dynamics with an ensemble of 128
+simulations, each requiring 24 CPU cores as those used in
 Ref.~\cite{balasubramanian2016extasy}. The user can use RP API to describe a
 pilot job with 3072 cores (Code~\ref{code:pilot}), 128 tasks
 (Code~\ref{code:units}) and two managers to coordinate the acquisition of the
@@ -461,37 +471,38 @@ Fig.~\ref{fig:archs}a's numbers illustrate the resource acquisition and task
 execution process. PilotManager queues the pilot description on one of the
 available Launcher in RP client (Fig.~\ref{fig:archs}a.1). That Launcher uses
 RADICAL-SAGA to schedule the pilot as a job on the target resource via the
-resource's batch System (Fig.~\ref{fig:archs}a.2--3). The pilot job waits in
-the resource management system queue and, once scheduled, bootstraps the
-pilot's AgentMnager and Updater (Fig.~\ref{fig:archs}a.4). AgentManager forks
-the StagerInput, Scheduler, Executor and StagerOutput components and the
-Updater notifies RP Client's Notifier that RP Agent is ready to execute tasks
-(Fig.~\ref{fig:archs}a.5--7).
+resource's batch System (Fig.~\ref{fig:archs}a.2). The pilot job waits in the
+resource management system queue and, once scheduled, bootstraps the pilot's
+AgentMnager and Updater. AgentManager forks the StagerInput, Scheduler,
+Executor and StagerOutput components and the Updater notifies RP Client's
+Notifier that RP Agent is ready to execute tasks (Fig.~\ref{fig:archs}a.3).
 
-Upon notification, UnitManager queues all the available tasks onto RP
-Client's Scheduler that, in turns, queues those tasks into the StagerInput,
-depending on the chosen scheduling algorithm (Fig.~\ref{fig:archs}a.8--10).
-If required, StagerInput stages the tasks' input files to the target resource
-and then tasks are queued to the Updater and passed to the chosen RP Agent's
-AgentManager (Fig.~\ref{fig:archs}a.11--13). At that point, tasks are passed
-to a StagerInput where input files are linked and made available to each
-task, and then queued to the RP Agent's Scheduler (Fig.~\ref{fig:archs}a.14).
-Scheduler places tasks on suitable partitions of the pilot's resources and
-then queue to the Executor so that, when those partitions of resource becomes
-available, tasks are executed (Fig.~\ref{fig:archs}a.14). Executor sets up
-the environment required by each task and then forks each task for execution
-(Fig.~\ref{fig:archs}a.14). This is why tasks are black boxes to RP\@; also
+Upon notification, UnitManager queues all the available tasks onto Client's
+Scheduler that, in turns, queues those tasks into the StagerInput, depending
+on the chosen scheduling algorithm (Fig.~\ref{fig:archs}a.4). If required,
+StagerInput stages the tasks' input files to the target resource and then
+tasks are queued to the Updater and passed to the chosen RP Agent's
+AgentManager (Fig.~\ref{fig:archs}a.5). At that point, tasks are passed to a
+StagerInput where input files are linked and made available to each task, and
+then queued to the RP Agent's Scheduler (Fig.~\ref{fig:archs}a.6). Scheduler
+places tasks on suitable partitions of the pilot's resources and then queues
+tasks to the Executor so that, when those partitions of resource becomes
+available, tasks are executed (Fig.~\ref{fig:archs}a.7). Executor sets up the
+environment required by each task and then forks each task for execution
+(Fig.~\ref{fig:archs}a.8). This is why tasks are black boxes to RP\@; also
 note that Scheduler and Executor can place and fork heterogeneous tasks,
 i.e., task requiring different type and amount core/GPUs and different
 execution time.
 
-RP cannot manage dependences among tasks. For RP, every task is assumed to be
-ready for execution. For example, assume a typical simulation-analysis
-workflow for molecular dynamics with a simulation stage and an analysis stage
-that depends upon the completion of the simulation stage. Each stage consists
-of a set of tasks but RP cannot distinguish between the two. EnTK enables
-this distinguishing: each stage is submitted to RP for execution, respecting
-their priority relation.
+RP API cannot express dependences among tasks. For RP, every task that is
+passed to UnitManager is assumed to be ready for execution. For example,
+assume a typical simulation-analysis workflow for molecular dynamics with a
+simulation stage and an analysis stage that depends upon the completion of
+the simulation stage. Users can explicitly code priorities among stages in
+the applications they write with the RP API but they have no dedicated
+abstractions in that API for expressing those priorities. EnTK offers these
+abstractions at API level: each stage of each pipeline is submitted to RP for
+execution, respecting their priority relation.
 
 Fig.~\ref{fig:archs}b's numbers illustrate the execution of workflows in
 EnTK\@. Users instantiate an AppManager (Code~\ref{code:appnam}), define a
@@ -594,7 +605,7 @@ approach to job submission to distributed computing systems.
 Since its first release in 2013, RP has supported a total of two dozen
 projects and around 100 active and direct users. Of these, approximately a
 dozen projects used RP has a standalone system to support the execution of
-multi-task applications on single and/or multiple computing infrastructures.
+many-task applications on single and/or multiple computing infrastructures.
 Motivated by the practical lessons from supporting many independent
 applications usage of RP as a standalone system, and the realization that an
 increasing number of HPC applications were adopting the ensemble
@@ -794,7 +805,7 @@ virtualenv, pip or conda                                         \\
 \hline
 %
 C7                                                               & 
-Developer documentation/manual              & 
+Developer documentation/manual                                   & 
 \url{https://radicalpilot.readthedocs.io/}                       \\
 \hline
 %
@@ -820,45 +831,45 @@ Support email for questions                                      &
 \begin{table}[!ht]
 \begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
 \hline
-\textbf{Nr.}                                        & 
-\textbf{(Executable) software metadata description} & 
-\textbf{Please fill in this column}                 \\
+\textbf{Nr.}                                                     & 
+\textbf{(Executable) software metadata description}              & 
+\textbf{Please fill in this column}                              \\
 \hline
 %
-S1                                                  & 
-Current software version                            & 
-0.60                                                \\
+S1                                                               & 
+Current software version                                         & 
+0.60                                                             \\
 \hline
 %
-S2                                                  & 
-Permanent link to executables of this version       & 
-\url{https://pypi.org/project/radical.pilot/}       \\
+S2                                                               & 
+Permanent link to executables of this version                    & 
+\url{https://pypi.org/project/radical.pilot/}                    \\
 \hline
 %
-S3                                                  & 
-Legal Software License                              & 
-MIT License (MIT)                                   \\
+S3                                                               & 
+Legal Software License                                           & 
+MIT License (MIT)                                                \\
 \hline
 %
-S4                                                  & 
-Computing platforms/Operating Systems               & 
-GNU/Linux operating systems                         \\
+S4                                                               & 
+Computing platforms/Operating Systems                            & 
+GNU/Linux operating systems                                      \\
 \hline
 %
-S5                                                  & 
-Installation requirements \& dependencies           & 
-virtualenv, pip or conda                            \\
+S5                                                               & 
+Installation requirements \& dependencies                        & 
+virtualenv, pip or conda                                         \\
 \hline
 %
-S6                                                  & 
-User manual and publications                        & 
+S6                                                               & 
+User manual and publications                                     & 
 User manual: \url{https://radicalpilot.readthedocs.io/}; 
-Publications: Refs~\cite{}                          \\
+Publications: Refs~\cite{}                                       \\
 \hline
 %
-S7                                                  & 
-Support email for questions                         & 
-\url{radical-cybertools@googlegroups.com}           \\
+S7                                                               & 
+Support email for questions                                      & 
+\url{radical-cybertools@googlegroups.com}                        \\
 \hline
 \end{tabular}
 \caption{Software metadata}
