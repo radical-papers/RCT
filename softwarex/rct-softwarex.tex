@@ -584,14 +584,14 @@ resources, including HPC and distributed systems.
 RADICAL-SAGA enables the Production ANd Distributed Analysis (PanDA) system
 to submit batch jobs to Titan and Summit, the two leadership class machines
 managed by the Oak Ridge Leadership Computing Facility (OLCF) at the Oak
-Ridge National Laboratory (ORNL)~\cite{}. PanDA is the workload management
-system used by the ATLAS experiment to execute hundred of millions of jobs a
-year on both grid and High Performance Computing (HPC)
-infrastructures~\cite{}. The usage of ORNL resources constitutes 10-12\% of
-all of ATLAS computing. There are several thousand researchers that directly
-or indirectly use PanDA, and thereby RADICAL-SAGA. In the near future,
-RADICAL-Pilot will also become a staple of the PanDA workload management
-system on HPC platforms.
+Ridge National Laboratory (ORNL)~\cite{web-olcf-resources}. PanDA is the
+workload management system used by the ATLAS experiment to execute hundred of
+millions of jobs a year on both grid and High Performance Computing (HPC)
+infrastructures~\cite{maeno2008panda}. The usage of ORNL resources
+constitutes 10-12\% of all of ATLAS computing. There are several thousand
+researchers that directly or indirectly use PanDA, and thereby RADICAL-SAGA.
+In the near future, RADICAL-Pilot will also become a staple of the PanDA
+workload management system on HPC platforms.
 
 Reflecting the state of distributed computing systems -- the lack of
 simplified and uniform interface to heterogeneous systems, RADICAL-SAGA was
@@ -625,8 +625,8 @@ specific application needs, each DSW is characterized by a unique execution
 and coordination pattern and can serve multiple applications. The four
 ensemble-based DSW developed using EnTK and other RCT are:
 EXTASY~\cite{balasubramanian2016extasy}, RepEx~\cite{treikalis2016repex},
-HTBAC~\cite{dakka2018high}, and ICEBERG~\cite{}. Details can be found in
-Ref.~\citep{}  % reference CISE article.
+HTBAC~\cite{dakka2018high}, and ICEBERG~\cite{iceberg}. Details can be found
+in Ref.~\citep{turilli2019middleware}
 
 ExTASY and RepEx implement advanced sampling algorithms using biomolecular
 simulations. Both use the EnTK API to implement  diverse coordination
@@ -636,27 +636,28 @@ critical to drug design and resistance studies. HTBAC allows the runtime
 adaptation at multiple levels: algorithms, pipelines and tasks within a
 pipeline. This capability has been demonstrated to reduce the
 time-to-solution by a factor 2.5 in controlled experiments on real drug
-candidates~\citep{}. ICEBERG supports scalable image analysis applications
-using multiple concurrent pipelines.
+candidates~\citep{dakka2018concurrent}. ICEBERG supports scalable image
+analysis applications using multiple concurrent pipelines.
 
 ExTASY, RepEx, HTBAC and ICEBERG benefit from integrating RCT by not having
-to reimplement workflow processing, efficient task management and
+to re-implement workflow processing, efficient task management and
 interoperable task execution capabilities on distinct and heterogeneous
 platforms. This, in turn, enables both a focus on and ease of ``last mile
 customization'' for the DSW\@.
 
 RCT are a testbed for engineering research, mostly focused on foundational
 abstractions~\cite{turilli2017evaluating}, architectural
-paradigms~\cite{turilli2018comprehensive}, application patterns~\cite{}, and
-performance analysis of distributed middleware on diverse computing
-infrastructures~\cite{}. Among the most representative projects supported by
-RP as a standalone system, the Abstractions and Integrated Middleware for
-Extreme-Scale Science (AIMES) project enabled extreme-scale distributed
-computing via dynamic federation of heterogeneous computing infrastructures.
-We used RP to execute millions of tasks on both HPC and HTC resources,
-studying the federated behavior of multiple infrastructures, establishing for
-the first time ever the importance of integrating task and resource
-information in scheduling and placement decision making for federated
+paradigms~\cite{turilli2018comprehensive}, application
+patterns~\cite{app-patterns}, and performance analysis of distributed
+middleware on diverse computing infrastructures~\cite{performance-analysis}.
+Among the most representative projects supported by RP as a standalone
+system, the Abstractions and Integrated Middleware for Extreme-Scale Science
+(AIMES) project enabled extreme-scale distributed computing via dynamic
+federation of heterogeneous computing infrastructures. We used RP to execute
+millions of tasks on both HPC and HTC resources, studying the federated
+behavior of multiple infrastructures, establishing for the first time ever
+the importance of integrating task and resource information in scheduling and
+placement decision making for federated
 supercomputers~\cite{turilli2016integrating}.
 
 The Building Blocks approach helps to create systems that can support use
