@@ -171,16 +171,16 @@ AirFlow, Oozie, Azkaban, Spark Streaming, Storm, or Kafka are examples of
 tools that have a design consistent with the building blocks approach and
 that have been integrated with RCT~\cite{}.
 
-In our adaptation, the Building Block approach is based on four
-well-understood principles: self-sufficiency, interoperability,
-composability, and extensibility. This approach does not reinvent modularity,
-it applies it at system level to enable composability among independent
-software systems. As an abstraction, modularity enables separation of
-concerns by encapsulating discrete functions into semantic units exposed by
-means of a dedicated interface. As such, modularity can be used at function
-or method level, depending on the programming paradigm and the facilities
-offered by programming languages, or at system-level, depending on the
-interface exposed by each system.
+% In our adaptation, the Building Block approach is based on four
+% well-understood principles: self-sufficiency, interoperability,
+% composability, and extensibility. This approach does not reinvent
+% modularity, it applies it at system level to enable composability among
+% independent software systems. As an abstraction, modularity enables
+% separation of concerns by encapsulating discrete functions into semantic
+% units exposed by means of a dedicated interface. As such, modularity can be
+% used at function or method level, depending on the programming paradigm and
+% the facilities offered by programming languages, or at system-level,
+% depending on the interface exposed by each system.
 
 % ---------------------------------------------------------------------------
 \subsection{Software Architecture}\label{ssec:architecture}
@@ -351,31 +351,34 @@ to use other task-based RTS as, for example, Coasters or HTCondor.
 % described in a standalone SoftwareX publication.}\amnote{agree}
 
 % RP
-As a runtime system, RP offers an API to describe both pilots and CUs,
-alongside classes and methods to manage acquisition of resources, scheduling
-of CUs on those resources, and the staging of input and output files.
-Reporting capabilities and notifications update the user about ongoing
-executions, and profiling capabilities enable detailed postmortem analysis of
-workload executions and runtime behavior.
+As a pilot system, the defining capability of a RP is to decouple resource
+acquisition from task execution, enabling execution of tasks on a pilot
+without using the resource's queuing system. RP offers an API to describe
+both pilots and CUs, alongside classes and methods to manage acquisition of
+resources, scheduling and execution of CUs on those resources, and the
+staging of input and output files. Reporting capabilities and notifications
+update the user about ongoing executions, and profiling capabilities enable
+detailed postmortem analysis of workload executions and runtime behavior.
 
-RP enables the execution of tasks with several dimensions of heterogeneity on
-one or more pilots instantiated on one or more resources. The defining
-capability of a pilot system is to decouple resource acquisition from task
-execution. Infrastructures exposing resources via a batch system allow users
-to submit their tasks as jobs. Jobs wait in the batch system's queue and when
-the requested resources became available for the requested amount of time, a
-job is scheduled for execution. Thus, each task of a many-task application
-has to wait in the batch system's queue to be executed, incurring in delays
-that can become rapidly unfeasible.
+% RP enables the execution of tasks with several dimensions of heterogeneity
+% on one or more pilots instantiated on one or more resources. The defining
+% capability of a pilot system is to decouple resource acquisition from task
+% execution. Infrastructures exposing resources via a batch system allow
+% users to submit their tasks as jobs. Jobs wait in the batch system's queue
+% and when the requested resources became available for the requested amount
+% of time, a job is scheduled for execution. Thus, each task of a many-task
+% application has to wait in the batch system's queue to be executed,
+% incurring in delays that can become rapidly unfeasible.
 
-Pilot systems allow for queuing a single job via the batch system and, once
-this job becomes active, it executes a system application that enables the
-direct scheduling of tasks on the acquired resources, without waiting in the
-batch system's queue. In this way, pilot systems can enable high throughput
-computing (HTC) on infrastructures designed to enable high performance
-computing (HPC). Note that pilot systems do not game the HPC infrastructure:
-pilot jobs are bound by the required resources and wait in the queue as every
-other job, therefore abiding to the system usage policies.
+% Pilot systems allow for queuing a single job via the batch system and, once
+% this job becomes active, it executes a system application that enables the
+% direct scheduling of tasks on the acquired resources, without waiting in
+% the batch system's queue. In this way, pilot systems can enable high
+% throughput computing (HTC) on infrastructures designed to enable high
+% performance computing (HPC). Note that pilot systems do not game the HPC
+% infrastructure: pilot jobs are bound by the required resources and wait in
+% the queue as every other job, therefore abiding to the system usage
+% policies.
 
 RP offers four unique features when compared to other pilot systems or tools
 that enable the execution of many-task applications on HPC systems: (1)
@@ -386,18 +389,20 @@ or multi core tasks within a single compute node, or across multiple nodes,
 isolating the execution of each tasks into a dedicated process and enabling
 concurrent execution of heterogeneous tasks by design.
 
-% EnTK
-EnTK is a workflow engine specifically designed to execute ensemble-based
-applications. These applications are composed by ensemble of tasks that may
-have dependences both among tasks and ensembles.\amnote{ah, here is the
-ensemble definition :-)}\mtnote{Right. see my previous editing, it should be
-consistent with this def.} These dependences express a relationship of
-priority at execution time and may be determined by input/output data and
-control flow requirements. For example, two tasks may have to be executed
-sequentially when the output of the first task is the input of the second
-task; and two tasks (or ensembles) may have to be executed sequentially when
-the output of the first tasks determines whether executing the second task is
-of interest.
+% EnTK EnTK is a workflow engine specifically designed to execute
+% ensemble-based applications. These applications are composed by ensemble of
+% tasks that may have dependences both among tasks and ensembles.\amnote{ah,
+% here is the ensemble definition :-)}\mtnote{Right. see my previous editing,
+% it should be consistent with this def.}
+
+As a workflow engine, EnTK is designed to execute ensemble applications,
+respecting the relations of priority among tasks. Compared to similar
+systems, EnTK allows to codify relations in terms of pipelines, stages and
+tasks, where relations may be determined by input/output data or control flow
+requirements. For example, two tasks may have to be executed sequentially
+when the output of the first task is the input of the second task; and two
+tasks (or ensembles) may have to be executed sequentially when the output of
+the first tasks determines whether executing the second task.
 
 Consistently, EnTK provides adaptive capabilities and dedicated constructs to
 pause, resume and stop pipelines at runtime. Adaptive applications change the
