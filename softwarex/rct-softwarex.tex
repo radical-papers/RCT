@@ -36,17 +36,18 @@
 
 RADICAL-Cybertools (RCT) are a set of software systems that serve as
 middleware to develop efficient and effective tools for scientific computing.
-Specifically, RCT enable executing many-task applications at extreme scale and
-on a variety of computing infrastructures. RCT are building blocks, designed
-to work as stand-alone systems, integrated among themselves or integrated with
-third-party systems. RCT enables innovative science in multiple domains,
-including but not limited to biophysics, climate science and particle physics,
-consuming hundreds of millions of core hours. This paper provides an overview
-of RCT components, their impact, and the architectural principle and software
-engineering underlying RCT.
+Specifically, RCT enable executing many-task applications at extreme scale
+and on a variety of computing infrastructures. RCT are building blocks,
+designed to work as stand-alone systems, integrated among themselves or
+integrated with third-party systems. RCT enables innovative science in
+multiple domains, including but not limited to biophysics, climate science
+and particle physics, consuming hundreds of millions of core hours. This
+paper provides an overview of RCT components, their impact, and the
+architectural principle and software engineering underlying RCT\@.
 \end{abstract}
 
 \begin{keyword}
+
 %% keywords here, in the form: keyword \sep keyword
 Middleware \sep Pilot System \sep Building Blocks
 
@@ -59,7 +60,7 @@ Middleware \sep Pilot System \sep Building Blocks
 
 \end{frontmatter}
 
-\linenumbers{}
+% \linenumbers{}
 
 % {\em The manuscript must be submitted in single column. The following
 % constraints apply:
@@ -165,8 +166,8 @@ programming interface and execution model specific to ensemble-based
 applications. EnTK is engineered for scale and a diversity of computing
 platforms and runtime systems, agnostic of the size, type and coupling of the
 tasks comprising the ensemble.
-\amnote{This is likely confusing if the reader does not know what
-an 'ensemble' is?}\mtnote{better?}
+% \amnote{This is likely confusing if the reader does not know what
+% an 'ensemble' is?}\mtnote{better?}
 
 RCT are designed to work both individually and as an integrated system, with
 or without third party systems. This requires a ``Building Block'' approach
@@ -178,7 +179,7 @@ compositional elements are explicitly
 separated~\cite{batory1992design,garlan1995architectural,lenz1988software,clemens1998component,schneider2000components}.
 AirFlow, Oozie, Azkaban, Spark Streaming, Storm, or Kafka are examples of
 tools that have a design consistent with the building blocks approach and
-that have been integrated with RCT~\cite{}.
+that have been integrated with RCT~\cite{turilli2019middleware}.
 
 % In our adaptation, the Building Block approach is based on four
 % well-understood principles: self-sufficiency, interoperability,
@@ -216,7 +217,7 @@ exchange data about the entities specific to each RCT and data about the
 state of the components and subsystems. Each type of data has dedicated
 modules and communication channel, separating communication from coordination
 with explicit states and events for each entity.
-\amnote{what does 'making' mean here?}\mtnote{better?}
+% \amnote{what does 'making' mean here?}\mtnote{better?}
 
 Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and
 capabilities. In the rest of the paper, we focus on RP and EnTK, first
@@ -313,14 +314,15 @@ dependences and can therefore execute concurrently, depending on resource
 availability. Pipelines are lists of stages where a stage \(i\) can be
 executed only after stage \(i-1\) has completed.
 
-As for RP, a task is an executable, i.e., a program. \amnote{what is an
-'instruction of a program'?}\mtnote{Not sure. Changed, alongside the rest of
-the paragraph. Any better?} This is important: EnTK enables concurrent and
-sequential execution at program-level, not at function or method level.
-Parallelism is still possible within each program run by an EnTK task,
-enabling concurrent execution of multi-threaded, multi-process and MPI
-programs. Note that, at the moment, EnTK requires a runtime system (RTS) that
-support the same task abstraction for task execution.
+% \amnote{what is an 'instruction of a program'?}\mtnote{Not sure. Changed,
+% alongside the rest of the paragraph. Any better?}
+
+As for RP, a task is an executable, i.e., a program. This is important: EnTK
+enables concurrent and sequential execution at program-level, not at function
+or method level. Parallelism is still possible within each program run by an
+EnTK task, enabling concurrent execution of multi-threaded, multi-process and
+MPI programs. Note that, at the moment, EnTK requires a runtime system (RTS)
+that support the same task abstraction for task execution.
 
 Fig.~\ref{fig:archs}b shows the architecture of EnTK (white) with three
 components (purple), each with subcomponents dedicated to the management of
@@ -474,12 +476,82 @@ sets of programs in the form of black boxes.
 RP executes set of tasks. The degree of concurrency of the execution depends
 on the amount of available resources. Consider for example a many-task
 application for the simulation of molecular dynamics with an ensemble of 128
-simulations, each requiring 24 CPU cores as those used in
+GROMACS simulations, each requiring 24 CPU cores as those used in
 Ref.~\cite{balasubramanian2016extasy}. The user can use RP API to describe a
-pilot job with 3072 cores (Code~\ref{code:pilot}), 128 tasks
-(Code~\ref{code:units}) and two managers to coordinate the acquisition of the
-pilot resources via RADICAL-SAGA on an HPC machine (Code~\ref{code:pmgr}) and
-the execution of the 128 tasks on those resources (Code~\ref{code:umgr}).
+pilot job with 3072 cores (Lis.~\ref{code:pilot}), 128 CUs
+(Lis.~\ref{code:units}) and two managers to coordinate the acquisition of the
+pilot resources via RADICAL-SAGA on an HPC machine and the execution of the
+128 tasks on those resources (Lis.~\ref{code:mgrs}).
+
+\lstset{language=Python, 
+        frame=lines,
+        caption={RADICAL-Pilot API: define a 3072-core pilot that runs for 
+                 120 minutes on resource `target'},
+        label={code:pilot},
+        basicstyle=\footnotesize,
+        breaklines=true,
+        captionpos=b,
+        showspaces=false,
+        showstringspaces=false,
+        showtabs=false,
+        tabsize=2}
+\begin{lstlisting}
+pdesc = rp.ComputePilotDescription()        
+pdesc.resource = target
+pdesc.cores = 3072
+pdesc.runtime = 120
+pdesc.project = config[resource]['project']
+pdesc.queue = config[resource]['queue']
+pdesc.access_schema = config[resource]['schema']
+\end{lstlisting}
+
+\lstset{language=Python, 
+        frame=lines,
+        caption={RADICAL-Pilot API: define 128 24-cores MPI CU 
+                 descriptions.},
+        label={code:units},
+        basicstyle=\footnotesize,
+        breakatwhitespace=true,
+        breaklines=true,
+        captionpos=b,
+        showspaces=false,
+        showstringspaces=false,
+        showtabs=false,
+        tabsize=2}
+\begin{lstlisting}
+n = 128   # number of units to run
+cuds = list()
+for i in range(0, n):
+    cud = rp.ComputeUnitDescription()
+    cud.executable = "/bin/bash"
+    cud.pre_exec = ['module load gromacs/5.1.2']
+    cud.arguments = ['-l', '-c', "/opt/gromacs/bin/gmx_mpi mdrun -s min.tpr -v -deffnm npt"]
+    cud.input_staging = ['FRF.itp', 'dynamic.mdp', 'FF.itp', 'martini_v2.2.itp', '85-20.top', 'init85-20.gro'] 
+    cud.cores = 24
+    cud.mpi = True    
+    cuds.append(cud)
+\end{lstlisting}
+
+\lstset{language=Python, 
+        frame=lines,
+        caption={RADICAL-Pilot API: create pilot and unit managers, submit
+                 units, and wait for their completion.},
+        label={code:mgrs},
+        basicstyle=\footnotesize,
+        breaklines=true,
+        captionpos=b,
+        showspaces=false,
+        showstringspaces=false,
+        showtabs=false,
+        tabsize=2}
+\begin{lstlisting}
+pmgr = rp.PilotManager(session=session)
+pilot = pmgr.submit_pilots(pdesc)
+umgr = rp.UnitManager(session=session)
+umgr.add_pilots(pilot)
+umgr.submit_units(cuds)
+umgr.wait_units()
+\end{lstlisting}
 
 Fig.~\ref{fig:archs}a's numbers illustrate the resource acquisition and task
 execution process. PilotManager queues the pilot description on one of the
@@ -519,22 +591,101 @@ abstractions at API level: each stage of each pipeline is submitted to RP for
 execution, respecting their priority relation.
 
 Fig.~\ref{fig:archs}b's numbers illustrate the execution of workflows in
-EnTK\@. Users instantiate an AppManager (Code~\ref{code:appnam}), define a
-set of resources on which to run their workflow (Code~\ref{code:entk-res}),
-describe that workflow in terms of pipelines, stages and tasks
-(Code~\ref{code:pst}) and execute it (Code~\ref{code:pst}). AppManager passes
-a copy of the workflow description to WFProcessor that, based on the
-priorities between stages and tasks, uses Enquerer to queue tasks that are
-ready for execution to the task manager (Fig.~\ref{fig:archs}b.1--2).
-Meanwhile, ResManager users the chosen runtime system to acquire the
-requested resources (Fig.~\ref{fig:archs}b.3) and, once available,
-TaskManagers uses those resources to execute the queued tasks
-(Fig.~\ref{fig:archs}b.4). ExecManager uses queues to communicate the state
-of each task execution to AppManager. Based on this information, AppManager
-copies tasks to WFProcessors when tasks dependences are satisfied. Note that
-AppManager is the only stateful component of EnTK\@: both WFProcessor and
-ExecManager can fail without loss of information about the
-execution.\mtnote{Vivek to expand upon the dequeuer.}
+EnTK\@. Users instantiate an AppManager (Lis.~\ref{code:amgr}), define a set
+of resources on which to run their workflow (Lis.~\ref{code:res}), describe
+that workflow in terms of pipelines, stages and tasks (Code~\ref{code:pst})
+and execute it (Code~\ref{code:exec}). AppManager passes a copy of the
+workflow description to WFProcessor that, based on the priorities between
+stages and tasks, uses Enquerer to queue tasks that are ready for execution
+to the task manager (Fig.~\ref{fig:archs}b.1). Meanwhile, ResManager users
+the chosen runtime system to acquire the requested resources
+(Fig.~\ref{fig:archs}b.2) and, once available, TaskManagers uses those
+resources to execute the queued tasks (Fig.~\ref{fig:archs}b.3) and dequeuing
+them once they have been executed. ExecManager uses queues to communicate the
+state of each task execution to AppManager (Fig.~\ref{fig:archs}b.4). Note
+that AppManager is the only stateful component of EnTK\@: both WFProcessor
+and ExecManager can fail without loss of information about the execution.% \mtnote{Vivek to expand upon the dequeuer.}
+
+\lstset{language=Python, 
+        frame=lines,
+        caption={RADICAL-EnsembleToolkit (EnTK) API: Create AppManager.},
+        label={code:amgr},
+        basicstyle=\footnotesize,
+        breaklines=true,
+        captionpos=b,
+        showspaces=false,
+        showstringspaces=false,
+        showtabs=false,
+        tabsize=2}
+\begin{lstlisting}
+appman = AppManager(hostname=hostname, port=port)
+\end{lstlisting}
+
+\lstset{language=Python, 
+        frame=lines,
+        caption={RADICAL-EnsembleToolkit (EnTK) API: Describe a resource request. },
+        label={code:res},
+        basicstyle=\footnotesize,
+        breaklines=true,
+        captionpos=b,
+        showspaces=false,
+        showstringspaces=false,
+        showtabs=false,
+        tabsize=2}
+\begin{lstlisting}
+res_dict = {
+    'resource': 'target',
+    'walltime': 120,
+    'cpus': 3072
+}
+\end{lstlisting}
+
+\lstset{language=Python, 
+        frame=lines,
+        caption={RADICAL-EnsembleToolkit (EnTK) API: Describe a pipeline with 1 stage with 128 24-cores MPI tasks.},
+        label={code:pst},
+        basicstyle=\footnotesize,
+        breaklines=true,
+        captionpos=b,
+        showspaces=false,
+        showstringspaces=false,
+        showtabs=false,
+        tabsize=2}
+\begin{lstlisting}
+p = Pipeline()
+s = Stage()
+n = 128
+for i in range(0, n):
+    t = Task()
+    t.executable = "/bin/bash"
+    t.pre_exec = ['module load gromacs/5.1.2']
+    t.arguments = ['-l', '-c', "/opt/gromacs/bin/gmx_mpi mdrun -s min.tpr -v -deffnm npt"]
+    t.copy_input_data = ['FRF.itp', 'dynamic.mdp', 'FF.itp', 'martini_v2.2.itp', '85-20.top', 'init85-20.gro'] 
+    t.cpu_reqs = {
+      'processes': 24,
+      'process_type': MPI
+      }
+    s.add_tasks(t)
+p.add_stages(s)
+\end{lstlisting}
+
+\lstset{language=Python, 
+        frame=lines,
+        caption={RADICAL-EnsembleToolkit (EnTK) API: Describe a pipeline with },
+        label={code:exec},
+        basicstyle=\footnotesize,
+        breaklines=true,
+        captionpos=b,
+        showspaces=false,
+        showstringspaces=false,
+        showtabs=false,
+        tabsize=2}
+\begin{lstlisting}
+appman.resource_desc = res_dict
+appman.workflow = set([p])
+appman.run()
+\end{lstlisting}
+
 
 % ---------------------------------------------------------------------------
 % Section IV
@@ -634,8 +785,8 @@ specific application needs, each DSW is characterized by a unique execution
 and coordination pattern and can serve multiple applications. The four
 ensemble-based DSW developed using EnTK and other RCT are:
 EXTASY~\cite{balasubramanian2016extasy}, RepEx~\cite{treikalis2016repex},
-HTBAC~\cite{dakka2018high}, and ICEBERG~\cite{iceberg}. Details can be found
-in Ref.~\citep{turilli2019middleware}
+HTBAC~\cite{dakka2018high}, and ICEBERG\@. Details can be found in
+Ref.~\citep{turilli2019middleware}
 
 ExTASY and RepEx implement advanced sampling algorithms using biomolecular
 simulations. Both use the EnTK API to implement  diverse coordination
@@ -657,17 +808,17 @@ customization'' for the DSW\@.
 RCT are a testbed for engineering research, mostly focused on foundational
 abstractions~\cite{turilli2017evaluating}, architectural
 paradigms~\cite{turilli2018comprehensive}, application
-patterns~\cite{app-patterns}, and performance analysis of distributed
-middleware on diverse computing infrastructures~\cite{performance-analysis}.
-Among the most representative projects supported by RP as a standalone
-system, the Abstractions and Integrated Middleware for Extreme-Scale Science
-(AIMES) project enabled extreme-scale distributed computing via dynamic
-federation of heterogeneous computing infrastructures. We used RP to execute
-millions of tasks on both HPC and HTC resources, studying the federated
-behavior of multiple infrastructures, establishing for the first time ever
-the importance of integrating task and resource information in scheduling and
-placement decision making for federated
-supercomputers~\cite{turilli2016integrating}.
+patterns~\cite{balasubramanian2016extasy,balasubramanian2018harnessing}, and
+performance analysis of distributed middleware on diverse computing
+infrastructures~\cite{turilli2017evaluating,dakka2018high}. Among the most
+representative projects supported by RP as a standalone system, the
+Abstractions and Integrated Middleware for Extreme-Scale Science (AIMES)
+project enabled extreme-scale distributed computing via dynamic federation of
+heterogeneous computing infrastructures. We used RP to execute millions of
+tasks on both HPC and HTC resources, studying the federated behavior of
+multiple infrastructures, establishing for the first time ever the importance
+of integrating task and resource information in scheduling and placement
+decision making for federated supercomputers~\cite{turilli2016integrating}.
 
 The Building Blocks approach helps to create systems that can support use
 cases both individually and as integrated, end-to-end
@@ -747,13 +898,17 @@ diverse groups competing in the same research field.
 % ---------------------------------------------------------------------------
 % Acknowledgments
 % ---------------------------------------------------------------------------
-\section*{Acknowledgments}
+\section*{Acknowledgments and Contributions}
 
 We thank all our users, collaborators, and present and past members of
-RADICAL. This paper was was supported primarily by NSF 1440677 and DOE ASCR
+RADICAL\@. This paper was was supported primarily by NSF 1440677 and DOE ASCR
 DE-SC0016280. We acknowledge access to computational facilities: XSEDE
 resources (TG-MCB090174), Blue Waters (NSF-1713749), and DOE leadership
-machines via multiple INCITE and DD awards.
+machines via multiple INCITE and DD awards. Vivek Balasubramanian is the lead
+developer of EnTK\@; Shantenu Jha is the PI of RADICAL lab; Andre Merzky is
+the lead developer of RADICAL-Pilot and RADICAL-SAGA\@; and Matteo Turilli is
+the lead architect of EnTK, co-architect of RADICAL-Pilot and wrote the
+paper.
 
 % ---------------------------------------------------------------------------
 % References
@@ -849,7 +1004,7 @@ Support email for questions                                      &
 \begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
 \hline
 \textbf{Nr.}                                                     & 
-\textbf{(Executable) software metadata description}              & 
+\textbf{Exec. metadata description}                          & 
 \textbf{Please fill in this column}                              \\
 \hline
 %
@@ -881,7 +1036,7 @@ virtualenv, pip or conda                                         \\
 S6                                                               & 
 User manual and publications                                     & 
 User manual: \url{https://radicalpilot.readthedocs.io/}; 
-Publications: Refs~\cite{}                                       \\
+Publications: Refs~\cite{merzky2015saga,balasubramanian2018harnessing,merzky2018using}                                       \\
 \hline
 %
 S7                                                               & 
