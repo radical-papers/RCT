@@ -8,42 +8,15 @@
 \begin{document}
 \begin{frontmatter}
 
-% \title{Title/Name of your software}
-
 \title{RADICAL-Cybertools: Middleware Building Blocks for Scalable Science}
 
 \author{Vivek Balasubramanian, Shantenu Jha, Andre Merzky and Matteo Turilli}
 \address{Electrical \& Computer Engineering, Rutgers University, Piscataway,NJ 08854, USA}
 
-% \author{Shantenu Jha}
-% \address{Electrical \& Computer Engineering, Rutgers University, Piscataway,NJ 08854, USA}
-
-% \author{Andre Merzky}
-% \address{Electrical \& Computer Engineering, Rutgers University, Piscataway,NJ 08854, USA}
-
-% \author{Matteo Turilli}
-% \address{Electrical \& Computer Engineering, Rutgers University, Piscataway,NJ 08854, USA}
-
-% including the leadership-class machines managed by ORNL, NCSA and TACC. 
-
-
-% RCT allow rapid development of applications for software engineering, chemical
-% physics, materials science, health science, climate science, drug discovery
-% and particle physics. 
-
 \begin{abstract}
 % Ca. 100 words
 
-RADICAL-Cybertools (RCT) are a set of software systems that serve as
-middleware to develop efficient and effective tools for scientific computing.
-Specifically, RCT enable executing many-task applications at extreme scale
-and on a variety of computing infrastructures. RCT are building blocks,
-designed to work as stand-alone systems, integrated among themselves or
-integrated with third-party systems. RCT enables innovative science in
-multiple domains, including but not limited to biophysics, climate science
-and particle physics, consuming hundreds of millions of core hours. This
-paper provides an overview of RCT components, their impact, and the
-architectural principle and software engineering underlying RCT\@.
+RADICAL-Cybertools (RCT) are a set of software systems that serve as middleware to develop efficient and effective tools for scientific computing. Specifically, RCT enable executing many-task applications at extreme scale and on a variety of computing infrastructures. RCT are building blocks, designed to work as stand-alone systems, integrated among themselves or integrated with third-party systems. RCT enables innovative science in multiple domains, including but not limited to biophysics, climate science and particle physics, consuming hundreds of millions of core hours. This paper provides an overview of RCT systems, their impact, and the architectural principles and software engineering underlying RCT\@.
 \end{abstract}
 
 \begin{keyword}
@@ -141,31 +114,42 @@ components: RADICAL-SAGA (RS)~\cite{merzky2015saga}, RADICAL-Pilot
 (RP)~\cite{merzky2018using} and RADICAL-Ensemble Toolkit
 (EnTK)~\cite{balasubramanian2018harnessing}.
 
-RS is a Python implementation of the Open Grid Forum SAGA standard 
+RS is a Python implementation of the Open Grid Forum SAGA standard
 GFD.90~\cite{goodale2006saga}, a high-level interface to distributed
 infrastructure components like job schedulers, file transfer and resource
 provisioning services. RS enables interoperability across heterogeneous
 distributed infrastructures, improving on their usability and enhancing the
-sustainability of services and tools.
+sustainability of services and tools. Ref.~\cite{merzky2015saga} details RS
+therefore, in the rest of the paper, we focus on RP and EnTK.
 
 RP is a Python implementation of the pilot paradigm and architectural
 pattern~\cite{turilli2018comprehensive}. Pilot systems enable users to submit
 pilot jobs to computing infrastructures and then use the resources acquired
 by the pilot to execute one or more tasks. These tasks are directly scheduled
 via the pilot, without having to queue in the infrastructure's batch system.
-RP focuses on High Performance Computing (HPC) resources, enabling the
-concurrent and consecutive execution of heterogeneous workloads comprised of
-one or more scalar, MPI, OpenMP, multi-process, and multi-threaded tasks.
-These tasks can be executed on CPUs, GPUs and other accelerators, on the same
-pilot or across multiple pilots.
+EnTK is a Python implementation of a workflow engine, specialized in
+supporting the programming and execution of applications with ensembles or
+pipelines of tasks. EnTK respects the arbitrary priority relation among
+tasks, EnTK execute those tasks concurrently or sequential, depending on
+their arbitrary priority relation. Tasks are calar, MPI, OpenMP,
+multi-process, and multi-threaded  programs that run as self-contained
+executables. Tasks are not functions, methods, threads or processes.
 
-EnTK supports the concurrent or sequential execution of tasks that can be in
-an arbitrary priority relation (i.e., ensemble or pipelines of tasks). EnTK
-promotes ensembles of tasks to a high-level abstraction, providing a
-programming interface and execution model specific to ensemble-based
-applications. EnTK is engineered for scale and a diversity of computing
-platforms and runtime systems, agnostic of the size, type and coupling of the
-tasks comprising the ensemble.
+% Both RP and EnTK focuses on High Performance Computing (HPC) resources,
+% enabling the concurrent and consecutive execution on CPU/GPU of stasks.
+
+% RP focuses on High Performance Computing (HPC) resources, enabling the
+% concurrent and consecutive execution of heterogeneous workloads comprised
+% of one or more scalar, MPI, OpenMP, multi-process, and multi-threaded
+% tasks. These tasks can be executed on CPUs, GPUs and other accelerators, on
+% the same pilot or across multiple pilots.
+
+% EnTK promotes ensembles of tasks to a high-level abstraction, providing a
+% programming interface and execution model specific to ensemble-based
+% applications. EnTK is engineered for scale and a diversity of computing
+% platforms and runtime systems, agnostic of the size, type and coupling of
+% the tasks comprising the ensemble.
+
 % \amnote{This is likely confusing if the reader does not know what
 % an 'ensemble' is?}\mtnote{better?}
 
@@ -199,52 +183,61 @@ that have been integrated with RCT~\cite{turilli2019middleware}.
 % pictorial component overview or similar (if possible). If necessary provide
 % implementation details.}
 
-All RCT are stand-alone, distributed systems. Architecturally, each tool
-consists of one or more subsystems, each with several components. Components
-are isolated into individual processes and some components are used only in
-specific deployment scenarios, depending on both application requirements and
-resource capabilities. Components are stateless and some of them can be
-instantiated concurrently to simultaneously manage multiple entities, like
-workflows, workloads, tasks or pilots. This enables scaling of throughput and
-tolerance to component failure.
+% All RCT are stand-alone, distributed systems. 
 
-Concurrent components are coordinated via a dedicated communication mesh,
-which introduces runtime and infrastructure-specific overheads, but improves
-overall scalability of the system and lowers component complexity. Components
-can have different implementations; configuration files can tailor each RCT
-to specific resources types, workloads, or scaling requirements. Components
-exchange data about the entities specific to each RCT and data about the
-state of the components and subsystems. Each type of data has dedicated
-modules and communication channel, separating communication from coordination
-with explicit states and events for each entity.
+Architecturally, all RCT consist of one or more subsystems, each with several
+components.% Components are isolated into individual processes and 
+Some components are used only in specific deployment scenarios, depending on
+both application requirements and resource capabilities. Components are
+stateless and some of them can be instantiated concurrently, 
+% to simultaneously manage multiple entities, like workflows, workloads,
+% tasks or pilots. This enables
+enabling throughput scaling and fault tolerance. A communication mesh enables
+coordination of concurrent components, improving scalability at the cost of
+infrastructure-specific overheads.
+
+% Concurrent components are coordinated via a dedicated A  communication
+% mesh, which introduces runtime and infrastructure-specific overheads, but
+% improves overall scalability of the system and lowers component complexity.
+% Components can have different implementations; configuration files can
+% tailor each RCT to specific resources types, workloads, or scaling
+% requirements. Components exchange data about the entities specific to each
+% RCT and data about the state of the components and subsystems. Each type of
+% data has dedicated modules and communication channel, separating
+% communication from coordination with explicit states and events for each
+% entity.
+
 % \amnote{what does 'making' mean here?}\mtnote{better?}
 
-Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and
-capabilities. In the rest of the paper, we focus on RP and EnTK, first
-introducing each system individually, then showing how RCT as a whole can be
-composed to serve diverse use cases.
+% Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and
+% capabilities. In the rest of the paper, we focus on RP and EnTK, first
+% introducing each system individually, then showing how RCT as a whole can
+% be composed to serve diverse use cases.
 
 % ------------
 \subsubsection{RADICAL-Pilot}\label{sssec:arch_rp}
 
-RP implements two main abstractions: Pilot and Compute Unit (CU). Pilots and
-CUs abstract away specificities of resources and workloads, making it
-possible to schedule workloads either concurrently or sequentially on
-resource placeholders. Pilots are such placeholders for computing resources,
-where resources are represented independent from architecture and topological
-details. CUs are units of work (i.e., tasks), specified as an application
-executable alongside its resource and execution environment requirements.
-Note that a task is not a function, method, thread or process but a program
-that runs as a self-contained executable.
+RP implements two abstractions: Pilot and Compute Unit (CU). 
+% Pilots and CUs abstract away specificities of resources and workloads,
+% making it possible to schedule workloads either concurrently or
+% sequentially on resource placeholders.
+Pilots are placeholders for computing resources, where resources are
+represented independent from architecture and topological details. CUs are
+units of work (i.e., tasks), specified by a program's executable alongside
+its resource and execution environment requirements.
+% Note that a task is not a function, method, thread or process but a program
+% that runs as a self-contained executable.
 
-Fig.~\ref{fig:archs}a depicts RP's architecture with two subsystems (white
-boxes) and several components (purple and yellow boxes). In each subsystem,
-purple components manage pilots and CUs while yellow components manage the
+Fig.~\ref{fig:archs}a depicts RP's architecture. RP has two subsystems (white
+boxes), each with several components (purple and yellow boxes). 
+% In each subsystem,
+Purple components manage pilots and CUs while yellow components manage the
 communication among components. Subsystems can execute locally or remotely,
 communicating and coordinating over TCP/IP, and enabling multiple deployment
-scenarios. For example, users can run Client locally, and distribute MongoDB
-and one or more instances of Agent on remote computing infrastructures.
-Alternatively, users can run all components on a local or remote resource.
+scenarios. 
+% For example, users can run Client locally, and distribute MongoDB and one
+% or more instances of Agent on remote computing infrastructures.
+% Alternatively, users can run all components on a local or remote resource.
 
 \begin{figure}
     \centering
@@ -254,151 +247,156 @@ Alternatively, users can run all components on a local or remote resource.
     \caption{Caption. \mtnote{TODO\@: Fix EnTK AppManager}}\label{fig:archs}
 \end{figure}
 
-The first subsystem, called Client, has two main components: PilotManager and
-UnitManager. PilotManager manages pilots and has a main component called
-`Launcher'. Launcher uses resource configuration files to define the number,
-placement, and properties of the Agent's components of each pilot. Currently,
-configuration files are made available for all the HPC machines of the
-Extreme Science and Engineering Discovery Environment (XSEDE), Blue Waters at
-the National Center For supercomputing Applications (NCSA), Cheyenne at
-NCAR-Wyoming Supercomputing Center (NWSC), and Rhea, Titan and Summit at the
-Oak Ridge National Laboratory (ORNL). Users can provide new files or alter
-existing configuration parameters at runtime, both for a single pilot or a
-whole RP session.
+% Client has two main components: PilotManager and UnitManager. PilotManager
+% manages pilots and has a main component called `Launcher'. Launcher uses
+% resource configuration files to define the number, placement, and
+% properties of the Agent's components of each pilot. Currently,
+% configuration files are made available for all the HPC machines of the
+% Extreme Science and Engineering Discovery Environment (XSEDE), Blue Waters
+% at the National Center For supercomputing Applications (NCSA), Cheyenne at
+% NCAR-Wyoming Supercomputing Center (NWSC), and Rhea, Titan and Summit at
+% the Oak Ridge National Laboratory (ORNL). Users can provide new files or
+% alter existing configuration parameters at runtime, both for a single pilot
+% or a whole RP session.
 
-UnitManager manages CUs and has two main components: Scheduler and
-StagerInput. Scheduler schedules CUs onto one or more pilots, available on
-one or more machines. This enables late binding of CUs to resources,
-depending on their availability. CUs are bound to resources that satisfy
-their execution requirements only when these resources are actually
-available. StagerInput distributes the input files that CU may need for their
-execution to the machines on which each CU has been scheduled.
+% UnitManager manages CUs and has two main components: Scheduler and
+% StagerInput. Scheduler schedules CUs onto one or more pilots, available on
+% one or more machines. This enables late binding of CUs to resources,
+% depending on their availability. CUs are bound to resources that satisfy
+% their execution requirements only when these resources are actually
+% available. StagerInput distributes the input files that CU may need for
+% their execution to the machines on which each CU has been scheduled.
 
-The second subsystem of RP is called `Agent' and has four main components:
-StagerInput and StagerOutput for staging CUs' input and output data,
-Scheduler and Executer to schedule CUs on a pilot resources and execute those
-CUs on them. Multiple instances of the Stager and Executer components can
-coexist in a single Agent. Depending on the architecture of the target
-machine, Agent's components can individually be placed on cluster head nodes,
+Client has two main components: PilotManager and UnitManager. PilotManager
+manages pilots and its Launcher component uses configuration files to tailor
+Agent's components to specific resources. Currently, configuration files are
+made available for all the XSEDE HPC machines, NCSA Blue Waters, NCAR
+Cheyenne, and ORNL Rhea, Titan and Summit. 
+% Users can provide new files or alter existing configuration parameters at
+% runtime, both for a single pilot or a whole RP session.
+%
+UnitManager manages CUs, using Scheduler to late binding CUs onto one or more
+pilots only when they become available on one or more machines. StagerInput
+copies CUs' input files to the machines on which each CU was scheduled.
+
+% Agent and has four components: StagerInput and StagerOutput for staging
+% CUs' input and output data, Scheduler and Executer to schedule CUs on a
+% pilot resources and execute those CUs on them. Multiple instances of the
+% Stager and Executer components can coexist in a single Agent. Depending on
+% the architecture of the target machine, Agent's components can individually
+% be placed on cluster head nodes, MOM/batch nodes, compute nodes, virtual
+% machines, or any combination thereof. ZeroMQ communication bridges connect
+% the Agent components, creating a network to support the transitions of CUs
+% through components.
+
+Agent has four main components: StagerInput and StagerOutput for staging CUs'
+input/output data, Scheduler and Executer to schedule and execute CUs on
+pilots' resources. For performance optimization at scale, multiple instances
+of Stager and Executer can coexist in a single Agent, placed on head nodes,
 MOM/batch nodes, compute nodes, virtual machines, or any combination thereof.
-ZeroMQ communication bridges connect the Agent components, creating a network
-to support the transitions of CUs through components.
 
-Data management in RP focuses on providing input files to CUs before their
-execution, and on moving output files to later CUs, or back into the user
-environment. On HPC resources which provide both local and network storage,
-RP can select the most appropriate storage, depending on CUs I/O
-requirements.  Data can be exclusive to CUs, or can be shared between CUs.
+% Each component of each subsystem of RP has a dedicated queue to feed
+% entities into that component. Orange Queues in Fig.~\ref{fig:archs}a are
+% dedicated to pilots and CUs, blue Queues to the messages exchanged by
+% communication components. All Queues support bulk communication to obtain
+% performance at scale in a distributed systems. Further, queues enable load
+% balancing among concurrent components. Note that concurrent components are
+% used for performance optimization at scale.
 
-Each component of each subsystem of RP has a dedicated queue to feed entities
-into that component. Orange Queues in Fig.~\ref{fig:archs}a are dedicated to
-pilots and CUs, blue Queues to the messages exchanged by communication
-components. All Queues support bulk communication to obtain performance at
-scale in a distributed systems. Further, queues enable load balancing among
-concurrent components. Note that concurrent components are used for
-performance optimization at scale.
+Each Agent's component has a queue to support Pilot or CUs feeding
+(Fig.~\ref{fig:archs}a, orange queues) and control messaging
+(Fig.~\ref{fig:archs}a, blue queues). All Queues support bulk communication
+and enable load balancing among concurrent components to obtain performance
+at scale.
 
-A special queue instance is rendered as collection in a MongoDB database.
-That collection is used to communicate between Client and Agent, while
-preserving the semantics used for all other queues in Fig.~\ref{fig:archs}a.
-Since the MongoDB entries are persistent, that database is also used to store
-data for \textit{post mortem} profiling and analysis.
+% Data management in RP focuses on providing input files to CUs before their
+% execution, and on moving output files to later CUs, or back into the user
+% environment. On HPC resources which provide both local and network storage,
+% RP can select the most appropriate storage, depending on CUs I/O
+% requirements.  Data can be exclusive to CUs, or can be shared between CUs.
+
+RP data management moves, copies or links input files to CUs before execution
+and output files from CUs after execution. RP can select the most appropriate
+storage, depending on resource capabilities and CUs requirements.  Data can
+be exclusive to CUs, or shared among them.
+
+% A special queue instance is rendered as collection in a MongoDB database.
+% That collection is used to communicate between Client and Agent, while
+% preserving the semantics used for all other queues in
+% Fig.~\ref{fig:archs}a. Since the MongoDB entries are persistent, that
+% database is also used to store data for \textit{post mortem} profiling and
+% analysis.
+
+Client and Agent communicate via a queue instance rendered as a data
+structure of a database, preserving the semantic of the queues in
+Fig.~\ref{fig:archs}a. Database's data are persistent, enabling \textit{post
+mortem} profiling and analysis of RP executions.
 
 % ------------
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
 
-EnTK implements three main abstractions: task, stage and pipeline. Tasks
-contain information regarding an executable, its software environment and its
-data dependences. Stages are a set of tasks where the tasks have no mutual
-dependences and can therefore execute concurrently, depending on resource
-availability. Pipelines are lists of stages where a stage \(i\) can be
-executed only after stage \(i-1\) has completed.
+EnTK implements three abstractions: task, stage and pipeline. Tasks is an
+executable program with information about its environment and data
+dependences. Stage is a set of tasks which have no mutual dependences and
+thus can execute concurrently. Pipeline is a list of stages where the
+ordering of the stages represents the ordering of their execution.
 
-% \amnote{what is an 'instruction of a program'?}\mtnote{Not sure. Changed,
-% alongside the rest of the paragraph. Any better?}
+As with RP, EnTK enables concurrent and sequential execution at program
+level, not at function or method level. Each task's program can use
+parallelism, enabling concurrent execution of scalar, MPI, OpenMP,
+multi-process, and multi-threaded programs.
 
-As for RP, a task is an executable, i.e., a program. This is important: EnTK
-enables concurrent and sequential execution at program-level, not at function
-or method level. Parallelism is still possible within each program run by an
-EnTK task, enabling concurrent execution of multi-threaded, multi-process and
-MPI programs. Note that, at the moment, EnTK requires a runtime system (RTS)
-that support the same task abstraction for task execution.
+% Note that, at the moment, EnTK requires a runtime system (RTS) that support
+% the same task abstraction for task execution.
 
 Fig.~\ref{fig:archs}b shows the architecture of EnTK (white) with three
 components (purple), each with subcomponents dedicated to the management of
 EnTK's entities (green) or coordination of the entities' execution (yellow).
-The three components are AppManager, WFProcessor and TaskManager that enable
-workflow specification, workflow execution management, and workload
-management.
+The three components are AppManager, WFProcessor and TaskManager,
+respectively enabling workflow specification, workflow execution management,
+and workload management.
 
-AppManager exposes an API for the development of ensemble-based applications
-in terms of tasks, stages and pipelines, and for specifying resource
-requirements for the application execution. AppManager initializes EnTK and
-holds the global state of the application at runtime. AppManager is the sole
-stateful component of EnTK, allowing to restart other components upon
-failure, without interrupting the execution of the ensemble-based
-application.
+EnTK's API enables the development of ensemble-based applications with tasks,
+stages and pipelines, and the specification of resource requirements for the
+application execution. AppManager initializes EnTK and holds the global state
+of the application at runtime. AppManager is the sole stateful component of
+EnTK, allowing to restart other components upon failure, without interrupting
+the execution of the ensemble-based application.
 
-WFProcessor uses the Enqueue and Dequeue subcomponents to queue and dequeue
-tasks pulled from AppManager. TaskManager uses ExecManager to schedule tasks
-on the RTS and keep track of the state of each task during execution.
-TaskManager uses ResManageer as an interface to the chosen RTS. RTS have to
-provide capabilities to acquire resources and schedule tasks on those
-resources for execution. ResManager isolates RTS from EnTK, enabling
-restarting of the RTS without loosing information about tasks that have been
-already executed. Currently, EnTK support only RP as RTS but it is designed
-to use other task-based RTS as, for example, Coasters or HTCondor.
+WFProcessor queues and dequeues tasks pulled from AppManager. TaskManager
+interfaces to the RTS via ResManageer and uses ExecManager to schedule tasks
+on the RTS, tracking the state of each task during execution. RTS provides
+capabilities to acquire resources and schedule tasks on those resources for
+execution. ResManager isolates RTS from EnTK, enabling fault-tolerance with
+persistent information about executed tasks. Currently, EnTK support only RP
+as RTS but it is designed to use other task-based RTS as, for example,
+Coasters or HTCondor.
 
 % ---------------------------------------------------------------------------
 \subsection{Software Functionalities}\label{ssec:functionalities}
 
 % {\em Present the major functionalities of the software.}
 
-% SAGA Given the heterogeneity of distributed infrastructures, SAGA provides
-% a much needed interoperability layer that lowers the complexity and
-% improves the simplicity of using distributed infrastructure whilst
-% enhancing the sustainability of distributed applications, services and
-% tools.\mtnote{probably not to be included as SAGA has been already
-% described in a standalone SoftwareX publication.}\amnote{agree}
-
 % RP
-As a pilot system, the defining capability of a RP is to decouple resource
-acquisition from task execution, enabling execution of tasks on a pilot
-without using the resource's queuing system. RP offers an API to describe
-both pilots and CUs, alongside classes and methods to manage acquisition of
-resources, scheduling and execution of CUs on those resources, and the
-staging of input and output files. Reporting capabilities and notifications
-update the user about ongoing executions, and profiling capabilities enable
-detailed postmortem analysis of workload executions and runtime behavior.
-
-% RP enables the execution of tasks with several dimensions of heterogeneity
-% on one or more pilots instantiated on one or more resources. The defining
-% capability of a pilot system is to decouple resource acquisition from task
-% execution. Infrastructures exposing resources via a batch system allow
-% users to submit their tasks as jobs. Jobs wait in the batch system's queue
-% and when the requested resources became available for the requested amount
-% of time, a job is scheduled for execution. Thus, each task of a many-task
-% application has to wait in the batch system's queue to be executed,
-% incurring in delays that can become rapidly unfeasible.
-
-% Pilot systems allow for queuing a single job via the batch system and, once
-% this job becomes active, it executes a system application that enables the
-% direct scheduling of tasks on the acquired resources, without waiting in
-% the batch system's queue. In this way, pilot systems can enable high
-% throughput computing (HTC) on infrastructures designed to enable high
-% performance computing (HPC). Note that pilot systems do not game the HPC
-% infrastructure: pilot jobs are bound by the required resources and wait in
-% the queue as every other job, therefore abiding to the system usage
-% policies.
-
-RP offers four unique features when compared to other pilot systems or tools
-that enable the execution of many-task applications on HPC systems: (1)
-concurrent execution of heterogeneous tasks on the same pilot; (2) support of
-all the major HPC batch systems; (3) support of more than twelve methods to
-launch tasks; and (4) a general purpose architecture. RP can execute single
-or multi core tasks within a single compute node, or across multiple nodes,
-isolating the execution of each tasks into a dedicated process and enabling
-concurrent execution of heterogeneous tasks by design.
+As a pilot system, RP decouples resource acquisition from task execution,
+enabling execution of tasks on a pilot without using the resource's queuing
+system.
+%
+% RP offers an API to describe both pilots and CUs, alongside classes and
+% methods to manage acquisition of resources, scheduling and execution of CUs
+% on those resources, and the staging of input and output files. Reporting
+% capabilities and notifications update the user about ongoing executions,
+% and profiling capabilities enable detailed postmortem analysis of workload
+% executions and runtime behavior.
+%
+When compared to other pilot systems or tools that enable the execution of
+many-task applications on HPC systems, RP offers four unique features: (1)
+concurrent execution of heterogeneous tasks on the same and across pilots,
+execute single or multi core tasks within a single compute node, or across
+multiple nodes, isolating the execution of each tasks into a dedicated
+process and enabling concurrent execution of heterogeneous tasks by design;
+(2) support of the major HPC batch systems; (3) support of twelve methods to
+launch tasks; and (4) a general purpose architecture.
 
 % EnTK EnTK is a workflow engine specifically designed to execute
 % ensemble-based applications. These applications are composed by ensemble of
@@ -406,22 +404,22 @@ concurrent execution of heterogeneous tasks by design.
 % here is the ensemble definition :-)}\mtnote{Right. see my previous editing,
 % it should be consistent with this def.}
 
-As a workflow engine, EnTK is designed to execute ensemble applications,
-respecting the relations of priority among tasks. Compared to similar
-systems, EnTK allows to codify relations in terms of pipelines, stages and
-tasks, where relations may be determined by input/output data or control flow
-requirements. For example, two tasks may have to be executed sequentially
-when the output of the first task is the input of the second task; and two
-tasks (or ensembles) may have to be executed sequentially when the output of
-the first tasks determines whether executing the second task.
-
-Consistently, EnTK provides adaptive capabilities and dedicated constructs to
-pause, resume and stop pipelines at runtime. Adaptive applications change the
-ensemble specifications, creating new pipelines, stages and tasks, or
-changing the properties of those already defined. Further, pipelines and
-stages can be paused while waiting to perform \textit{ad hoc} computations.
-This enables the implementation of high-level application patterns as, for
-example, simulation-analysis or replica exchange.
+EnTK is a workflow engine that, compared to similar systems, allows to codify
+ensemble applications as pipelines of stages of tasks. Task interdependences
+may be determined by input/output data or control flow requirements.
+%
+% For example, two tasks may have to be executed sequentially when the output
+% of the first task is the input of the second task; and two tasks (or
+% ensembles) may have to be executed sequentially when the output of the
+% first tasks determines whether executing the second task.
+%
+EnTK provides adaptive capabilities to change the ensemble specifications,
+creating new pipelines, stages and tasks, or changing the properties of those
+already defined. Further, pipelines and stages can be paused while waiting to
+perform \textit{ad hoc} computations. This enables the implementation of
+high-level application patterns as, for example,
+simulation-analysis~\cite{balasubramanian2016extasy} or replica
+exchange~\cite{treikalis2016repex}.
 
 % Execution Model
 
@@ -904,11 +902,11 @@ We thank all our users, collaborators, and present and past members of
 RADICAL\@. This paper was was supported primarily by NSF 1440677 and DOE ASCR
 DE-SC0016280. We acknowledge access to computational facilities: XSEDE
 resources (TG-MCB090174), Blue Waters (NSF-1713749), and DOE leadership
-machines via multiple INCITE and DD awards. Vivek Balasubramanian is the lead
-developer of EnTK\@; Shantenu Jha is the PI of RADICAL lab; Andre Merzky is
-the lead developer of RADICAL-Pilot and RADICAL-SAGA\@; and Matteo Turilli is
-the lead architect of EnTK, co-architect of RADICAL-Pilot and wrote the
-paper.
+machines via multiple INCITE and DD awards. In alphabetical order: Vivek
+Balasubramanian is the lead developer of EnTK\@; Shantenu Jha is the PI of
+RADICAL lab; Andre Merzky is the lead developer and architect of
+RADICAL-Pilot and RADICAL-SAGA\@; and Matteo Turilli is the lead architect of
+EnTK, co-architect of RADICAL-Pilot and wrote the paper.
 
 % ---------------------------------------------------------------------------
 % References
