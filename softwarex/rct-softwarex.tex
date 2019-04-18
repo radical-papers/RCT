@@ -453,8 +453,7 @@ exchange~\cite{treikalis2016repex}.
 % supported by EnTK\@. REPEX, EXTASY candidate examples.}
 
 Multiple scientific domains can benefit from executing many-task applications
-at scale, especially at the scale enabled by leadership-class HPC
-machines~\cite{raicu2008many,iosup2011performance}. Independent of the domain
+at scale~\cite{raicu2008many,iosup2011performance}. Independent of the domain
 for which these applications are developed, their execution requires to run a
 single task, a bag of tasks, or a workflow. In this context, tasks refers to
 programs like, for example, GROMACS, NAMD, AMBER, AthenaMP, SPECFEM and many
@@ -472,14 +471,436 @@ execution reduces exclusively to manging the execution of single or multiple
 sets of programs in the form of black boxes.
 
 RP executes set of tasks. The degree of concurrency of the execution depends
-on the amount of available resources. Consider for example a many-task
-application for the simulation of molecular dynamics with an ensemble of 128
-GROMACS simulations, each requiring 24 CPU cores as those used in
-Ref.~\cite{balasubramanian2016extasy}. The user can use RP API to describe a
-pilot job with 3072 cores (Lis.~\ref{code:pilot}), 128 CUs
-(Lis.~\ref{code:units}) and two managers to coordinate the acquisition of the
-pilot resources via RADICAL-SAGA on an HPC machine and the execution of the
-128 tasks on those resources (Lis.~\ref{code:mgrs}).
+on the amount of available resources. Consider for example
+Ref.~\cite{balasubramanian2016extasy}'s many-task application for the
+simulation of molecular dynamics with an ensemble of 128 GROMACS simulations,
+each requiring 24 CPU cores. The user can use RP API to describe a pilot job
+with 3072 cores (Lis.~\ref{code:pilot}), 128 CUs (Lis.~\ref{code:units}) and
+two managers to coordinate the acquisition of the pilot resources via RS on
+an HPC machine and the concurrent execution of the 128 tasks on those
+resources (Lis.~\ref{code:mgrs}).
+
+% Fig.~\ref{fig:archs}a's numbers illustrate the resource acquisition and
+% task execution process. PilotManager queues the pilot description on one of
+% the available Launcher in RP client (Fig.~\ref{fig:archs}a.1). That
+% Launcher uses RS to schedule the pilot as a job on the target resource via
+% the resource's batch System (Fig.~\ref{fig:archs}a.2). The pilot job waits
+% in the resource management system queue and, once scheduled, bootstraps the
+% pilot's AgentMnager and Updater. AgentManager forks the StagerInput,
+% Scheduler, Executor and StagerOutput components and the Updater notifies RP
+% Client's Notifier that RP Agent is ready to execute tasks
+% (Fig.~\ref{fig:archs}a.3).
+
+% Upon notification, UnitManager queues all the available tasks onto Client's
+% Scheduler that, in turns, queues those tasks into the StagerInput,
+% depending on the chosen scheduling algorithm (Fig.~\ref{fig:archs}a.4). If
+% required, StagerInput stages the tasks' input files to the target resource
+% and then tasks are queued to the Updater and passed to the chosen RP
+% Agent's AgentManager (Fig.~\ref{fig:archs}a.5). At that point, tasks are
+% passed to a StagerInput where input files are linked and made available to
+% each task, and then queued to the RP Agent's Scheduler
+% (Fig.~\ref{fig:archs}a.6). Scheduler places tasks on suitable partitions of
+% the pilot's resources and then queues tasks to the Executor so that, when
+% those partitions of resource becomes available, tasks are executed
+% (Fig.~\ref{fig:archs}a.7). Executor sets up the environment required by
+% each task and then forks each task for execution (Fig.~\ref{fig:archs}a.8).
+% This is why tasks are black boxes to RP\@; also note that Scheduler and
+% Executor can place and fork heterogeneous tasks, i.e., task requiring
+% different type and amount core/GPUs and different execution time.
+
+Fig.~\ref{fig:archs}a's numbers illustrate the resource acquisition and task
+execution process. PilotManager uses RS to queue a pilot as a job on the
+resource's batch System (Fig.~\ref{fig:archs}a.1-2). Once scheduled, the
+pilot bootstraps RP Agent's components, using Updater to notify RP Client
+that is ready to execute tasks (Fig.~\ref{fig:archs}a.3). Upon notification,
+UnitManager queues all the available tasks onto Client's Scheduler and, after
+staging files if required, tasks are queued to the RP Agent's Scheduler
+(Fig.~\ref{fig:archs}a.4-6). Scheduler places tasks on suitable partitions of
+the pilot's resources and then queues tasks to the Executor so that, when
+those partitions of resource becomes available, tasks are executed
+(Fig.~\ref{fig:archs}a.7). Executor sets up the environment required by each
+task and then forks each task for execution (Fig.~\ref{fig:archs}a.8). 
+% This is why tasks are black boxes to RP\@; also note that Scheduler and
+% Executor can place and fork heterogeneous tasks, i.e., task requiring
+% different type and amount core/GPUs and different execution time.
+
+RP API cannot express dependences among tasks. For RP, every task that is
+passed to UnitManager is assumed to be ready for execution. For example,
+assume a typical simulation-analysis workflow for molecular dynamics with a
+simulation stage and an analysis stage that depends upon the completion of
+the simulation stage. Users can explicitly code priorities among stages in
+the applications they write with the RP API but they have no dedicated
+abstractions in that API for expressing those priorities. EnTK offers these
+abstractions at API level: each stage of each pipeline is submitted to RP for
+execution, respecting their priority relation.
+
+Fig.~\ref{fig:archs}b's numbers illustrate the execution of workflows in
+EnTK\@. Users instantiate an AppManager (Lis.~\ref{code:amgr}), define a set
+of resources on which to run their workflow (Lis.~\ref{code:res}), describe
+that workflow in terms of pipelines, stages and tasks (Lis.~\ref{code:pst})
+and execute it (Lis.~\ref{code:exec}). AppManager passes a copy of the
+workflow description to WFProcessor that, based on the priorities between
+stages and tasks, uses Enquerer to queue tasks that are ready for execution
+to TaskManager (Fig.~\ref{fig:archs}b.1). Meanwhile, ResManager users
+the chosen runtime system to acquire the requested resources
+(Fig.~\ref{fig:archs}b.2) and, once available, TaskManager uses those
+resources to execute the queued tasks (Fig.~\ref{fig:archs}b.3) and dequeuing
+them once they have been executed. ExecManager uses queues to communicate the
+state of each task execution to AppManager (Fig.~\ref{fig:archs}b.4). Note
+that AppManager is the only stateful component of EnTK\@: both WFProcessor
+and ExecManager can fail without loss of information about the execution.
+
+
+% ---------------------------------------------------------------------------
+% Section IV
+% ---------------------------------------------------------------------------
+\section{Impact}\label{sec:impact}
+
+% {\em \textbf{This is the main section of the article and the reviewers
+% weight the description here appropriately}
+
+% Guidelines for the authors:
+% \begin{enumerate}
+%   \item Indicate in what way new research questions can be pursued as a
+%         result of the software (if any).
+%   \item Indicate in what way, and to what extent, the pursuit of existing
+%         research questions is improved (if so).
+%   \item Indicate in what way the software has changed the daily practice of
+%         its users (if so).
+%   \item Indicate how widespread the use of the software is within and
+%         outside the intended user group.
+%   \item Indicate in what way the software is used in commercial settings
+%         and/or how it led to the creation of spin-off companies (if so).
+% \end{enumerate}}
+
+% ---------
+% VERSION 1
+% ---------
+% The impact of RCT spans domain science, high-performance computing and
+% software systems design. RCT enabled domain-scientists to achieve
+% scientific results that would not have been possible otherwise; they
+% facilitated research advances in high-performance and distributed computing
+% systems, while serving as a leading and important prototype implementation
+% for exploring a paradigmatic shift in the design of middleware for
+% high-performance scientific workflows.
+
+% RCT has enabled the development of scientific applications in multiple and
+% diverse domains, including software engineering~\cite{se}; chemical and
+% particle physics~\cite{cpp}; materials, health and climate
+% science~\cite{mhcs}; and drug discovery~\cite{dd}. These users form a This
+% worldwide community of domain scientists and system engineers that actively
+% contribute to the open source development of RCT. A comprehensive
+% assessment across multiple dimensions is needed to evaluate the true impact
+% of a software system such as RCT. Whereas the absolute number of users is a
+% useful metric, an equally important metric is what those users were able to
+% achieve scientifically and how RCT enabled them.
+
+% Currently, RCT supports a dozen active science projects across the USA and
+% Europe. The size of projects varies from single PIs with large allocations,
+% to very large international collaborations. Thus, there is intrinsic
+% uncertainty in the number of users at any given instant of time but good
+% faith, best estimates suggest upwards of 30 direct users.
+
+% RADICAL-SAGA and RADICAL-Pilot support use cases, spanning functional and
+% scientific domains. RADICAL-SAGA is mostly integrated into end-to-end
+% middleware solutions while RADICAL-Pilot is used both as standalone system
+% and integrated with other systems. As seen in Sec.~\ref{ssec:architecture},
+% RADICAL-PILOT uses RADICAL-SAGA to submit pilots to a large array of
+% resources, including HPC and distributed systems.
+
+% RADICAL-SAGA enables the Production ANd Distributed Analysis (PanDA) system
+% to submit batch jobs to Titan and Summit, the two leadership class machines
+% managed by the Oak Ridge Leadership Computing Facility (OLCF) at the Oak
+% Ridge National Laboratory (ORNL)~\cite{web-olcf-resources}. PanDA is the
+% workload management system used by the ATLAS experiment to execute hundred
+% of millions of jobs a year on both grid and High Performance Computing
+% (HPC) infrastructures~\cite{maeno2008panda}. The usage of ORNL resources
+% constitutes 10-12\% of all of ATLAS computing. There are several thousand
+% researchers that directly or indirectly use PanDA, and thereby
+% RADICAL-SAGA. In the near future, RADICAL-Pilot will also become a staple
+% of the PanDA workload management system on HPC platforms.
+
+% Reflecting the state of distributed computing systems -- the lack of
+% simplified and uniform interface to heterogeneous systems, RADICAL-SAGA was
+% used to develop Science Gateways as part of the Distributed Application
+% Runtime Environment (DARE) framework. These gateways supported several
+% projects, including DECIDE and neuGRID, to study the early diagnosis of
+% Alzheimer and other neurodegenerative diseases. In that capacity
+% RADICAL-SAGA enabled submission of jobs to distributed computing
+% infrastructures managed by the European Grid Initiative (EGI),
+% interconnected via GEANT, the pan-European research and education network
+% that interconnects Europe’s National Research and Education Networks.
+% Recently, the emergence of toolkits such as Agave which integrate identity
+% management have provided higher-level solutions for Gateway developers, but
+% they retain the RADICAL-SAGA based approach to job submission to
+% distributed computing systems.
+
+% Since its first release in 2013, RP has supported a total of two dozen
+% projects and around 100 active and direct users. Of these, approximately a
+% dozen projects used RP has a standalone system to support the execution of
+% many-task applications on single and/or multiple computing infrastructures.
+% Motivated by the practical lessons from supporting many independent
+% applications usage of RP as a standalone system, and the realization that
+% an increasing number of HPC applications were adopting the ensemble
+% computational model to overcome limitations of single task applications to
+% achieve significant performance gains on large-scale parallel machines, in
+% 2015 we designed and implemented the Ensemble Toolkit
+% (EnTK)~\citep{balasubramanian2016extasy} as the latest addition to RCT.
+
+% EnTK has enabled the development of domain specific workflow (DSW)
+% frameworks which provide a specific higher-level functionality. Although,
+% driven by specific application needs, each DSW is characterized by a unique
+% execution and coordination pattern and can serve multiple applications. The
+% four ensemble-based DSW developed using EnTK and other RCT are:
+% EXTASY~\cite{balasubramanian2016extasy}, RepEx~\cite{treikalis2016repex},
+% HTBAC~\cite{dakka2018high}, and ICEBERG\@. Details can be found in
+% Ref.~\citep{turilli2019middleware}
+
+% ExTASY and RepEx implement advanced sampling algorithms using biomolecular
+% simulations. Both use the EnTK API to implement  diverse coordination
+% patterns amongst ensembles of biomolecular simulations and analysis. HTBAC
+% supports multiple algorithms that compute free-energy calculations that are
+% critical to drug design and resistance studies. HTBAC allows the runtime
+% adaptation at multiple levels: algorithms, pipelines and tasks within a
+% pipeline. This capability has been demonstrated to reduce the
+% time-to-solution by a factor 2.5 in controlled experiments on real drug
+% candidates~\citep{dakka2018concurrent}. ICEBERG supports scalable image
+% analysis applications using multiple concurrent pipelines.
+
+% ExTASY, RepEx, HTBAC and ICEBERG benefit from integrating RCT by not having
+% to re-implement workflow processing, efficient task management and
+% interoperable task execution capabilities on distinct and heterogeneous
+% platforms. This, in turn, enables both a focus on and ease of ``last mile
+% customization'' for the DSW\@.
+
+% RCT are a testbed for engineering research, mostly focused on foundational
+% abstractions~\cite{turilli2017evaluating}, architectural
+% paradigms~\cite{turilli2018comprehensive}, application
+% patterns~\cite{balasubramanian2016extasy,balasubramanian2018harnessing},
+% and performance analysis of distributed middleware on diverse computing
+% infrastructures~\cite{turilli2017evaluating,dakka2018high}. Among the most
+% representative projects supported by RP as a standalone system, the
+% Abstractions and Integrated Middleware for Extreme-Scale Science (AIMES)
+% project enabled extreme-scale distributed computing via dynamic federation
+% of heterogeneous computing infrastructures. We used RP to execute millions
+% of tasks on both HPC and HTC resources, studying the federated behavior of
+% multiple infrastructures, establishing for the first time ever the
+% importance of integrating task and resource information in scheduling and
+% placement decision making for federated
+% supercomputers~\cite{turilli2016integrating}.
+
+% The Building Blocks approach helps to create systems that can support use
+% cases both individually and as integrated, end-to-end
+% solution~\cite{turilli2019middleware}. This is important when supporting
+% projects with multiple, distinct use cases. For example, ICEBERG has to
+% support five use cases, each investigating a specific problem in the domain
+% of polar science. Four of these use cases require the concurrent execution
+% of pipelines but one requires only the execution of bag of tasks. The first
+% four cases can use EnTK while the latter only RADICAL-Pilot. Importantly,
+% all use cases can be served by the ICEBERG framework with a minor change in
+% the private API to call EnTK or RP, depending on the use cases and
+% therefore without any engineering overheads.
+
+% ---------
+% VERSION 2
+% ---------
+The impact of RCT spans domain science, high-performance computing and
+software systems design. RCT serves a worldwide community of domain
+scientists and system engineers that actively contribute to the open source
+development of RCT. Currently, RCT supports a dozen active science projects
+across the USA and Europe. The size of projects varies from single PIs to
+very large international collaborations. Thus, there is intrinsic uncertainty
+in the number of both direct and indirect RCT users.
+
+So far, RCT supported scientific advancements in software
+engineering~\cite{se}; chemical and particle physics~\cite{cpp}; materials,
+health and climate science~\cite{mhcs}; and drug discovery~\cite{dd}.
+RADICAL-SAGA has mostly been integrated into end-to-end middleware solutions,
+RADICAL-Pilot has been used both as standalone system and integrated with
+other systems, while EnTK has served as workflow engine for domain-specific
+applications.
+
+RADICAL-SAGA enables the Production ANd Distributed Analysis (PanDA) system
+to submit batch jobs to Titan and Summit, the two leadership class machines
+managed at the ORNL~\cite{web-olcf-resources}. PanDA is the workload
+management system used by the ATLAS experiment to execute hundred of millions
+of jobs a year on both grid and HPC infrastructures~\cite{maeno2008panda}.
+The usage of ORNL resources constitutes 10-12\% of all of ATLAS computing.
+There are several thousand researchers that directly or indirectly use PanDA,
+and thereby RADICAL-SAGA. In the near future, RADICAL-Pilot will also become
+a staple of the PanDA workload management system on HPC platforms.
+
+RADICAL-SAGA was used to develop Science Gateways as part of the Distributed
+Application Runtime Environment (DARE) framework~\cite{dare}. These gateways
+supported several projects, including DECIDE~\cite{decide} and
+neuGRID~\cite{neugrid}, to study the early diagnosis of Alzheimer and other
+neurodegenerative diseases. In that capacity, RADICAL-SAGA enabled submission
+of jobs to distributed computing infrastructures managed by the European Grid
+Initiative (EGI). Recently, the emergence of toolkits such as
+Agave~\cite{agave} which integrate identity management have provided
+higher-level solutions for Gateway developers, but they retain the
+RADICAL-SAGA based approach to job submission to distributed computing
+systems.
+
+Since its first release in 2013, RP has supported around two dozen projects
+and 100 direct users. Half of these projects used RP has a standalone system
+to execute many-task applications on single and/or multiple computing
+infrastructures. Supporting many independent applications usage of RP
+contributed to realize the growing importance of the ensemble computational
+model: HPC applications were replacing single task applications with
+ensembles of tasks to achieve significant performance gains on large-scale
+parallel machines.
+
+EnTK has enabled the development of ensemble-based workflow frameworks which
+provide domain specific functionalities. Each framework is characterized by a
+unique execution and coordination pattern and can serve multiple
+applications. The four ensemble-based workflow frameworks developed using
+EnTK and other RCT are: EXTASY~\cite{balasubramanian2016extasy},
+RepEx~\cite{treikalis2016repex}, HTBAC~\cite{dakka2018high}, and ICEBERG\@.
+Details can be found in Ref.~\citep{turilli2019middleware}
+
+ExTASY and RepEx implement advanced sampling algorithms using biomolecular
+simulations. Both use the EnTK API to implement  diverse coordination
+patterns amongst ensembles of biomolecular simulations and analysis. HTBAC
+supports multiple algorithms that compute free-energy calculations that are
+critical to drug design and resistance studies. HTBAC allows the runtime
+adaptation at multiple levels: algorithms, pipelines and tasks within a
+pipeline. This capability has been demonstrated to reduce the
+time-to-solution by a factor 2.5 in controlled experiments on real drug
+candidates~\citep{dakka2018concurrent}. ICEBERG supports scalable image
+analysis applications using multiple concurrent pipelines.
+
+The Building Blocks approach helps to create systems that can support use
+cases both individually and as integrated, end-to-end
+solution~\cite{turilli2019middleware}. This is important when supporting
+projects with multiple, distinct use cases. For example, ICEBERG has to
+support five use cases, each investigating a specific problem in the domain
+of polar science. Four of these use cases require the concurrent execution of
+pipelines but one requires only the execution of bag of tasks. The first four
+cases can use EnTK while the latter only RADICAL-Pilot. Importantly, all use
+cases can be served by the ICEBERG framework with a minor change in the
+private API to call EnTK or RP, depending on the use cases and therefore
+without any engineering overheads.
+
+ExTASY, RepEx, HTBAC and ICEBERG benefit from integrating RCT by not having
+to re-implement workflow processing, efficient task management and
+interoperable task execution capabilities on distinct and heterogeneous
+platforms. This, in turn, enables both a focus on and ease of ``last mile
+customization''.
+
+RCT are a testbed for engineering research, mostly focused on foundational
+abstractions~\cite{turilli2017evaluating}, architectural
+paradigms~\cite{turilli2018comprehensive}, application
+patterns~\cite{balasubramanian2016extasy,balasubramanian2018harnessing}, and
+performance analysis of distributed middleware on diverse computing
+infrastructures~\cite{turilli2017evaluating,dakka2018high}. Among the most
+representative projects supported by RP as a standalone system, the
+Abstractions and Integrated Middleware for Extreme-Scale Science (AIMES)
+project enabled extreme-scale distributed computing via dynamic federation of
+heterogeneous computing infrastructures. We used RP to execute millions of
+tasks on both HPC and HTC resources, studying the federated behavior of
+multiple infrastructures, establishing the importance of integrating task and
+resource information in scheduling and placement decision making for
+federated supercomputers~\cite{turilli2016integrating}.
+
+
+% ---------------------------------------------------------------------------
+% Section V
+% ---------------------------------------------------------------------------
+\section{Conclusions}\label{sec:conclusions}
+
+We need conclusions.
+
+% RCT is a small operation with at most two developers working on the systems
+% at the same time. In order to implement the aforementioned capabilities
+% while supporting more than ten concurrent projects at every point in time,
+% we adopted a specific methodology for the design, development and
+% maintenance of RCT\@. This methodology is based on the Building Blocks
+% approach, the use of git for distributed version control of the code
+% base~\cite{github-rct}, and a tailored project management process.
+
+% % The building block approach represents an important advance in the design
+% % of middleware for scientific applications. This approach, leverages %
+% emerging trends in software and distributed computing infrastructure, to %
+% enable a sustainable ecosystem of both existing and new software components
+% % from which tailored workflow systems can be composed. Building blocks %
+% enable expert contributions while lowering the breadth of expertise %
+% required of workflow system developers. Building blocks provide both a %
+% technical basis and the socio-economic incentives to support an integrative
+% % and sustainable approach to the design of workflow systems.
+
+% % Git enables the project to benefit from a distributed open source %
+% development model. Code is publicly available and everyone can contribute %
+% new code by opening a pull request. This has the double benefit of helping
+% % to build a global community around RCT but also to facilitate the %
+% integration of new lead developers. As RCT are developed in an academic %
+% context, changes in available development effort alongside the technical %
+% quality of that effort need to be accounted for in the development model. %
+% To this end, documentation is managed via the wiki functionality of GitHub,
+% % Sphinx and Read the Docs. Embedding documentation in the code allows to %
+% facilitate the adoption of the code base while maintaining high quality, up
+% % to date documentation. Wiki enables distributed editing of high-level, %
+% design and project-related documentation.
+
+% % The project management process of RCT is based on the notion of `action'.
+% % Each action is assigned to one or multiple owners and reviewed in weekly
+% % meetings. Actions are implemented as GitHub tickets, facilitating %
+% integration with pull requests and wiki-based documentation. Tickets %
+% labeling uses a predefined taxonomy, shared among the RCT repositories. %
+% Tickets' labels and metadata are pulled regularly into a database to %
+% support statistical analysis. The insight is used to determine code hot %
+% spots, priority among feature requests and critical user issues. In turn, %
+% this enables allocation of development effort and planning for upcoming %
+% feature development and releases.
+
+% Overall, these processes and insight have an impact on how to approach the
+% development of middleware for supporting scientific research. Based on more
+% than ten years of experience, our approach show a sustainable and effective
+% way to organize software development, promote community adoption and
+% leverage the specific characteristics of the academic financial model. This
+% signs the transition from a development model based on end-to-end,
+% monolithic solutions with stringent requirements on infrastructures'
+% software stack, to a model based on small, independent and composable
+% systems, each with a well-defined capability. Note that these systems must
+% be composable with third-party systems, i.e., systems developed
+% independently by different development teams. This approach enables a model
+% of sustainability based on smaller and shorter funding sources but requires
+% a certain convergence in the vision of diverse groups competing in the same
+% research field.
+
+
+% ---------------------------------------------------------------------------
+% Acknowledgments
+% ---------------------------------------------------------------------------
+\section*{Acknowledgments and Contributions}
+
+We thank all our users, collaborators, and present and past members of
+RADICAL\@. This paper was was supported primarily by NSF 1440677 and DOE ASCR
+{DE-SC0016280}. We acknowledge access to computational facilities: XSEDE
+resources (TG-MCB090174), Blue Waters (NSF-1713749), and DOE leadership
+machines via multiple INCITE and DD awards. Vivek Balasubramanian is the lead
+developer of EnTK\@; Shantenu Jha is the PI of RADICAL-Cybertools; Andre
+Merzky is the lead developer of RADICAL-Pilot and RADICAL-SAGA\@; and Matteo
+Turilli is the Co-PI of RADICAL-Cybertools, lead architect of EnTK,
+co-architect of RADICAL-Pilot and wrote the paper.
+
+% ---------------------------------------------------------------------------
+% References
+% ---------------------------------------------------------------------------
+\bibliographystyle{elsarticle-num} 
+\bibliography{rct-softwarex}
+
+
+% ---------------------------------------------------------------------------
+% Appendixes
+% ---------------------------------------------------------------------------
+\appendix
+
+
+% ---------------------------------------------------------------------------
+% Appendix I
+% ---------------------------------------------------------------------------
+\section*{Code Samples}\label{sec:metadata}
 
 \lstset{language=Python, 
         frame=lines,
@@ -550,59 +971,6 @@ umgr.add_pilots(pilot)
 umgr.submit_units(cuds)
 umgr.wait_units()
 \end{lstlisting}
-
-Fig.~\ref{fig:archs}a's numbers illustrate the resource acquisition and task
-execution process. PilotManager queues the pilot description on one of the
-available Launcher in RP client (Fig.~\ref{fig:archs}a.1). That Launcher uses
-RADICAL-SAGA to schedule the pilot as a job on the target resource via the
-resource's batch System (Fig.~\ref{fig:archs}a.2). The pilot job waits in the
-resource management system queue and, once scheduled, bootstraps the pilot's
-AgentMnager and Updater. AgentManager forks the StagerInput, Scheduler,
-Executor and StagerOutput components and the Updater notifies RP Client's
-Notifier that RP Agent is ready to execute tasks (Fig.~\ref{fig:archs}a.3).
-
-Upon notification, UnitManager queues all the available tasks onto Client's
-Scheduler that, in turns, queues those tasks into the StagerInput, depending
-on the chosen scheduling algorithm (Fig.~\ref{fig:archs}a.4). If required,
-StagerInput stages the tasks' input files to the target resource and then
-tasks are queued to the Updater and passed to the chosen RP Agent's
-AgentManager (Fig.~\ref{fig:archs}a.5). At that point, tasks are passed to a
-StagerInput where input files are linked and made available to each task, and
-then queued to the RP Agent's Scheduler (Fig.~\ref{fig:archs}a.6). Scheduler
-places tasks on suitable partitions of the pilot's resources and then queues
-tasks to the Executor so that, when those partitions of resource becomes
-available, tasks are executed (Fig.~\ref{fig:archs}a.7). Executor sets up the
-environment required by each task and then forks each task for execution
-(Fig.~\ref{fig:archs}a.8). This is why tasks are black boxes to RP\@; also
-note that Scheduler and Executor can place and fork heterogeneous tasks,
-i.e., task requiring different type and amount core/GPUs and different
-execution time.
-
-RP API cannot express dependences among tasks. For RP, every task that is
-passed to UnitManager is assumed to be ready for execution. For example,
-assume a typical simulation-analysis workflow for molecular dynamics with a
-simulation stage and an analysis stage that depends upon the completion of
-the simulation stage. Users can explicitly code priorities among stages in
-the applications they write with the RP API but they have no dedicated
-abstractions in that API for expressing those priorities. EnTK offers these
-abstractions at API level: each stage of each pipeline is submitted to RP for
-execution, respecting their priority relation.
-
-Fig.~\ref{fig:archs}b's numbers illustrate the execution of workflows in
-EnTK\@. Users instantiate an AppManager (Lis.~\ref{code:amgr}), define a set
-of resources on which to run their workflow (Lis.~\ref{code:res}), describe
-that workflow in terms of pipelines, stages and tasks (Code~\ref{code:pst})
-and execute it (Code~\ref{code:exec}). AppManager passes a copy of the
-workflow description to WFProcessor that, based on the priorities between
-stages and tasks, uses Enquerer to queue tasks that are ready for execution
-to the task manager (Fig.~\ref{fig:archs}b.1). Meanwhile, ResManager users
-the chosen runtime system to acquire the requested resources
-(Fig.~\ref{fig:archs}b.2) and, once available, TaskManagers uses those
-resources to execute the queued tasks (Fig.~\ref{fig:archs}b.3) and dequeuing
-them once they have been executed. ExecManager uses queues to communicate the
-state of each task execution to AppManager (Fig.~\ref{fig:archs}b.4). Note
-that AppManager is the only stateful component of EnTK\@: both WFProcessor
-and ExecManager can fail without loss of information about the execution.% \mtnote{Vivek to expand upon the dequeuer.}
 
 \lstset{language=Python, 
         frame=lines,
@@ -683,248 +1051,6 @@ appman.resource_desc = res_dict
 appman.workflow = set([p])
 appman.run()
 \end{lstlisting}
-
-
-% ---------------------------------------------------------------------------
-% Section IV
-% ---------------------------------------------------------------------------
-\section{Impact}\label{sec:impact}
-
-% {\em \textbf{This is the main section of the article and the reviewers
-% weight the description here appropriately}
-
-% Guidelines for the authors:
-% \begin{enumerate}
-%   \item Indicate in what way new research questions can be pursued as a
-%         result of the software (if any).
-%   \item Indicate in what way, and to what extent, the pursuit of existing
-%         research questions is improved (if so).
-%   \item Indicate in what way the software has changed the daily practice of
-%         its users (if so).
-%   \item Indicate how widespread the use of the software is within and
-%         outside the intended user group.
-%   \item Indicate in what way the software is used in commercial settings
-%         and/or how it led to the creation of spin-off companies (if so).
-% \end{enumerate}}
-
-The impact of RCT spans domain science, high-performance computing and the
-design of software systems. RCT have enabled domain-scientists to achieve
-scientific results that would not have been possible otherwise; they have
-facilitated research advances in high-performance and distributed computing
-systems, while serving as an leading and important prototype implementation
-for exploring a paradigmatic shift in the design of middleware for
-high-performance scientific workflows.
-
-RCT has enabled the development of scientific applications in multiple and
-diverse domains, including software engineering, chemical physics, materials
-science, health science, climate science, drug discovery and particle
-physics. These users form a worldwide community of domain scientists and
-system engineers that actively contribute to the open source development of
-RCT. A comprehensive assessment across multiple dimensions is needed to
-evaluate the true impact of a software system such as RCT. Whereas the
-absolute number of users is a useful metric, an equally important metric is
-what those users were able to achieve scientifically and how RCT enabled
-them.
-
-Currently, RCT supports a dozen active science projects across the USA and
-Europe. The size of projects varies from single PIs with large allocations,
-to very large international collaborations. Thus, there is intrinsic
-uncertainty in the number of users at any given instant of time but good
-faith, best estimates suggest upwards of 30 direct users.
-
-RADICAL-SAGA and RADICAL-Pilot support use cases, spanning functional and
-scientific domains. RADICAL-SAGA is mostly integrated into end-to-end
-middleware solutions while RADICAL-Pilot is used both as standalone system
-and integrated with other systems. As seen in Sec.~\ref{ssec:architecture},
-RADICAL-PILOT uses RADICAL-SAGA to submit pilots to a large array of
-resources, including HPC and distributed systems.
-
-RADICAL-SAGA enables the Production ANd Distributed Analysis (PanDA) system
-to submit batch jobs to Titan and Summit, the two leadership class machines
-managed by the Oak Ridge Leadership Computing Facility (OLCF) at the Oak
-Ridge National Laboratory (ORNL)~\cite{web-olcf-resources}. PanDA is the
-workload management system used by the ATLAS experiment to execute hundred of
-millions of jobs a year on both grid and High Performance Computing (HPC)
-infrastructures~\cite{maeno2008panda}. The usage of ORNL resources
-constitutes 10-12\% of all of ATLAS computing. There are several thousand
-researchers that directly or indirectly use PanDA, and thereby RADICAL-SAGA.
-In the near future, RADICAL-Pilot will also become a staple of the PanDA
-workload management system on HPC platforms.
-
-Reflecting the state of distributed computing systems -- the lack of
-simplified and uniform interface to heterogeneous systems, RADICAL-SAGA was
-used to develop Science Gateways as part of the Distributed Application
-Runtime Environment (DARE) framework. These gateways supported several
-projects, including DECIDE and neuGRID, to study the early diagnosis of
-Alzheimer and other neurodegenerative diseases. In that capacity RADICAL-SAGA
-enabled submission of jobs to distributed computing infrastructures managed
-by the European Grid Initiative (EGI), interconnected via GEANT, the
-pan-European research and education network that interconnects Europe’s
-National Research and Education Networks. Recently, the emergence of toolkits
-such as Agave which integrate identity management have provided higher-level
-solutions for Gateway developers, but they retain the RADICAL-SAGA based
-approach to job submission to distributed computing systems.
-
-Since its first release in 2013, RP has supported a total of two dozen
-projects and around 100 active and direct users. Of these, approximately a
-dozen projects used RP has a standalone system to support the execution of
-many-task applications on single and/or multiple computing infrastructures.
-Motivated by the practical lessons from supporting many independent
-applications usage of RP as a standalone system, and the realization that an
-increasing number of HPC applications were adopting the ensemble
-computational model to overcome limitations of single task applications to
-achieve significant performance gains on large-scale parallel machines, in
-2015 we designed and implemented the Ensemble Toolkit
-(EnTK)~\citep{balasubramanian2016extasy} as the latest addition to RCT.
-
-EnTK has enabled the development of domain specific workflow (DSW) frameworks
-which provide a specific higher-level functionality. Although, driven by
-specific application needs, each DSW is characterized by a unique execution
-and coordination pattern and can serve multiple applications. The four
-ensemble-based DSW developed using EnTK and other RCT are:
-EXTASY~\cite{balasubramanian2016extasy}, RepEx~\cite{treikalis2016repex},
-HTBAC~\cite{dakka2018high}, and ICEBERG\@. Details can be found in
-Ref.~\citep{turilli2019middleware}
-
-ExTASY and RepEx implement advanced sampling algorithms using biomolecular
-simulations. Both use the EnTK API to implement  diverse coordination
-patterns amongst ensembles of biomolecular simulations and analysis. HTBAC
-supports multiple algorithms that compute free-energy calculations that are
-critical to drug design and resistance studies. HTBAC allows the runtime
-adaptation at multiple levels: algorithms, pipelines and tasks within a
-pipeline. This capability has been demonstrated to reduce the
-time-to-solution by a factor 2.5 in controlled experiments on real drug
-candidates~\citep{dakka2018concurrent}. ICEBERG supports scalable image
-analysis applications using multiple concurrent pipelines.
-
-ExTASY, RepEx, HTBAC and ICEBERG benefit from integrating RCT by not having
-to re-implement workflow processing, efficient task management and
-interoperable task execution capabilities on distinct and heterogeneous
-platforms. This, in turn, enables both a focus on and ease of ``last mile
-customization'' for the DSW\@.
-
-RCT are a testbed for engineering research, mostly focused on foundational
-abstractions~\cite{turilli2017evaluating}, architectural
-paradigms~\cite{turilli2018comprehensive}, application
-patterns~\cite{balasubramanian2016extasy,balasubramanian2018harnessing}, and
-performance analysis of distributed middleware on diverse computing
-infrastructures~\cite{turilli2017evaluating,dakka2018high}. Among the most
-representative projects supported by RP as a standalone system, the
-Abstractions and Integrated Middleware for Extreme-Scale Science (AIMES)
-project enabled extreme-scale distributed computing via dynamic federation of
-heterogeneous computing infrastructures. We used RP to execute millions of
-tasks on both HPC and HTC resources, studying the federated behavior of
-multiple infrastructures, establishing for the first time ever the importance
-of integrating task and resource information in scheduling and placement
-decision making for federated supercomputers~\cite{turilli2016integrating}.
-
-The Building Blocks approach helps to create systems that can support use
-cases both individually and as integrated, end-to-end
-solution~\cite{turilli2019middleware}. This is important when supporting
-projects with multiple, distinct use cases. For example, ICEBERG has to
-support five use cases, each investigating a specific problem in the domain
-of polar science. Four of these use cases require the concurrent execution of
-pipelines but one requires only the execution of bag of tasks. The first four
-cases can use EnTK while the latter only RADICAL-Pilot. Importantly, all use
-cases can be served by the ICEBERG framework with a minor change in the
-private API to call EnTK or RP, depending on the use cases and therefore
-without any engineering overheads.
-
-
-% ---------------------------------------------------------------------------
-% Section V
-% ---------------------------------------------------------------------------
-\section{Conclusions}\label{sec:conclusions}
-
-RCT is a small operation with at most two developers working on the systems
-at the same time. In order to implement the aforementioned capabilities while
-supporting more than ten concurrent projects at every point in time, we
-adopted a specific methodology for the design, development and maintenance of
-RCT\@. This methodology is based on the Building Blocks approach, the use of
-git for distributed version control of the code base~\cite{github-rct}, and a
-tailored project management process.
-
-% The building block approach represents an important advance in the design
-% of middleware for scientific applications. This approach, leverages
-% emerging trends in software and distributed computing infrastructure, to
-% enable a sustainable ecosystem of both existing and new software components
-% from which tailored workflow systems can be composed. Building blocks
-% enable expert contributions while lowering the breadth of expertise
-% required of workflow system developers. Building blocks provide both a
-% technical basis and the socio-economic incentives to support an integrative
-% and sustainable approach to the design of workflow systems.
-
-% Git enables the project to benefit from a distributed open source
-% development model. Code is publicly available and everyone can contribute
-% new code by opening a pull request. This has the double benefit of helping
-% to build a global community around RCT but also to facilitate the
-% integration of new lead developers. As RCT are developed in an academic
-% context, changes in available development effort alongside the technical
-% quality of that effort need to be accounted for in the development model.
-% To this end, documentation is managed via the wiki functionality of GitHub,
-% Sphinx and Read the Docs. Embedding documentation in the code allows to
-% facilitate the adoption of the code base while maintaining high quality, up
-% to date documentation. Wiki enables distributed editing of high-level,
-% design and project-related documentation.
-
-% The project management process of RCT is based on the notion of `action'.
-% Each action is assigned to one or multiple owners and reviewed in weekly
-% meetings. Actions are implemented as GitHub tickets, facilitating
-% integration with pull requests and wiki-based documentation. Tickets
-% labeling uses a predefined taxonomy, shared among the RCT repositories.
-% Tickets' labels and metadata are pulled regularly into a database to
-% support statistical analysis. The insight is used to determine code hot
-% spots, priority among feature requests and critical user issues. In turn,
-% this enables allocation of development effort and planning for upcoming
-% feature development and releases.
-
-Overall, these processes and insight have an impact on how to approach the
-development of middleware for supporting scientific research. Based on more
-than ten years of experience, our approach show a sustainable and effective
-way to organize software development, promote community adoption and leverage
-the specific characteristics of the academic financial model. This signs the
-transition from a development model based on end-to-end, monolithic solutions
-with stringent requirements on infrastructures' software stack, to a model
-based on small, independent and composable systems, each with a well-defined
-capability. Note that these systems must be composable with third-party
-systems, i.e., systems developed independently by different development
-teams. This approach enables a model of sustainability based on smaller and
-shorter funding sources but requires a certain convergence in the vision of
-diverse groups competing in the same research field.
-
-
-% ---------------------------------------------------------------------------
-% Acknowledgments
-% ---------------------------------------------------------------------------
-\section*{Acknowledgments and Contributions}
-
-We thank all our users, collaborators, and present and past members of
-RADICAL\@. This paper was was supported primarily by NSF 1440677 and DOE ASCR
-{DE-SC0016280}. We acknowledge access to computational facilities: XSEDE
-resources (TG-MCB090174), Blue Waters (NSF-1713749), and DOE leadership
-machines via multiple INCITE and DD awards. Vivek Balasubramanian is the lead
-developer of EnTK\@; Shantenu Jha is the PI of RADICAL-Cybertools; Andre
-Merzky is the lead developer of RADICAL-Pilot and RADICAL-SAGA\@; and Matteo
-Turilli is the Co-PI of RADICAL-Cybertools, lead architect of EnTK,
-co-architect of RADICAL-Pilot and wrote the paper.
-
-% ---------------------------------------------------------------------------
-% References
-% ---------------------------------------------------------------------------
-\bibliographystyle{elsarticle-num} 
-\bibliography{rct-softwarex}
-
-
-% ---------------------------------------------------------------------------
-% Appendixes
-% ---------------------------------------------------------------------------
-\appendix
-
-
-% ---------------------------------------------------------------------------
-% Appendix I
-% ---------------------------------------------------------------------------
-\section*{Required Metadata}\label{sec:metadata}
 
 
 % ---------------------------------------------------------------------------

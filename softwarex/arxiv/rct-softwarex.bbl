@@ -1,0 +1,130 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{github-rct}
+{Research in Advanced DIstributed Cyberinfrastructure and Applications
+  Laboratory (RADICAL)}, {RADICAL-Cybertools (RCT)},
+  \url{https://github.com/radical-cybertools}, Last accessed on 2019-03-31
+  (2019).
+
+\bibitem{merzky2015saga}
+A.~Merzky, O.~Weidner, S.~Jha, Saga: A standardized access layer to
+  heterogeneous distributed computing infrastructure, SoftwareX 1 (2015) 3--8
+  (2015).
+
+\bibitem{merzky2018using}
+A.~Merzky, M.~Turilli, M.~Maldonado, M.~Santcroos, S.~Jha, Using pilot systems
+  to execute many task workloads on supercomputers, in: D.~Klus{\'a}{\v{c}}ek,
+  W.~Cirne, N.~Desai (Eds.), Job Scheduling Strategies for Parallel Processing:
+  22nd International Workshop, JSSPP 2018, Vancouver, BC, Canada, May 25, 2018,
+  Revised Selected Paper, Springer, 2019, pp. 61--82 (2019).
+
+\bibitem{balasubramanian2018harnessing}
+V.~Balasubramanian, M.~Turilli, W.~Hu, M.~Lefebvre, W.~Lei, R.~Modrak,
+  G.~Cervone, J.~Tromp, S.~Jha, Harnessing the power of many: Extensible
+  toolkit for scalable ensemble applications, in: 2018 IEEE International
+  Parallel and Distributed Processing Symposium (IPDPS), IEEE, 2018, pp.
+  536--545 (2018).
+
+\bibitem{goodale2006saga}
+T.~Goodale, S.~Jha, H.~Kaiser, T.~Kielmann, P.~Kleijer, G.~Von~Laszewski,
+  C.~Lee, A.~Merzky, H.~Rajic, J.~Shalf, Saga: A simple api for grid
+  applications. high-level application programming on the grid, Computational
+  Methods in Science and Technology 12~(1) (2006) 7--20 (2006).
+
+\bibitem{turilli2018comprehensive}
+M.~Turilli, M.~Santcroos, S.~Jha, A comprehensive perspective on pilot-job
+  systems, ACM Computing Surveys (CSUR) 51~(2) (2018) 43 (2018).
+
+\bibitem{batory1992design}
+D.~Batory, S.~O'Malley, The design and implementation of hierarchical software
+  systems with reusable components, ACM Trans. Softw. Eng. Methodol. 1~(4)
+  (1992) 355--398 (1992).
+
+\bibitem{garlan1995architectural}
+D.~Garlan, R.~Allen, J.~Ockerbloom, Architectural mismatch or why it's hard to
+  build systems out of existing parts, in: Proceedings of the 17th
+  International Conference on Software Engineering, ICSE '95, 1995, pp.
+  179--185 (1995).
+
+\bibitem{lenz1988software}
+M.~Lenz, H.~a. Schmid, P.~W. Wolf, Software reuse: Emerging technology, 1988,
+  Ch. Software Reuse Through Building Blocks, pp. 100--108 (1988).
+
+\bibitem{clemens1998component}
+S.~Clemens, G.~Dominik, M.~Stephan, Component software: Beyond object-oriented
+  programming, Addison-Westley: Boston, MA, USA (1998).
+
+\bibitem{schneider2000components}
+J.-G. Schneider, O.~Nierstrasz, Components, scripts and glue, in: Software
+  Architectures, Springer, 2000, pp. 13--25 (2000).
+
+\bibitem{turilli2019middleware}
+M.~Turilli, V.~Balasubramanian, A.~Merzky, I.~Paraskevakos, S.~Jha, Middleware
+  building blocks for workflow systems (2019).
+\newblock \href {http://arxiv.org/abs/arXiv:1903.10057}
+  {\path{arXiv:arXiv:1903.10057}}.
+
+\bibitem{raicu2008many}
+I.~Raicu, I.~T. Foster, Y.~Zhao, Many-task computing for grids and
+  supercomputers, in: 2008 workshop on many-task computing on grids and
+  supercomputers, IEEE, 2008, pp. 1--11 (2008).
+
+\bibitem{iosup2011performance}
+A.~Iosup, S.~Ostermann, M.~N. Yigitbasi, R.~Prodan, T.~Fahringer, D.~Epema,
+  Performance analysis of cloud computing services for many-tasks scientific
+  computing, IEEE Transactions on Parallel and Distributed systems 22~(6)
+  (2011) 931--945 (2011).
+
+\bibitem{balasubramanian2016extasy}
+V.~Balasubramanian, I.~Bethune, A.~Shkurti, E.~Breitmoser, E.~Hruska,
+  C.~Clementi, C.~Laughton, S.~Jha, Extasy: Scalable and flexible coupling of
+  md simulations and advanced sampling techniques, in: 2016 IEEE 12th
+  International Conference on e-Science (e-Science), IEEE, 2016, pp. 361--370
+  (2016).
+
+\bibitem{web-olcf-resources}
+{Oak Ridge National Laboratory (ORNL), Leadership Computing Facility (OLCF)},
+  {OLCF} resources: Compute systems,
+  \url{https://www.olcf.ornl.gov/olcf-resources/compute-systems/}, Last
+  accessed on 2019-02-28 (2019).
+
+\bibitem{maeno2008panda}
+T.~Maeno, Panda: distributed production and distributed analysis system for
+  atlas, in: Journal of Physics: Conference Series, Vol. 119, IOP Publishing,
+  2008, p. 062036 (2008).
+
+\bibitem{treikalis2016repex}
+A.~Treikalis, A.~Merzky, H.~Chen, T.-S. Lee, D.~M. York, S.~Jha, Repex: A
+  flexible framework for scalable replica exchange molecular dynamics
+  simulations, in: 2016 45th International Conference on Parallel Processing
+  (ICPP), IEEE, 2016, pp. 628--637 (2016).
+
+\bibitem{dakka2018high}
+J.~Dakka, M.~Turilli, D.~W. Wright, S.~J. Zasada, V.~Balasubramanian, S.~Wan,
+  P.~V. Coveney, S.~Jha, High-throughput binding affinity calculations at
+  extreme scales, BMC bioinformatics 19~(18) (2018) 482 (2018).
+
+\bibitem{dakka2018concurrent}
+J.~Dakka, K.~Farkas-Pall, M.~Turilli, D.~W. Wright, P.~V. Coveney, S.~Jha,
+  Concurrent and adaptive extreme scale binding free energy calculations, in:
+  2018 IEEE 14th International Conference on e-Science (e-Science), IEEE, 2018,
+  pp. 189--200 (2018).
+
+\bibitem{turilli2017evaluating}
+M.~Turilli, Y.~N. Babuji, A.~Merzky, M.~T. Ha, M.~Wilde, D.~S. Katz, S.~Jha,
+  Evaluating distributed execution of workloads, in: 2017 IEEE 13th
+  International Conference on e-Science (e-Science), IEEE, 2017, pp. 276--285
+  (2017).
+
+\bibitem{turilli2016integrating}
+M.~Turilli, F.~Liu, Z.~Zhang, A.~Merzky, M.~Wilde, J.~Weissman, D.~S. Katz,
+  S.~Jha, Integrating abstractions to enhance the execution of distributed
+  applications, in: 2016 IEEE International Parallel and Distributed Processing
+  Symposium (IPDPS), IEEE, 2016, pp. 953--962 (2016).
+
+\end{thebibliography}
