@@ -332,6 +332,21 @@ structure of a database, preserving the semantic of the queues in
 Fig.~\ref{fig:archs}a. Database's data are persistent, enabling \textit{post
 mortem} profiling and analysis of RP executions.
 
+Fig.~\ref{fig:archs}a's numbers illustrate the resource acquisition and
+task execution process. PilotManager uses RS to queue a pilot as a job on
+the resource's batch System (Fig.~\ref{fig:archs}a.1-2). Once scheduled,
+the pilot bootstraps RP Agent's components, using Updater to notify RP
+Client that is ready to execute tasks (Fig.~\ref{fig:archs}a.3). Upon
+notification, UnitManager queues all the available tasks onto Client's
+Scheduler and, after staging files if required, tasks are queued to the RP
+Agent's Scheduler (Fig.~\ref{fig:archs}a.4-6). Scheduler places tasks on
+suitable partitions of the pilot's resources and then queues tasks to the
+Executor so that, when those partitions of resource becomes available,
+tasks are executed (Fig.~\ref{fig:archs}a.7). Executor sets up the
+environment required by each task and then forks each task for execution
+(Fig.~\ref{fig:archs}a.8).
+
+
 % ------------
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
 
@@ -371,6 +386,26 @@ execution. ResManager isolates RTS from EnTK, enabling fault-tolerance with
 persistent information about executed tasks. Currently, EnTK support only RP
 as RTS but it is designed to use other task-based RTS as, for example,
 Coasters or HTCondor.
+
+Fig.~\ref{fig:archs}b's numbers illustrate the execution of workflows in
+EnTK\@. Users instantiate an AppManager, %(Lis.~\ref{code:amgr}), 
+define a set of resources on which to run their workflow,
+% (Lis.~\ref{code:res}), 
+describe that workflow in terms of pipelines, stages and tasks
+% (Lis.~\ref{code:pst}) 
+and execute it.
+% (Lis.~\ref{code:exec}). 
+AppManager passes a copy of the workflow description to WFProcessor that,
+based on the priorities between stages and tasks, uses Enquerer to queue
+tasks that are ready for execution to TaskManager (Fig.~\ref{fig:archs}b.1).
+Meanwhile, ResManager users the chosen runtime system to acquire the
+requested resources (Fig.~\ref{fig:archs}b.2) and, once available,
+TaskManager uses those resources to execute the queued tasks
+(Fig.~\ref{fig:archs}b.3) and dequeuing them once they have been executed.
+ExecManager uses queues to communicate the state of each task execution to
+AppManager (Fig.~\ref{fig:archs}b.4). Note that AppManager is the only
+stateful component of EnTK\@: both WFProcessor and ExecManager can fail
+without loss of information about the execution.
 
 % ---------------------------------------------------------------------------
 \subsection{Software Functionalities}\label{ssec:functionalities}
@@ -435,7 +470,44 @@ exchange~\cite{treikalis2016repex}.
 % ---------------------------------------------------------------------------
 \section{Illustrative Examples}\label{sec:examples}
 
-\input{illustrative-example}
+Given the diversity of use-cases and often unique requirements, the
+proliferation of workflow systems is inevitable. Whereas this proliferation
+cannot be reversed, it must be managed. For example, the high-barrier to
+overcoming ``last mile customization'' of workflow systems which often
+results in whole-sale refactoring must be prevented. In addition to meeting
+the needs of workflow users, it is imperative that the workflow system
+developers be provided with the necessary abstractions and capabilities to
+prevent the need to develop \textit{ab initio}.
+
+The case of specialized domain-specific tools that support similar but not
+identical workflows provides an illustrative example. Building logically
+self-contained software blocks, lowers the technical barriers to their
+composability and thus allows designing domain-specific tools.
+
+RCT can be extended to support multiple domain-specific tools. EnTK has
+enabled the development of workflow tools which provide domain specific
+functionalities. Each tool is characterized by a unique execution and
+coordination pattern and can serve multiple applications. The four
+ensemble-based workflow frameworks developed using EnTK and other RCT are:
+EXTASY~\cite{balasubramanian2016extasy}, RepEx~\cite{treikalis2016repex},
+HTBAC~\cite{dakka2018high}, and ICEBERG\@. Details can be found in
+Ref.~\citep{turilli2019middleware}
+
+% EnTK has enabled the development of domain-specific workflow (DSW) tools.
+% Driven by specific application needs, each DSW is characterized by a unique
+% execution and coordination pattern and can serve multiple applications. The
+% four ensemble-based DSW developed using EnTK and other RCT are:
+% EXTASY~\cite{balasubramanian2016extasy}, RepEx~\cite{treikalis2016repex},
+% HTBAC~\cite{dakka2018high}, and ICEBERG~\cite{web-iceberg}. Details can be
+% found in Ref.~\cite{turilli2019middleware}.
+
+ExTASY, RepEx, HTBAC represent three adaptive ensemble based DSW tools. They
+have benefited by using EnTK by not having to re-implement workflow
+processing, efficient task management and interoperable task execution
+capabilities on distinct and heterogeneous platforms. In turn, eight distinct
+adaptive ensemble workflows have been implemented using EnTK, which provides
+circumstantial evidence, if not weak validation, of the ``last mile
+customization'' capability of the RCT-based building block approach.
 
 % ---------------------------------------------------------------------------
 % Section IV
@@ -637,14 +709,8 @@ model: HPC applications were replacing single task applications with
 ensembles of tasks to achieve significant performance gains on large-scale
 parallel machines.
 
-EnTK has enabled the development of ensemble-based workflow frameworks which
-provide domain specific functionalities. Each framework is characterized by a
-unique execution and coordination pattern and can serve multiple
-applications. The four ensemble-based workflow frameworks developed using
-EnTK and other RCT are: EXTASY~\cite{balasubramanian2016extasy},
-RepEx~\cite{treikalis2016repex}, HTBAC~\cite{dakka2018high}, and ICEBERG\@.
-Details can be found in Ref.~\citep{turilli2019middleware}
-
+As seen in Sec.~\ref{sec:examples}, EnTK has enabled the development of four
+ensemble-based workflow tools which provide domain specific functionalities.
 ExTASY and RepEx implement advanced sampling algorithms using biomolecular
 simulations. Both use the EnTK API to implement  diverse coordination
 patterns amongst ensembles of biomolecular simulations and analysis. HTBAC
@@ -668,14 +734,14 @@ cases can be served by the ICEBERG framework with a minor change in the
 private API to call EnTK or RP, depending on the use cases and therefore
 without any engineering overheads.
 
-ExTASY, RepEx, HTBAC and ICEBERG benefit from integrating RCT by not having
-to re-implement workflow processing, efficient task management and
-interoperable task execution capabilities on distinct and heterogeneous
-platforms. This, in turn, enables both a focus on and ease of ``last mile
-customization''.
+% ExTASY, RepEx, HTBAC and ICEBERG benefit from integrating RCT by not having
+% to re-implement workflow processing, efficient task management and
+% interoperable task execution capabilities on distinct and heterogeneous
+% platforms. This, in turn, enables both a focus on and ease of ``last mile
+% customization''.
 
-RCT are a testbed for engineering research, mostly focused on foundational
-abstractions~\cite{turilli2017evaluating}, architectural
+RCT are also a testbed for engineering research, mostly focused on
+foundational abstractions~\cite{turilli2017evaluating}, architectural
 paradigms~\cite{turilli2018comprehensive}, application
 patterns~\cite{balasubramanian2016extasy,balasubramanian2018harnessing}, and
 performance analysis of distributed middleware on diverse computing
@@ -695,15 +761,25 @@ federated supercomputers~\cite{turilli2016integrating}.
 % ---------------------------------------------------------------------------
 \section{Conclusions}\label{sec:conclusions}
 
-We need conclusions.
+RCT is a small operation with at most two developers working on the systems
+at the same time. In order to implement RCT capabilities while supporting
+more than ten concurrent projects at every point in time, we adopted a
+specific methodology for the design, development and maintenance of RCT\@.
+This methodology is based on the Building Blocks approach, the use of git for
+distributed version control of the code base~\cite{github-rct}, and a
+tailored project management process.
 
-% RCT is a small operation with at most two developers working on the systems
-% at the same time. In order to implement the aforementioned capabilities
-% while supporting more than ten concurrent projects at every point in time,
-% we adopted a specific methodology for the design, development and
-% maintenance of RCT\@. This methodology is based on the Building Blocks
-% approach, the use of git for distributed version control of the code
-% base~\cite{github-rct}, and a tailored project management process.
+Based on more than ten years of experience, our approach show a sustainable
+and effective way to organize software development, promote community
+adoption and leverage the specific characteristics of the academic financial
+model. This signs the transition from a development model based on
+end-to-end, monolithic solutions with stringent requirements on
+infrastructures' software stack. The RCT development model based on small,
+independent systems, each with a well-defined capability and composable with
+other systems developed independently by different development teams. This
+approach enables a model of sustainability based on smaller and shorter
+funding sources but requires a certain convergence in the vision of diverse
+groups competing in the same research field.
 
 % % The building block approach represents an important advance in the design
 % % of middleware for scientific applications. This approach, leverages %
@@ -740,19 +816,8 @@ We need conclusions.
 % feature development and releases.
 
 % Overall, these processes and insight have an impact on how to approach the
-% development of middleware for supporting scientific research. Based on more
-% than ten years of experience, our approach show a sustainable and effective
-% way to organize software development, promote community adoption and
-% leverage the specific characteristics of the academic financial model. This
-% signs the transition from a development model based on end-to-end,
-% monolithic solutions with stringent requirements on infrastructures'
-% software stack, to a model based on small, independent and composable
-% systems, each with a well-defined capability. Note that these systems must
-% be composable with third-party systems, i.e., systems developed
-% independently by different development teams. This approach enables a model
-% of sustainability based on smaller and shorter funding sources but requires
-% a certain convergence in the vision of diverse groups competing in the same
-% research field.
+% development of middleware for supporting scientific research. 
+
 
 
 % ---------------------------------------------------------------------------
@@ -787,6 +852,16 @@ co-architect of RADICAL-Pilot and wrote the paper.
 % Appendix I
 % ---------------------------------------------------------------------------
 \section*{Code Samples}\label{sec:metadata}
+
+RADICAL-Pilot (RP) executes set of tasks. The degree of concurrency of the
+execution depends on the amount of available resources. Consider for example
+Ref.~\cite{balasubramanian2016extasy}'s many-task application for the
+simulation of molecular dynamics with an ensemble of 128 GROMACS simulations,
+each requiring 24 CPU cores. The user can use RP API to describe a pilot job
+with 3072 cores (Lis.~\ref{code:pilot}), 128 CUs (Lis.~\ref{code:units}) and
+two managers to coordinate the acquisition of the pilot resources via
+RADICAL-SAGA on an HPC machine and the concurrent execution of the 128 tasks
+on those resources (Lis.~\ref{code:mgrs}).
 
 \lstset{language=Python, 
         frame=lines,
@@ -857,6 +932,19 @@ umgr.add_pilots(pilot)
 umgr.submit_units(cuds)
 umgr.wait_units()
 \end{lstlisting}
+
+RP API cannot express dependences among tasks. For RP, every task that is
+passed to UnitManager is assumed to be ready for execution. Users can
+explicitly code priorities among stages in the applications they write with
+the RP API but they have no dedicated abstractions in that API for expressing
+those priorities. EnTK offers these abstractions at API level, enabling users
+to create pipelines as sequence of stages, each with a set of tasks. For
+example, the 128 GROMACS simulations of the previous example can become a
+stage of a pipeline followed by another stage performing the analysis of the
+simulations' result. Users instantiate an AppManager (Lis.~\ref{code:amgr}),
+define a set of resources on which to run their workflow
+(Lis.~\ref{code:res}), describe that workflow in terms of pipelines, stages
+and tasks (Lis.~\ref{code:pst}) and execute it (Lis.~\ref{code:exec}).
 
 \lstset{language=Python, 
         frame=lines,
@@ -948,7 +1036,7 @@ appman.run()
 % replace examples in right column with the correct information about your
 % current code, and leave the left column as it is.
 
-\begin{table}[!ht]
+\begin{table}[H]
 \begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
 \hline
 \textbf{Nr.}                                                     & 
@@ -1010,7 +1098,7 @@ Support email for questions                                      &
 % correct information about your executables, and leave the left column as it
 % is.
 
-\begin{table}[!ht]
+\begin{table}[H]
 \begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
 \hline
 \textbf{Nr.}                                                     & 

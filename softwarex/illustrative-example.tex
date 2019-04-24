@@ -1,43 +1,45 @@
 Given the diversity of use-cases and often unique requirements, the
-proliferation of workflow systems is inevitable. Whereas the proliferation o
-workflow systems cannot be reversed, it must be managed. For example, the
-high-barrier to overcoming “last mile customization” of workflow systems which
-often results in whole-sale refactoring must be prevented. In addition to
-meeting the needs of workflow users, it is imperative that the workflow system
+proliferation of workflow systems is inevitable. Whereas this proliferation
+cannot be reversed, it must be managed. For example, the high-barrier to
+overcoming ``last mile customization'' of workflow systems which often
+results in whole-sale refactoring must be prevented. In addition to meeting
+the needs of workflow users, it is imperative that the workflow system
 developers be provided with the necessary abstractions and capabilities to
-prevent the need to develop {\it ab initio}.
+prevent the need to develop \textit{ab initio}.
 
 The case of specialized domain-specific tools that support similar but not
 identical workflows provides an illustrative example. Building logically
 self-contained software blocks, lowers the technical barriers to their
-composability and thus allows designing domain-specific tools. 
+composability and thus allows designing domain-specific tools.
 
-% Building blocks provide both a technical basis and socio-economic incentives
-% to support an integrative and sustainable approach to the design of tools.
+% Building blocks provide both a technical basis and socio-economic
+% incentives to support an integrative and sustainable approach to the design
+% of tools.
 
 % The building block approach leverages emerging trends in software and
 % distributed computing infrastructure, to enable a sustainable ecosystem of
-% both existing and new software components from which domain-specific tools can
-% be composed. Building blocks enable expert contributions while lowering the
-% breadth of expertise required of workflow tool developers. 
+% both existing and new software components from which domain-specific tools
+% can be composed. Building blocks enable expert contributions while lowering
+% the breadth of expertise required of workflow tool developers.
 
 
-% The building block approach represents an important advance in the design of
-% middleware for scientific applications. This approach leverages emerging
+% The building block approach represents an important advance in the design
+% of middleware for scientific applications. This approach leverages emerging
 % trends in software and distributed computing infrastructure, to enable a
-% sustainable ecosystem of both existing and new software components from which
-% tailored workflow systems can be composed. Building blocks enable expert
-% contributions while lowering the breadth of expertise required of workflow
-% tool developers. Building blocks provide both a technical basis and
-% socio-economic incentives to support an integrative and sustainable approach
-% to the design of tools.
+% sustainable ecosystem of both existing and new software components from
+% which tailored workflow systems can be composed. Building blocks enable
+% expert contributions while lowering the breadth of expertise required of
+% workflow tool developers. Building blocks provide both a technical basis
+% and socio-economic incentives to support an integrative and sustainable
+% approach to the design of tools.
 
-% Each RCT component is an independent system that can also be integrated with
-% other systems (RCT or otherwise) to form tailored middleware solutions. RCT's
-% novelty is to enable the integration across systems independently developed
-% and not necessarily designed to integrate. For example, several independent
-% communities directly utilize RADICAL-SAGA alone, some via RP. Other
-% communities integrate RCT with third-party systems.
+% Each RCT component is an independent system that can also be integrated
+% with other systems (RCT or otherwise) to form tailored middleware
+% solutions. RCT's novelty is to enable the integration across systems
+% independently developed and not necessarily designed to integrate. For
+% example, several independent communities directly utilize RADICAL-SAGA
+% alone, some via RP. Other communities integrate RCT with third-party
+% systems.
 
 RCT can be extended to support multiple domain-specific tools. EnTK has
 enabled the development of domain-specific workflow (DSW) tools. Driven by
@@ -56,58 +58,59 @@ adaptive ensemble workflows have been implemented using EnTK, which provides
 circumstantial evidence, if not weak validation, of the ``last mile
 customization'' capability of the RCT-based building block approach.
 
-% RCT offer several benefits~\cite{turilli2019middleware}: the most relevant is
-% isolating developers of workflow tool or scientists (L4) from job management
-% (L1), task management (L2), and workload management (L3), letting L4 users
-% exclusively focus on workflow description and application logic. While this
-% isolation is offered by other systems, RCT is agnostic towards which software
-% and systems are integrated at each layer L1--4.
+% RCT offer several benefits~\cite{turilli2019middleware}: the most relevant
+% is isolating developers of workflow tool or scientists (L4) from job
+% management (L1), task management (L2), and workload management (L3),
+% letting L4 users exclusively focus on workflow description and application
+% logic. While this isolation is offered by other systems, RCT is agnostic
+% towards which software and systems are integrated at each layer L1--4.
 
 
 
 %%%%%%%%%%%%%
 
 
-% Multiple scientific domains can benefit from executing many-task applications
-% at scale~\cite{raicu2008many,iosup2011performance}. Independent of the domain
-% for which these applications are developed, their execution requires to run a
-% single task, a bag of tasks, or a workflow. In this context, tasks refers to
-% programs like, for example, GROMACS, NAMD, AMBER, AthenaMP, SPECFEM and many
-% others. Many-task applications requires to concurrently run multiple
-% instances of programs, using scale to reduce the total time to completion of
-% the whole execution.
+% Multiple scientific domains can benefit from executing many-task
+% applications at scale~\cite{raicu2008many,iosup2011performance}.
+% Independent of the domain for which these applications are developed, their
+% execution requires to run a single task, a bag of tasks, or a workflow. In
+% this context, tasks refers to programs like, for example, GROMACS, NAMD,
+% AMBER, AthenaMP, SPECFEM and many others. Many-task applications requires
+% to concurrently run multiple instances of programs, using scale to reduce
+% the total time to completion of the whole execution.
 
-% As seen in Sec.~\ref{sec:description}, RCT support the execution of a single
-% task, a bag of tasks, and workflows expressed as a set or a sequence of
-% pipelines with stages and tasks. Because of the separation between manging
-% the concurrent and consecutive execution of tasks, and the computation
-% performance by each task, RCT support many-task application independent from
-% the scientific domain in which they are used. From RCT point of view, every
-% execution reduces exclusively to manging the execution of single or multiple
-% sets of programs in the form of black boxes.
+% As seen in Sec.~\ref{sec:description}, RCT support the execution of a
+% single task, a bag of tasks, and workflows expressed as a set or a sequence
+% of pipelines with stages and tasks. Because of the separation between
+% manging the concurrent and consecutive execution of tasks, and the
+% computation performance by each task, RCT support many-task application
+% independent from the scientific domain in which they are used. From RCT
+% point of view, every execution reduces exclusively to manging the execution
+% of single or multiple sets of programs in the form of black boxes.
 
-% RP executes set of tasks. The degree of concurrency of the execution depends
-% on the amount of available resources. Consider for example
+% RP executes set of tasks. The degree of concurrency of the execution
+% depends on the amount of available resources. Consider for example
 % Ref.~\cite{balasubramanian2016extasy}'s many-task application for the
-% simulation of molecular dynamics with an ensemble of 128 GROMACS simulations,
-% each requiring 24 CPU cores. The user can use RP API to describe a pilot job
-% with 3072 cores (Lis.~\ref{code:pilot}), 128 CUs (Lis.~\ref{code:units}) and
-% two managers to coordinate the acquisition of the pilot resources via RS on
-% an HPC machine and the concurrent execution of the 128 tasks on those
-% resources (Lis.~\ref{code:mgrs}).
+% simulation of molecular dynamics with an ensemble of 128 GROMACS
+% simulations, each requiring 24 CPU cores. The user can use RP API to
+% describe a pilot job with 3072 cores (Lis.~\ref{code:pilot}), 128 CUs
+% (Lis.~\ref{code:units}) and two managers to coordinate the acquisition of
+% the pilot resources via RS on an HPC machine and the concurrent execution
+% of the 128 tasks on those resources (Lis.~\ref{code:mgrs}).
 
-% Fig.~\ref{fig:archs}a's numbers illustrate the resource acquisition and task
-% execution process. PilotManager uses RS to queue a pilot as a job on the
-% resource's batch System (Fig.~\ref{fig:archs}a.1-2). Once scheduled, the
-% pilot bootstraps RP Agent's components, using Updater to notify RP Client
-% that is ready to execute tasks (Fig.~\ref{fig:archs}a.3). Upon notification,
-% UnitManager queues all the available tasks onto Client's Scheduler and, after
-% staging files if required, tasks are queued to the RP Agent's Scheduler
-% (Fig.~\ref{fig:archs}a.4-6). Scheduler places tasks on suitable partitions of
-% the pilot's resources and then queues tasks to the Executor so that, when
-% those partitions of resource becomes available, tasks are executed
-% (Fig.~\ref{fig:archs}a.7). Executor sets up the environment required by each
-% task and then forks each task for execution (Fig.~\ref{fig:archs}a.8). 
+% Fig.~\ref{fig:archs}a's numbers illustrate the resource acquisition and
+% task execution process. PilotManager uses RS to queue a pilot as a job on
+% the resource's batch System (Fig.~\ref{fig:archs}a.1-2). Once scheduled,
+% the pilot bootstraps RP Agent's components, using Updater to notify RP
+% Client that is ready to execute tasks (Fig.~\ref{fig:archs}a.3). Upon
+% notification, UnitManager queues all the available tasks onto Client's
+% Scheduler and, after staging files if required, tasks are queued to the RP
+% Agent's Scheduler (Fig.~\ref{fig:archs}a.4-6). Scheduler places tasks on
+% suitable partitions of the pilot's resources and then queues tasks to the
+% Executor so that, when those partitions of resource becomes available,
+% tasks are executed (Fig.~\ref{fig:archs}a.7). Executor sets up the
+% environment required by each task and then forks each task for execution
+% (Fig.~\ref{fig:archs}a.8).
 
 % RP API cannot express dependences among tasks. For RP, every task that is
 % passed to UnitManager is assumed to be ready for execution. For example,
@@ -116,22 +119,23 @@ customization'' capability of the RCT-based building block approach.
 % the simulation stage. Users can explicitly code priorities among stages in
 % the applications they write with the RP API but they have no dedicated
 % abstractions in that API for expressing those priorities. EnTK offers these
-% abstractions at API level: each stage of each pipeline is submitted to RP for
-% execution, respecting their priority relation.
+% abstractions at API level: each stage of each pipeline is submitted to RP
+% for execution, respecting their priority relation.
 
 % Fig.~\ref{fig:archs}b's numbers illustrate the execution of workflows in
-% EnTK\@. Users instantiate an AppManager (Lis.~\ref{code:amgr}), define a set
-% of resources on which to run their workflow (Lis.~\ref{code:res}), describe
-% that workflow in terms of pipelines, stages and tasks (Lis.~\ref{code:pst})
-% and execute it (Lis.~\ref{code:exec}). AppManager passes a copy of the
-% workflow description to WFProcessor that, based on the priorities between
-% stages and tasks, uses Enquerer to queue tasks that are ready for execution
-% to TaskManager (Fig.~\ref{fig:archs}b.1). Meanwhile, ResManager users
-% the chosen runtime system to acquire the requested resources
-% (Fig.~\ref{fig:archs}b.2) and, once available, TaskManager uses those
-% resources to execute the queued tasks (Fig.~\ref{fig:archs}b.3) and dequeuing
-% them once they have been executed. ExecManager uses queues to communicate the
-% state of each task execution to AppManager (Fig.~\ref{fig:archs}b.4). Note
-% that AppManager is the only stateful component of EnTK\@: both WFProcessor
-% and ExecManager can fail without loss of information about the execution.
+% EnTK\@. Users instantiate an AppManager (Lis.~\ref{code:amgr}), define a
+% set of resources on which to run their workflow (Lis.~\ref{code:res}),
+% describe that workflow in terms of pipelines, stages and tasks
+% (Lis.~\ref{code:pst}) and execute it (Lis.~\ref{code:exec}). AppManager
+% passes a copy of the workflow description to WFProcessor that, based on the
+% priorities between stages and tasks, uses Enquerer to queue tasks that are
+% ready for execution to TaskManager (Fig.~\ref{fig:archs}b.1). Meanwhile,
+% ResManager users the chosen runtime system to acquire the requested
+% resources (Fig.~\ref{fig:archs}b.2) and, once available, TaskManager uses
+% those resources to execute the queued tasks (Fig.~\ref{fig:archs}b.3) and
+% dequeuing them once they have been executed. ExecManager uses queues to
+% communicate the state of each task execution to AppManager
+% (Fig.~\ref{fig:archs}b.4). Note that AppManager is the only stateful
+% component of EnTK\@: both WFProcessor and ExecManager can fail without loss
+% of information about the execution.
 
