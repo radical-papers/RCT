@@ -1,14 +1,16 @@
 \newif\ifdraft{}
-% \drafttrue{}
+\drafttrue{}
 
 \ifdraft{}
   \newcommand{\amnote}[1]{ \textcolor{blue} { ***andrem: #1 }}
   \newcommand{\jhanote}[1]{ {\textcolor{red} { ***shantenu: #1 }}}
   \newcommand{\mtnote}[1]{ {\textcolor{orange} { ***matteo: #1 }}}
+  \newcommand{\vbnote}[1]{ {\textcolor{purple} { ***vivek: #1 }}}
 \else
   \newcommand{\amnote}[1]{}
   \newcommand{\jhanote}[1]{}
   \newcommand{\mtnote}[1]{}
+  \newcommand{\vbnote}[1]{}
 \fi
 
 \newcommand{\apples}{AppLeS\xspace}

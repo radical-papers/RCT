@@ -16,7 +16,16 @@
 \begin{abstract}
 % Ca. 100 words
 
-RADICAL-Cybertools (RCT) are a set of software systems that serve as middleware to develop efficient and effective tools for scientific computing. Specifically, RCT enable executing many-task applications at extreme scale and on a variety of computing infrastructures. RCT are building blocks, designed to work as stand-alone systems, integrated among themselves or integrated with third-party systems. RCT enables innovative science in multiple domains, including but not limited to biophysics, climate science and particle physics, consuming hundreds of millions of core hours. This paper provides an overview of RCT systems, their impact, and the architectural principles and software engineering underlying RCT\@.
+RADICAL-Cybertools (RCT) are a set of software systems that serve as middleware 
+to develop efficient and effective tools for scientific computing. Specifically,
+RCT enable executing many-task applications at extreme scale \st{and} on a variety of
+computing infrastructures. RCT are building blocks, designed to work as 
+stand-alone systems, integrated among themselves or \st{integrated} with third-party
+systems. RCT enables innovative science in multiple domains, including but not
+limited to biophysics, climate science and particle physics, consuming hundreds
+of millions of core hours. This paper provides an overview of RCT systems, their
+impact and the architectural principles and software engineering underlying 
+RCT\@.
 \end{abstract}
 
 \begin{keyword}
@@ -74,10 +83,10 @@ Middleware \sep Pilot System \sep Building Blocks
 %           other software etc.).
 % \end{enumerate}}
 
-The design of distributed systems to support scientific computing has never
-been more challenging. Unprecedented diversity in application requirements,
-and disruptive changes in the resources and technology landscapes, intermix
-with new discovery modalities and need for scalable computing.
+The design of \st{distributed systems} \vbnote{middleware?} to support scientific 
+computing has never been more challenging. Unprecedented diversity in 
+application requirements, and disruptive changes in the resources and technology 
+landscapes, intermix with new discovery modalities and need for scalable computing.
 
 Set against this dynamic landscape, two critical question must be addressed:
 How can middleware be designed and implemented to meet the collective
@@ -93,7 +102,7 @@ functionalities. RCT offer several innovative features to support the design
 and implementation of middleware.
 
 This paper takes a software perspective to present the overarching
-architectural paradigm of RCT, discussing the design and implementation of
+architectural paradigm of RCT and discuss the design and implementation of
 two cybertools: RADICAL-Pilot and Ensemble-Toolkit (EnTK). We outline the
 direct impact that RCT are having on domain sciences, focusing the discussion
 on architectural and design paradigms of middleware for scientific computing.
@@ -109,8 +118,9 @@ scientific computing.
 % {\em Describe the software in as much as is necessary to establish a
 % vocabulary needed to explain its impact.}
 
-The RADICAL Cyberinfrastructure tools (RCT)~\cite{github-rct} have three main
-components: RADICAL-SAGA (RS)~\cite{merzky2015saga}, RADICAL-Pilot
+The RADICAL Cyberinfrastructure tools (RCT)~\cite{github-rct} \vbnote{the 
+abbreviation RCT is being overwritten here, already defined RCT in Section 1}
+have three main components: RADICAL-SAGA (RS)~\cite{merzky2015saga}, RADICAL-Pilot
 (RP)~\cite{merzky2018using} and RADICAL-Ensemble Toolkit
 (EnTK)~\cite{entk,balasubramanian2018harnessing}.
 
@@ -128,12 +138,12 @@ pilot jobs to computing infrastructures and then use the resources acquired
 by the pilot to execute one or more tasks. These tasks are directly scheduled
 via the pilot, without having to queue in the infrastructure's batch system.
 EnTK is a Python implementation of a workflow engine, specialized in
-supporting the programming and execution of applications with ensembles or
-pipelines of tasks. EnTK respects the arbitrary priority relation among
-tasks, EnTK execute those tasks concurrently or sequential, depending on
-their arbitrary priority relation. Tasks are calar, MPI, OpenMP,
-multi-process, and multi-threaded  programs that run as self-contained
-executables. Tasks are not functions, methods, threads or processes.
+supporting the programming and execution of applications with ensembles of 
+tasks. EnTK respects the arbitrary priority relation among tasks, EnTK executes
+those tasks concurrently or sequential, depending on their arbitrary priority 
+relation. Tasks are scalar, MPI, OpenMP, multi-process, and multi-threaded 
+programs that run as self-contained executables. Tasks are not functions, 
+methods, threads or processes.
 
 % Both RP and EnTK focuses on High Performance Computing (HPC) resources,
 % enabling the concurrent and consecutive execution on CPU/GPU of stasks.
@@ -186,15 +196,18 @@ that have been integrated with RCT~\cite{turilli2019middleware}.
 % All RCT are stand-alone, distributed systems. 
 
 Architecturally, all RCT consist of one or more subsystems, each with several
-components.% Components are isolated into individual processes and 
+components. % Components are isolated into individual processes and 
 Some components are used only in specific deployment scenarios, depending on
 both application requirements and resource capabilities. Components are
 stateless and some of them can be instantiated concurrently, 
 % to simultaneously manage multiple entities, like workflows, workloads,
 % tasks or pilots. This enables
-enabling throughput scaling and fault tolerance. A communication mesh enables
-coordination of concurrent components, improving scalability at the cost of
-infrastructure-specific overheads.
+enabling throughput scaling and fault tolerance. A communication mesh 
+\vbnote{I think mesh refers to a topology where every component can directly
+talk to another. I don't think that's true for our systems - I think we have a
+master-slave comm. model.}
+enables coordination of concurrent components, improving scalability at the cost
+of infrastructure-specific overheads.
 
 % Concurrent components are coordinated via a dedicated A  communication
 % mesh, which introduces runtime and infrastructure-specific overheads, but
@@ -232,7 +245,10 @@ Fig.~\ref{fig:archs}a depicts RP's architecture. RP has two subsystems (white
 boxes), each with several components (purple and yellow boxes). 
 % In each subsystem,
 Purple components manage pilots and CUs while yellow components manage the
-communication among components. Subsystems can execute locally or remotely,
+communication among components. \vbnote{Is 'AgentManager' a communication
+sub-component? Also, in the figure Queues are either blue or orange but in the
+legend they are blue and pink.}
+Subsystems can execute locally or remotely,
 communicating and coordinating over TCP/IP, and enabling multiple deployment
 scenarios. 
 % For example, users can run Client locally, and distribute MongoDB and one
@@ -275,7 +291,7 @@ Cheyenne, and ORNL Rhea, Titan and Summit.
 % Users can provide new files or alter existing configuration parameters at
 % runtime, both for a single pilot or a whole RP session.
 %
-UnitManager manages CUs, using Scheduler to late binding CUs onto one or more
+UnitManager manages CUs, using Scheduler to late bind CUs onto one or more
 pilots only when they become available on one or more machines. StagerInput
 copies CUs' input files to the machines on which each CU was scheduled.
 
@@ -317,7 +333,7 @@ at scale.
 
 RP data management moves, copies or links input files to CUs before execution
 and output files from CUs after execution. RP can select the most appropriate
-storage, depending on resource capabilities and CUs requirements.  Data can
+storage, depending on resource capabilities and CUs requirements. Data can
 be exclusive to CUs, or shared among them.
 
 % A special queue instance is rendered as collection in a MongoDB database.
@@ -378,14 +394,15 @@ of the application at runtime. AppManager is the sole stateful component of
 EnTK, allowing to restart other components upon failure, without interrupting
 the execution of the ensemble-based application.
 
-WFProcessor queues and dequeues tasks pulled from AppManager. TaskManager
-interfaces to the RTS via ResManageer and uses ExecManager to schedule tasks
-on the RTS, tracking the state of each task during execution. RTS provides
-capabilities to acquire resources and schedule tasks on those resources for
-execution. ResManager isolates RTS from EnTK, enabling fault-tolerance with
-persistent information about executed tasks. Currently, EnTK support only RP
-as RTS but it is designed to use other task-based RTS as, for example,
-Coasters or HTCondor.
+WFProcessor queues and dequeues tasks pulled to and from the TaskManager in
+accordance with the task order specified by stages and pipelines. TaskManager
+interfaces with the RTS via ResManager and ExecManager. RTS provides 
+capabilities to acquire resources and schedule tasks on those resources for 
+execution. ResManager isolates RTS from EnTK, enabling fault-tolerance with 
+persistent information about executed tasks. ExecManager schedules tasks on the 
+resources, tracking the state of each task during execution. Currently, EnTK 
+support only RP as RTS but it is designed to use other task-based RTS as, 
+for example, Coasters or HTCondor.
 
 Fig.~\ref{fig:archs}b's numbers illustrate the execution of workflows in
 EnTK\@. Users instantiate an AppManager, %(Lis.~\ref{code:amgr}), 
@@ -396,7 +413,7 @@ describe that workflow in terms of pipelines, stages and tasks
 and execute it.
 % (Lis.~\ref{code:exec}). 
 AppManager passes a copy of the workflow description to WFProcessor that,
-based on the priorities between stages and tasks, uses Enquerer to queue
+based on the priorities between stages and pipelines, uses Enqueuer to queue
 tasks that are ready for execution to TaskManager (Fig.~\ref{fig:archs}b.1).
 Meanwhile, ResManager users the chosen runtime system to acquire the
 requested resources (Fig.~\ref{fig:archs}b.2) and, once available,
@@ -405,7 +422,8 @@ TaskManager uses those resources to execute the queued tasks
 ExecManager uses queues to communicate the state of each task execution to
 AppManager (Fig.~\ref{fig:archs}b.4). Note that AppManager is the only
 stateful component of EnTK\@: both WFProcessor and ExecManager can fail
-without loss of information about the execution.
+without loss of information about pending or completed tasks, but only of tasks
+that are executing at the instant of failure.
 
 % ---------------------------------------------------------------------------
 \subsection{Software Functionalities}\label{ssec:functionalities}
@@ -450,10 +468,10 @@ may be determined by input/output data or control flow requirements.
 %
 EnTK provides adaptive capabilities to change the ensemble specifications,
 creating new pipelines, stages and tasks, or changing the properties of those
-already defined. Further, pipelines and stages can be paused while waiting to
-perform \textit{ad hoc} computations. This enables the implementation of
-high-level application patterns as, for example,
-simulation-analysis~\cite{balasubramanian2016extasy} or replica
+already defined, based on intermediate results obtained during execution. 
+Further, pipelines can be paused while waiting to perform \textit{ad hoc} 
+computations. This enables the implementation of high-level application patterns
+as, for example, simulation-analysis~\cite{balasubramanian2016extasy} or replica
 exchange~\cite{treikalis2016repex}.
 
 % Execution Model
@@ -866,7 +884,7 @@ on those resources (Lis.~\ref{code:mgrs}).
 \lstset{language=Python, 
         frame=lines,
         caption={RADICAL-Pilot API: define a 3072-core pilot that runs for 
-                 120 minutes on resource `target'},
+                 120 minutes on resource `target' accessed via `ssh'},
         label={code:pilot},
         basicstyle=\footnotesize,
         breaklines=true,
@@ -880,9 +898,9 @@ pdesc = rp.ComputePilotDescription()
 pdesc.resource = target
 pdesc.cores = 3072
 pdesc.runtime = 120
-pdesc.project = config[resource]['project']
-pdesc.queue = config[resource]['queue']
-pdesc.access_schema = config[resource]['schema']
+pdesc.project = `abc'
+pdesc.queue = `xyz'
+pdesc.access_schema = `ssh'
 \end{lstlisting}
 
 \lstset{language=Python, 
@@ -903,10 +921,10 @@ n = 128   # number of units to run
 cuds = list()
 for i in range(0, n):
     cud = rp.ComputeUnitDescription()
-    cud.executable = "/bin/bash"
-    cud.pre_exec = ['module load gromacs/5.1.2']
-    cud.arguments = ['-l', '-c', "/opt/gromacs/bin/gmx_mpi mdrun -s min.tpr -v -deffnm npt"]
-    cud.input_staging = ['FRF.itp', 'dynamic.mdp', 'FF.itp', 'martini_v2.2.itp', '85-20.top', 'init85-20.gro'] 
+    cud.executable = `gmx_mpi'
+    cud.pre_exec = [`module load gromacs/5.1.2']
+    cud.arguments = [`mdrun', `-s', `min.tpr', `-v', `-deffnm', `npt']
+    cud.input_staging = [`FRF.itp', `dynamic.mdp', `FF.itp', `martini_v2.2.itp', `85-20.top', `init85-20.gro'] 
     cud.cores = 24
     cud.mpi = True    
     cuds.append(cud)
@@ -974,9 +992,9 @@ appman = AppManager(hostname=hostname, port=port)
         tabsize=2}
 \begin{lstlisting}
 res_dict = {
-    'resource': 'target',
-    'walltime': 120,
-    'cpus': 3072
+    `resource': `target',
+    `walltime': 120,
+    `cpus': 3072
 }
 \end{lstlisting}
 
@@ -997,13 +1015,13 @@ s = Stage()
 n = 128
 for i in range(0, n):
     t = Task()
-    t.executable = "/bin/bash"
+    t.executable = "gmx_mpi"
     t.pre_exec = ['module load gromacs/5.1.2']
-    t.arguments = ['-l', '-c', "/opt/gromacs/bin/gmx_mpi mdrun -s min.tpr -v -deffnm npt"]
-    t.copy_input_data = ['FRF.itp', 'dynamic.mdp', 'FF.itp', 'martini_v2.2.itp', '85-20.top', 'init85-20.gro'] 
+    t.arguments = [`mdrun', `-s', `min.tpr', `-v', `-deffnm', `npt']
+    t.copy_input_data = [`FRF.itp', `dynamic.mdp', `FF.itp', `martini_v2.2.itp', `85-20.top', `init85-20.gro'] 
     t.cpu_reqs = {
-      'processes': 24,
-      'process_type': MPI
+      `processes': 24,
+      `process_type': MPI
       }
     s.add_tasks(t)
 p.add_stages(s)
@@ -1011,7 +1029,8 @@ p.add_stages(s)
 
 \lstset{language=Python, 
         frame=lines,
-        caption={RADICAL-EnsembleToolkit (EnTK) API: Describe a pipeline with },
+        caption={RADICAL-EnsembleToolkit (EnTK) API: Describe execution of a 
+        pipeline on specified target resource },
         label={code:exec},
         basicstyle=\footnotesize,
         breaklines=true,
