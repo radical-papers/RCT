@@ -144,7 +144,8 @@ tasks. EnTK % respects the arbitrary priority relation among tasks
 executes tasks concurrently or sequentially, depending on their arbitrary
 priority relation. Tasks are scalar, MPI, OpenMP, multi-process, and
 multi-threaded programs that run as self-contained executables. Tasks are not
-functions, methods, threads or processes.
+functions, methods, threads or processes. \amnote{Things that \I{"run as
+self-contained executables"} are usually processes.}
 
 % Both RP and EnTK focuses on High Performance Computing (HPC) resources,
 % enabling the concurrent and consecutive execution on CPU/GPU of stasks.
@@ -213,7 +214,7 @@ infrastructure-specific overheads.
 talk to another. I don't think that's true for our systems - I think we have
 a master-slave comm. model.}\mtnote{The communication mash is among
 components of subsystems, e.g., RP agent's components, or workflow manager in
-entk}
+entk.}
 
 % Concurrent components are coordinated via a dedicated A  communication
 % mesh, which introduces runtime and infrastructure-specific overheads, but
@@ -366,7 +367,7 @@ Agent's Scheduler (Fig.~\ref{fig:archs}a.4-6). Scheduler places tasks on
 suitable partitions of the pilot's resources and then queues tasks to the
 Executor so that, when those partitions of resource becomes available,
 tasks are executed (Fig.~\ref{fig:archs}a.7). Executor sets up the
-environment required by each task and then forks each task for execution
+environment required by each task and then spawns each task for execution
 (Fig.~\ref{fig:archs}a.8).
 
 
@@ -374,7 +375,7 @@ environment required by each task and then forks each task for execution
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
 
 EnTK implements three abstractions: task, stage and pipeline. Tasks is an
-executable program with information about its environment and data
+executable program\amnote{"represents an executable program"?} with information about its environment and data
 dependences. Stage is a set of tasks which have no mutual dependences and
 thus can execute concurrently. Pipeline is a list of stages where the
 ordering of the stages represents the ordering of their execution.
@@ -392,7 +393,9 @@ components (purple), each with subcomponents dedicated to the management of
 EnTK's entities (green) or coordination of the entities' execution (yellow).
 The three components are AppManager, WFProcessor and TaskManager,
 respectively enabling workflow specification, workflow execution management,
-and workload management.
+and workload management.\amnote{I would probably leave out the "RabbitMQ" box
+and label - that the queues are implemented in RMQ is an implementation detail,
+similar to ZMQ on RP?  It's also (rightly) not mentioned in the text.}
 
 EnTK's API enables the development of ensemble-based applications with tasks,
 stages and pipelines, and the specification of resource requirements for the
@@ -714,7 +717,7 @@ The usage of ORNL resources constitutes $\approx 2-3$\% of all of ATLAS
 computing. There are several thousand researchers that directly or indirectly
 use PanDA, and thereby RADICAL-SAGA. In the near future, RADICAL-Pilot will
 also become a staple of the PanDA workload management system on HPC
-platforms.
+platforms.\amnote{That's planned, but not sure?}
 
 RADICAL-SAGA was used to develop Science Gateways as part of the Distributed
 Application Runtime Environment (DARE)
