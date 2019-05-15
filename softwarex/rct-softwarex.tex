@@ -389,14 +389,15 @@ The three components are AppManager, WFProcessor and TaskManager,
 respectively enabling workflow specification, workflow execution management,
 and workload management.
 
-\amnote{I would probably leave out the "RabbitMQ" box and label - that the
-queues are implemented in RMQ is an implementation detail, similar to ZMQ on
-RP?  It's also (rightly) not mentioned in the
-text.}\mtnote{Done.}\amnote{nitpicking mode (meaning: feel free to ignore, its
-inconsequential in this paper): we don't mention a "QueueManager" either.  Is
-that really a notable EnTK component?  I would suggest to leave out the whole
-grey box as being not an architectural element, but an implementation detail.
-The has a wierd shape anyway, which I think is owed to unclarity in it's role?}
+% \amnote{I would probably leave out the "RabbitMQ" box and label - that the
+% queues are implemented in RMQ is an implementation detail, similar to ZMQ
+% on RP?  It's also (rightly) not mentioned in the
+% text.}\mtnote{Done.}\amnote{nitpicking mode (meaning: feel free to ignore,
+% its inconsequential in this paper): we don't mention a "QueueManager"
+% either. Is that really a notable EnTK component?  I would suggest to leave
+% out the whole grey box as being not an architectural element, but an
+% implementation detail. The has a wierd shape anyway, which I think is owed
+% to unclarity in it's role?}
 
 EnTK's API enables the development of ensemble-based applications with tasks,
 stages and pipelines, and the specification of resource requirements for the
