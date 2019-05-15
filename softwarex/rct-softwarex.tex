@@ -144,8 +144,8 @@ tasks. EnTK % respects the arbitrary priority relation among tasks
 executes tasks concurrently or sequentially, depending on their arbitrary
 priority relation. Tasks are scalar, MPI, OpenMP, multi-process, and
 multi-threaded programs that run as self-contained executables. Tasks are not
-functions, methods, threads or processes. \amnote{Things that \I{"run as
-self-contained executables"} are usually processes.}
+functions, methods, threads or subprocesses. \amnote{Things that \I{"run as
+self-contained executables"} are usually processes.}\mtnote{better?}
 
 % Both RP and EnTK focuses on High Performance Computing (HPC) resources,
 % enabling the concurrent and consecutive execution on CPU/GPU of stasks.
@@ -374,10 +374,12 @@ environment required by each task and then spawns each task for execution
 % ------------
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
 
-EnTK implements three abstractions: task, stage and pipeline. Tasks is an
-executable program\amnote{"represents an executable program"?} with information about its environment and data
-dependences. Stage is a set of tasks which have no mutual dependences and
-thus can execute concurrently. Pipeline is a list of stages where the
+\amnote{"represents an executable program"?}\mtnote{Done.}
+
+EnTK implements three abstractions: task, stage and pipeline. Each task
+represents an executable program with information about its environment and
+data dependences. Stage is a set of tasks which have no mutual dependences
+and thus can execute concurrently. Pipeline is a list of stages where the
 ordering of the stages represents the ordering of their execution.
 
 As with RP, EnTK enables concurrent and sequential execution at program
@@ -393,9 +395,11 @@ components (purple), each with subcomponents dedicated to the management of
 EnTK's entities (green) or coordination of the entities' execution (yellow).
 The three components are AppManager, WFProcessor and TaskManager,
 respectively enabling workflow specification, workflow execution management,
-and workload management.\amnote{I would probably leave out the "RabbitMQ" box
-and label - that the queues are implemented in RMQ is an implementation detail,
-similar to ZMQ on RP?  It's also (rightly) not mentioned in the text.}
+and workload management.
+
+\amnote{I would probably leave out the "RabbitMQ" box and label - that the
+queues are implemented in RMQ is an implementation detail, similar to ZMQ on
+RP?  It's also (rightly) not mentioned in the text.}\mtnote{Done.}
 
 EnTK's API enables the development of ensemble-based applications with tasks,
 stages and pipelines, and the specification of resource requirements for the
