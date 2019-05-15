@@ -144,8 +144,7 @@ tasks. EnTK % respects the arbitrary priority relation among tasks
 executes tasks concurrently or sequentially, depending on their arbitrary
 priority relation. Tasks are scalar, MPI, OpenMP, multi-process, and
 multi-threaded programs that run as self-contained executables. Tasks are not
-functions, methods, threads or subprocesses. \amnote{Things that \I{"run as
-self-contained executables"} are usually processes.}\mtnote{better?}
+functions, methods, threads or subprocesses.
 
 % Both RP and EnTK focuses on High Performance Computing (HPC) resources,
 % enabling the concurrent and consecutive execution on CPU/GPU of stasks.
@@ -161,9 +160,6 @@ self-contained executables"} are usually processes.}\mtnote{better?}
 % applications. EnTK is engineered for scale and a diversity of computing
 % platforms and runtime systems, agnostic of the size, type and coupling of
 % the tasks comprising the ensemble.
-
-% \amnote{This is likely confusing if the reader does not know what an
-% 'ensemble' is?}\mtnote{better?}
 
 RCT are designed to work both individually and as an integrated system, with
 or without third party systems. This requires a ``Building Block'' approach
@@ -226,8 +222,6 @@ entk.}
 % data has dedicated modules and communication channel, separating
 % communication from coordination with explicit states and events for each
 % entity.
-
-% \amnote{what does 'making' mean here?}\mtnote{better?}
 
 % Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and
 % capabilities. In the rest of the paper, we focus on RP and EnTK, first
@@ -374,8 +368,6 @@ environment required by each task and then spawns each task for execution
 % ------------
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
 
-\amnote{"represents an executable program"?}\mtnote{Done.}
-
 EnTK implements three abstractions: task, stage and pipeline. Each task
 represents an executable program with information about its environment and
 data dependences. Stage is a set of tasks which have no mutual dependences
@@ -399,7 +391,12 @@ and workload management.
 
 \amnote{I would probably leave out the "RabbitMQ" box and label - that the
 queues are implemented in RMQ is an implementation detail, similar to ZMQ on
-RP?  It's also (rightly) not mentioned in the text.}\mtnote{Done.}
+RP?  It's also (rightly) not mentioned in the
+text.}\mtnote{Done.}\amnote{nitpicking mode (meaning: feel free to ignore, its
+inconsequential in this paper): we don't mention a "QueueManager" either.  Is
+that really a notable EnTK component?  I would suggest to leave out the whole
+grey box as being not an architectural element, but an implementation detail.
+The has a wierd shape anyway, which I think is owed to unclarity in it's role?}
 
 EnTK's API enables the development of ensemble-based applications with tasks,
 stages and pipelines, and the specification of resource requirements for the
@@ -467,9 +464,7 @@ launch tasks; and (4) a general purpose architecture.
 
 % EnTK EnTK is a workflow engine specifically designed to execute
 % ensemble-based applications. These applications are composed by ensemble of
-% tasks that may have dependences both among tasks and ensembles.\amnote{ah,
-% here is the ensemble definition :-)}\mtnote{Right. see my previous editing,
-% it should be consistent with this def.}
+% tasks that may have dependences both among tasks and ensembles.
 
 EnTK is a workflow engine that, compared to similar systems, allows to codify
 ensemble applications as pipelines of stages of tasks. Task interdependences
