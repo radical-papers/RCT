@@ -82,23 +82,24 @@ Middleware \sep Pilot System \sep Building Blocks
 %           other software etc.).
 % \end{enumerate}}
 
-The design of \st{distributed systems} \vbnote{middleware?} to support scientific 
-computing has never been more challenging. Unprecedented diversity in 
-application requirements, and disruptive changes in the resources and technology 
-landscapes, intermix with new discovery modalities and need for scalable computing.
+The design of middleware to support scientific computing has never been more
+challenging. The unprecedented complexity of middleware design and development
+arises from diversity in application requirements, disruptive changes in the
+resources and technology landscapes, intermixed with new discovery modalities
+and need for scalable computing.
 
-Set against this dynamic landscape, two critical question must be addressed:
+Against this dynamic landscape, two critical question must be addressed:
 How can middleware be designed and implemented to meet the collective
 challenges of scale, new and diverse functionality, and usability? How can
 critical middleware components be designed to be sustainable software
 implementations while being forward looking and enable innovative
 capabilities?
 
-RADICAL-Cybertools (RCT)~\cite{github-rct} are a set of systems developed to address these
-challenges.  RCT are building blocks, which can be used as a stand-alone
-system, or integrated with other RCT, or third-party tools to enable diverse
-functionalities. RCT offer several innovative features to support the design
-and implementation of middleware.
+RADICAL-Cybertools (RCT)~\cite{github-rct} are a set of systems developed to
+address these challenges.  RCT are building blocks, which can be used as a
+stand-alone system, or integrated with other RCT, or third-party tools to
+enable diverse functionalities. RCT offer several innovative features to
+support the design and implementation of middleware.
 
 This paper takes a software perspective to present the overarching
 architectural paradigm of RCT and discuss the design and implementation of
@@ -162,15 +163,19 @@ functions, methods, threads or subprocesses.
 % the tasks comprising the ensemble.
 
 RCT are designed to work both individually and as an integrated system, with
-or without third party systems. This requires a ``Building Block'' approach
-to their design and development, based on applying the traditional notions of
+or without third party systems. This requires a ``Building Block'' approach to
+their design and development, based on applying the traditional notions of
 modularity at system level~\cite{turilli2019middleware}. The Building Block
 approach derives from the work on Service-oriented Architecture and its
-Microservice variants, and the component-based software development
-approaches where computational and compositional elements are explicitly
+Microservice variants, and the component-based software development approaches
+where computational and compositional elements are explicitly
 separated~\cite{batory1992design,garlan1995architectural,lenz1987software,clemens1998component,schneider2000components}.
-AirFlow, Oozie, Azkaban, Spark Streaming, Storm, or Kafka are examples of
-tools that have a design consistent with the building blocks approach.
+\jhanote{Can we reduce the number of references to SOA and CBSE? I'm assuming
+some of these are in the CCGrid and CISE paper, so "references therein" is
+acceptable. It is motivated as much by space, as it consistency across other
+"aspects" not central to this paper or covered elsewhere.} AirFlow, Oozie,
+Azkaban, Spark Streaming, Storm, or Kafka are examples of tools that have a
+design consistent with the building blocks approach.
 
 % \jhanote{ We should not say the  later part, as I don't think its fully
 % correct.}
@@ -202,15 +207,17 @@ both application requirements and resource capabilities. Components are
 stateless and some of them can be instantiated concurrently, 
 % to simultaneously manage multiple entities, like workflows, workloads,
 % tasks or pilots. This enables
-enabling throughput scaling and fault tolerance. A communication mesh enables
-coordination of concurrent components, improving scalability at the cost of
-infrastructure-specific overheads.
+enabling throughput scaling and fault tolerance. A communication overlay
+enables coordination of concurrent components, improving scalability at the
+cost of infrastructure-specific overheads.
 
 \vbnote{I think mesh refers to a topology where every component can directly
 talk to another. I don't think that's true for our systems - I think we have
 a master-slave comm. model.}\mtnote{The communication mash is among
 components of subsystems, e.g., RP agent's components, or workflow manager in
-entk.}
+entk.}\jhanote{I've added to the confusion by using overlay. I think mesh is usually used in topology specific context, and that is not intended. I wanted
+to use communication subsystem -- which is the canonical approach, but
+we're talking about subsystems of components, thus subsystem is suboptimal.}
 
 % Concurrent components are coordinated via a dedicated A  communication
 % mesh, which introduces runtime and infrastructure-specific overheads, but
@@ -499,14 +506,27 @@ exchange~\cite{treikalis2016repex}.
 % ---------------------------------------------------------------------------
 \section{Illustrative Examples}\label{sec:examples}
 
-Given the diversity of use-cases and often unique requirements, the
-proliferation of workflow systems is inevitable. Whereas this proliferation
-cannot be reversed, it must be managed. For example, the high-barrier to
-overcoming ``last mile customization'' of workflow systems which often
-results in whole-sale refactoring must be prevented. In addition to meeting
-the needs of workflow users, it is imperative that the workflow system
-developers be provided with the necessary abstractions and capabilities to
-prevent the need to develop \textit{ab initio}.
+
+An increasing trend is that application developers tend to develop their own
+tools tailored to their requirements. Ref.~\cite{workflow-systems-url}
+enumerates in excess of 230 purported workflow systems. The proliferation of
+workflow systems has many implications for users and developers of workflow
+systems, and raises important questions: Is it possible to implement workflow
+systems in an agile fashion to provide flexibility and sharing of capabilities
+while not constraining functionality, performance, or sustainability? What are
+the necessary abstractions and capabilities that workflow system developers be
+provided with so as to prevent the need to develop \textit{ab initio}.
+
+
+% Given the diversity of use-cases and often unique requirements, the
+% proliferation of workflow systems is inevitable. Whereas this proliferation
+% cannot be reversed, it must be managed. For example, the high-barrier to
+% overcoming ``last mile customization'' of workflow systems which often
+% results in whole-sale refactoring must be prevented. 
+
+% In addition to meeting the needs of workflow users, it is imperative that the
+% workflow system developers be provided with the necessary abstractions and
+% capabilities to prevent the need to develop \textit{ab initio}.
 
 The case of specialized domain-specific tools that support similar but not
 identical workflows provides an illustrative example. Building logically
@@ -530,13 +550,16 @@ Ref.~\citep{turilli2019middleware}
 % HTBAC~\cite{dakka2018high}, and ICEBERG~\cite{web-iceberg}. Details can be
 % found in Ref.~\cite{turilli2019middleware}.
 
-ExTASY, RepEx, HTBAC represent three adaptive ensemble based DSW tools. They
-have benefited by using EnTK by not having to re-implement workflow
-processing, efficient task management and interoperable task execution
-capabilities on distinct and heterogeneous platforms. In turn, eight distinct
-adaptive ensemble workflows have been implemented using EnTK, which provides
-circumstantial evidence, if not weak validation, of the ``last mile
-customization'' capability of the RCT-based building block approach.
+ExTASY, RepEx, HTBAC represent three adaptive ensemble based domain-specific
+tools. They have benefited by using EnTK by not having to re-implement
+workflow processing, efficient task management and interoperable task
+execution capabilities on distinct and heterogeneous platforms. In turn, eight
+distinct adaptive ensemble workflows have been implemented using EnTK, which
+suggests that the ``last mile customization'' capability of the RCT-based
+building block approach.
+
+% provides circumstantial evidence, if not weak validation, of 
+
 
 % ---------------------------------------------------------------------------
 % Section IV
@@ -700,24 +723,28 @@ very large international collaborations. Thus, there is intrinsic uncertainty
 in the number of both direct and indirect RCT users.
 
 So far, RCT supported scientific advancements in software
-engineering~\cite{merzky2018synapse}; chemical and particle
+engineering~\cite{merzky2018synapse}; chemical~\cite{sampat2018parallel} and
+particle
 physics~\cite{paraskevakos2018task,shkurti2016coco,dakka2018high,oleynik2017high};
-materials, health and climate science~\cite{mhcs}; and drug
-discovery~\cite{dd}. RADICAL-SAGA has mostly been integrated into end-to-end
-middleware solutions, RADICAL-Pilot has been used both as standalone system
-and integrated with other systems, while EnTK has served as workflow engine
-for domain-specific applications.
+materials~\cite{dakka2018high}, earth and climate
+science~\cite{balasubramanian2018harnessing}; and drug
+discovery~\cite{bfe-jctc-2014}. RADICAL-SAGA has mostly been integrated into
+end-to-end middleware solutions, RADICAL-Pilot has been used both as
+standalone system and integrated with other systems, while EnTK has served as
+workflow engine for domain-specific applications.
 
-RADICAL-SAGA enables the Production ANd Distributed Analysis (PanDA) system
-to submit batch jobs to Titan and Summit, the two leadership class machines
+RADICAL-SAGA enables the Production ANd Distributed Analysis (PanDA) system to
+submit batch jobs to Titan and Summit, the two leadership class machines
 managed at the ORNL~\cite{web-olcf-resources}. PanDA is the workload
 management system used by the ATLAS experiment to execute hundred of millions
-of jobs a year on both grid and HPC infrastructures~\cite{maeno2008panda}.
-The usage of ORNL resources constitutes $\approx 2-3$\% of all of ATLAS
-computing. There are several thousand researchers that directly or indirectly
-use PanDA, and thereby RADICAL-SAGA. In the near future, RADICAL-Pilot will
-also become a staple of the PanDA workload management system on HPC
-platforms.\amnote{That's planned, but not sure?}
+of jobs a year on both grid and HPC infrastructures~\cite{maeno2008panda}. The
+usage of ORNL resources constitutes $\approx 2-3$\% of all of ATLAS computing.
+There are several thousand researchers that directly or indirectly use PanDA,
+and thereby RADICAL-SAGA. RADICAL-Pilot will be part of the PanDA workload
+management ecosystem on multiple HPC platforms.
+
+\amnote{That's planned, but not sure?}\jhanote{better? addressed the subtletly
+of Harvester too}
 
 RADICAL-SAGA was used to develop Science Gateways as part of the Distributed
 Application Runtime Environment (DARE)
@@ -795,23 +822,23 @@ federated supercomputers~\cite{turilli2016integrating}.
 
 RCT is a small operation with at most two developers working on the systems
 at the same time. In order to implement RCT capabilities while supporting
-more than ten concurrent projects at every point in time, we adopted a
+more than ten concurrent projects at any point in time, we adopted a
 specific methodology for the design, development and maintenance of RCT\@.
 This methodology is based on the Building Blocks approach, the use of git for
 distributed version control of the code base~\cite{github-rct}, and a
 tailored project management process.
 
-Based on more than ten years of experience, our approach show a sustainable
-and effective way to organize software development, promote community
-adoption and leverage the specific characteristics of the academic financial
-model. This signs the transition from a development model based on
-end-to-end, monolithic solutions with stringent requirements on
-infrastructures' software stack. The RCT development model based on small,
-independent systems, each with a well-defined capability and composable with
-other systems developed independently by different development teams. This
-approach enables a model of sustainability based on smaller and shorter
-funding sources but requires a certain convergence in the vision of diverse
-groups competing in the same research field.
+Based on more than ten years of experience, our approach shows a sustainable
+and effective way to organize software development, promote community adoption
+and leverage the specific characteristics of the academic financial model.
+This signals the transition away from a development model based on end-to-end,
+monolithic solutions with stringent requirements on infrastructures' software
+stack. The RCT development model is based on small, independent systems, each
+with a well-defined capability and composable with other systems developed
+independently by different development teams. This approach enables a model of
+sustainability based on smaller and shorter funding sources but requires a
+certain convergence in the vision of diverse groups competing in the same
+research field.
 
 % % The building block approach represents an important advance in the design
 % % of middleware for scientific applications. This approach, leverages %
@@ -873,7 +900,7 @@ RADICAL-Pilot and wrote the bulk of the paper.
 \bibliographystyle{elsarticle-num} 
 \bibliography{rct-softwarex}
 
-
+\newpage
 % ---------------------------------------------------------------------------
 % Appendixes
 % ---------------------------------------------------------------------------
