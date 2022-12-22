@@ -519,30 +519,30 @@ exchange~\cite{treikalis2016repex}.
 An increasing trend is to develop single-point software solutions, tailored to
 the requirements of a specific use case. The case of software tools that support
 similar but not identical workflow applications provides a paradigmatic example.
-Ref.~\cite{workflow-systems-url} enumerates in excess of 230 workflow systems,
+Ref.~\cite{workflow-systems-url} enumerates in excess of 320 workflow systems,
 all implementing overlapping if not equal abstractions and capabilities, each
 with slightly different tailoring, often undocumented performance and actual
 state of availability and active development.
 
 RCT avoids many of the pitfalls of reimplementing existing tools by offering
-logically self-contained software blocks that can be easily composed with
-independently designed third-party software tools, composed among themselves or
-individually used as stand-alone tools. Consistently, RCT offers two large
-classes of use cases: those that require middleware to build application-facing
-frameworks and those that require well-defined interfaces and capabilities to
-develop a user-facing application.
+logically self-contained software building blocks that can be easily composed
+with independently designed third-party software tools, composed among
+themselves or individually used as stand-alone
+tools~\cite{turilli2019middleware}. Consistently, RCT offers three classes
+of use cases: (1) developing middleware to build application-facing
+frameworks; (2) developing user-facing applications via well-defined interfaces; and (3) integrating with third-party middleware tools to serve use cases that require aggregated capabilities.
 
 % , lowers the technical barriers to their composability and thus allows
 % designing domain-specific tools.
 
 % RCT can be extended to support multiple domain-specific tools.
-EnTK has enabled the development of workflow tools which provide domain-specific
-functionalities. Each tool is characterized by a unique execution and
-coordination pattern and can serve multiple applications. The four
+EnTK and RP enabled the development of workflow tools which provide
+domain-specific functionalities. Each tool is characterized by a unique
+execution and coordination pattern and can serve multiple applications. The four
 ensemble-based workflow frameworks developed using EnTK and other RCT are:
 EXTASY~\cite{balasubramanian2016extasy}, RepEx~\cite{treikalis2016repex},
-HTBAC~\cite{dakka2018high}, and ICEBERG~\cite{iceberg_paper}. Details can be
-found in Ref.~\citep{turilli2019middleware}.
+HTBAC~\cite{dakka2018high}, ICEBERG~\cite{iceberg_paper} and
+DeepDriveMD~\cite{lee2019deepdrivemd}.
 
 % EnTK has enabled the development of domain-specific workflow (DSW) tools.
 % Driven by specific application needs, each DSW is characterized by a unique
@@ -552,17 +552,20 @@ found in Ref.~\citep{turilli2019middleware}.
 % HTBAC~\cite{dakka2018high}, and ICEBERG~\cite{web-iceberg}. Details can be
 % found in Ref.~\cite{turilli2019middleware}.
 
-ExTASY, RepEx, HTBAC represent three adaptive ensemble based domain-specific
-tools. They have benefited by using EnTK by not having to re-implement
-workflow processing, efficient task management and interoperable task
-execution capabilities on distinct and heterogeneous platforms. In turn, eight
-distinct adaptive ensemble workflows have been implemented using EnTK, which
-suggests that the ``last mile customization'' capability of the RCT-based
-building block approach.
+ExTASY, RepEx, HTBAC and DeepDriveMD represent four adaptive ensemble-based,
+domain-specific tools. EnTK allowed them not to have to re-implement workflow
+processing, efficient task management and interoperable task execution
+capabilities on distinct and heterogeneous platforms. In turn, eight adaptive
+ensemble workflows have been directly implemented using EnTK, and RP and its
+RAPTOR subsystem supported the development of a docking application that scaled
+up to $\approx$224,000 cores on Frontera~\cite{merzky2022raptor}, as part of the
+IMPECCABLE campaign to find viable molecules to fight
+COVID-19~\cite{saadi2021impeccable}. Finally, RP has been integrated with
+several third-party tools, like Parsl~\cite{alsaadi2021radical},
+swift/T~\cite{turilli2017evaluating}, PanDA~\cite{merzky2019panda},
+Hadoop~\cite{luckow2016hadoop} and Spark~\cite{paraskevakos2018task}
 
-% provides circumstantial evidence, if not weak validation, of
-
-\mtnote{TODO: Add details about RP and RAPTOR for IMPECCABLE and friends.}
+% \mtnote{TODO: Add details about RP and RAPTOR for IMPECCABLE and friends.}
 
 % ---------------------------------------------------------------------------
 % Section IV
@@ -741,14 +744,15 @@ systems, while EnTK has served as workflow engine for domain-specific
 applications.
 
 RADICAL-SAGA enables the Production ANd Distributed Analysis (PanDA) system to
-submit batch jobs to Titan and Summit, the two leadership class machines
-managed at the ORNL~\cite{web-olcf-resources}. PanDA is the workload
-management system used by the ATLAS experiment to execute hundred of millions
-of jobs a year on both grid and HPC infrastructures~\cite{maeno2008panda}. The
-usage of ORNL resources constitutes $\approx 2-3$\% of all of ATLAS computing.
-There are several thousand researchers that directly or indirectly use PanDA,
-and thereby RADICAL-SAGA. RADICAL-Pilot will be part of the PanDA workload
-management ecosystem on multiple HPC platforms.
+submit batch jobs to Titan and Summit~\cite{megino2017integration}, the two
+leadership class machines managed at the ORNL~\cite{web-olcf-resources}. PanDA
+is the workload management system used by the ATLAS experiment to execute
+hundred of millions of jobs a year, on both grid and HPC
+infrastructures~\cite{maeno2008panda}. The usage of ORNL resources constitutes
+$\approx 2-3$\% of all of ATLAS computing. There are several thousand
+researchers that directly or indirectly use PanDA, and thereby RADICAL-SAGA.
+% RADICAL-Pilot will be part of the PanDA workload management ecosystem on
+% multiple HPC platforms.
 
 % \amnote{That's planned, but not sure?}\jhanote{better? addressed the subtletly
 % of Harvester too}
@@ -768,7 +772,7 @@ management ecosystem on multiple HPC platforms.
 % systems.
 
 Since its first release in 2013, RP has supported around two dozen projects
-and 100 direct users. Half of these projects used RP has a standalone system
+and 100 direct users. Half of these projects used RP has a stand-alone system
 to execute applications comprised of multiple tasks. Supporting distinct
 applications contributed to realize the growing importance of the
 ensemble computational model: HPC applications were replacing single task
@@ -793,7 +797,7 @@ both individually and as integrated, end-to-end
 solution~\cite{turilli2019middleware}. This is important when supporting
 projects with multiple, distinct use cases. For example, ICEBERG has to support
 five use cases, each investigating a specific problem in the domain of polar
-science. Four of these use cases require the concurrent execution of pipelines
+science. Four of these use cases require the concurrent execution of pipelines,
 but one requires only the execution of bag of tasks. The first four cases can
 use EnTK while the latter only RADICAL-Pilot. Importantly, all use cases can be
 served by the ICEBERG framework with a minor change in the private API to call
@@ -806,19 +810,19 @@ overheads.
 % platforms. This, in turn, enables both a focus on and ease of ``last mile
 % customization''.
 
-RCT are also a testbed for engineering research, mostly focused on foundational
+RCT are also a test bed for engineering research, mostly focused on foundational
 abstractions~\cite{turilli2017evaluating}, architectural
 paradigms~\cite{turilli2018comprehensive}, application
 patterns~\cite{balasubramanian2016extasy,balasubramanian2018harnessing}, and
 performance analysis of distributed middleware on diverse computing
 infrastructures~\cite{turilli2017evaluating,dakka2018high}. Among the most
-representative projects supported by RP as a standalone system, the Abstractions
+representative projects supported by RP as a stand-alone system, the Abstractions
 and Integrated Middleware for Extreme-Scale Science (AIMES) project enabled
 extreme-scale distributed computing via dynamic federation of heterogeneous
 computing infrastructures. We used RP to execute millions of tasks on both HPC
 and HTC resources, studying the federated behavior of multiple infrastructures,
 establishing the importance of integrating task and resource information in
-scheduling and placement decision making for federated
+scheduling and placement decision-making for federated
 supercomputers~\cite{turilli2016integrating}.
 
 
