@@ -15,21 +15,22 @@
 
 \begin{abstract}
 % Ca. 100 words
-RADICAL-Cybertools (RCT) are middlware software systems to develop efficient and
-effective tools for scientific computing. Specifically, RCT enable executing
-heterogeneous many-task applications at extreme scale and on a variety of
-computing infrastructures. RCT are building blocks designed to work as
-stand-alone systems, integrated among themselves or with third-party systems.
-RCT enable innovative science in multiple domains, including but not limited to
-biophysics, climate science and particle physics, consuming hundreds of millions
-of core hours/year. This paper provides an overview of RCT, their impact, and
-the architectural principles and software engineering underlying RCT\@.
+RADICAL-Cybertools (RCT) are middlware software systems designed to develop
+efficient and effective tools for scientific computing. Specifically, RCT enable
+developing applications with up to 100,000 heterogeneous tasks and execute them
+on the largest high performance computing platforms in the world. RCT are
+building blocks designed to work as stand-alone systems, integrated among
+themselves or with third-party systems. RCT enable innovative science in
+multiple domains, including biophysics, climate science, particle physics and
+drug discovery, consuming hundreds of millions of core hours/year. This paper
+provides an overview of RCT, their impact, and their underlying software
+engineering and architectural principles.
 \end{abstract}
 
 \begin{keyword}
 
 %% keywords here, in the form: keyword \sep keyword
-Middleware \sep Pilot System \sep Building Blocks
+Middleware \sep Pilot System \sep Scientific Workflow \sep Building Blocks
 
 %% PACS codes here, in the form: \PACS code \sep code
 
@@ -85,27 +86,31 @@ The design of middleware to support scientific computing has never been more
 challenging. The unprecedented complexity of middleware design and development
 arises from diversity in application requirements, disruptive changes in the
 resources and technology landscapes, intermixed with new discovery modalities
-and need for scalable computing.
-
-Against this dynamic landscape, two critical question must be addressed: (1) How
-can middleware be designed and implemented to meet the collective challenges of
-scale, new and diverse functionality, and usability? (2) How can critical
-middleware components be designed to be sustainable software implementations
-while being forward looking and enable innovative capabilities?
+and need for scalable computing. Against this dynamic landscape, two critical
+challenges must be addressed: (1) How can middleware be designed and implemented
+to meet the collective challenges of scale, new and diverse functionality, and
+usability? (2) How can critical middleware components be designed to be
+sustainable software implementations while being forward-looking and enable
+innovative capabilities?
 
 RADICAL-Cybertools (RCT)~\cite{github-rct} are a set of systems developed to
-address these challenges.  RCT are building blocks, which can be used as a
-stand-alone system, or integrated with other RCT, or third-party tools to enable
-diverse functionalities. RCT offer several innovative features to support the
-design and implementation of middleware.
+address those challenges. An increasing trend is to develop single-point
+software solutions, tailored to the requirements of a specific use case. For
+example, Ref.~\cite{workflow-systems-url} enumerates more than 334 workflow
+systems, all implementing overlapping if not equal abstractions and
+capabilities. RCT are instead building blocks, logically self-contained software
+systems that can be easily composed with independently designed third-party
+software tools, composed among themselves or individually used as stand-alone
+tools~\cite{turilli2019middleware}.
 
-This paper takes a software perspective to present the overarching
-architectural paradigm of RCT and discuss the design and implementation of
-two cybertools: RADICAL-Pilot and Ensemble-Toolkit (EnTK). We outline the
-direct impact that RCT are having on domain sciences, focusing the discussion
-on architectural and design paradigms of middleware for scientific computing.
-In this way, we show how RCT further the ``state-of-theory'' and practice of
-scientific computing.
+This paper presents RCT, discussing the design and architectural paradigms its
+two main systems: RADICAL-Pilot and RADICAL-EnsembleToolkit. We outline
+the direct impact that RCT are having on multiple domain sciences
+and show how RCT further scientific computing (see 150+ peer reviewed related
+publications at~\cite{radical-pub-url,scholar-pub-url}).
+
+% ~\cite{kopp2023framework,hu2017short,sarkar2021adaptive,dakka2018high,wright2019application,wan2020rapid,hruska2020extensible}
+% ~\cite{lee2019deepdrivemd,lee2021scalable,turilli2019characterizing}.
 
 
 % ---------------------------------------------------------------------------
@@ -116,89 +121,65 @@ scientific computing.
 % {\em Describe the software in as much as is necessary to establish a
 % vocabulary needed to explain its impact.}
 
-% \vbnote{the abbreviation RCT is being overwritten here, already defined RCT
-% in Section 1}
-
 RCT have three main components: RADICAL-SAGA (RS)~\cite{merzky2015saga},
-RADICAL-Pilot (RP)~\cite{merzky2018using} and RADICAL-Ensemble Toolkit
-(EnTK)~\cite{balasubramanian2016ensemble,balasubramanian2018harnessing}.
-
-RS is a Python implementation of the Open Grid Forum SAGA standard
-GFD.90~\cite{goodale2006saga},
-% a high-level interface to distributed infrastructure components like job
-% schedulers, file transfer and resource provisioning services. RS
-which enables interoperability across high performance computing (HPC)
-platforms.
-% heterogeneous distributed infrastructures, improving on their usability and
-% enhancing the sustainability of services and tools.
-Ref.~\cite{merzky2015saga} details RS therefore, in the rest of the paper, we
-focus on RP and EnTK.
+RADICAL-Pilot (RP)~\cite{merzky2018using} and RADICAL-EnsembleToolkit
+(EnTK)~\cite{balasubramanian2016ensemble,balasubramanian2018harnessing}. RS is a
+Python implementation of the Open Grid Forum SAGA standard
+GFD.90~\cite{tom2006saga}, soon to be replaced by
+PSI/J~\cite{hategan2023psi} which enables submitting, monitoring and managing
+jobs across high performance computing (HPC) platforms.
+Refs.~\cite{merzky2015saga} and~\cite{hategan2023psi} detail RS and PSI/J,
+therefore we focus on RP and EnTK in the rest of the paper.
 
 RP is a Python implementation of the pilot paradigm and architectural
-pattern~\cite{turilli2018comprehensive}. Pilot systems enable users to submit
-pilot jobs to computing infrastructures and then use the resources acquired
-by the pilot to execute one or more tasks. These tasks are directly scheduled
-via the pilot, without having to queue in the infrastructure's batch system.
+pattern~\cite{turilli2018comprehensive,luckow2012p}. Pilot systems enable users
+to submit jobs to HPC platforms and then use the resources acquired to execute
+the application tasks. These tasks are directly scheduled via the pilot system,
+without having to queue in the platform's batch system. EnTK is a Python
+implementation of a workflow engine, specialized in supporting the programming
+and execution of applications with ensembles of tasks organized into pipelines
+of stages of tasks. EnTK executes tasks concurrently or sequentially, depending
+on their priority relation and resource availability.
 
-EnTK is a Python implementation of a workflow engine, specialized in supporting
-the programming and execution of applications with ensembles of tasks organized
-into pipelines of stages of tasks. EnTK executes tasks concurrently or
-sequentially, depending on their arbitrary priority relation and resource
-availability.
+Distinctively, RCT supports the execution of heterogeneous executable or
+function tasks on heterogeneous computing resources. Both types of task can be
+single/multi core/GPU/node and MPI/OpenMP\@. Executable tasks are programs that
+run as self-contained entities, while function tasks are functions or methods
+written in a specific programming language. Uniquely, RCT support the concurrent
+execution of heterogeneous executable and Python function tasks on up to 193,000
+cores and 27,600 GPUs~\cite{merzky2021design}.
 
-Across RCT, executable tasks are scalar, MPI, OpenMP, multi-process, and
-multi-threaded programs that run as self-contained entities; while function
-tasks are (non)MPI functions, methods, threads or subprocesses written in a
-specific programming language. Uniquely, RCT support the concurrent execution of
-executable and Python function tasks across large amount of resources acquired
-on among the largest HPC platforms currently available to the scientific
-research.
-
-% Both RP and EnTK focuses on High Performance Computing (HPC) resources,
-% enabling the concurrent and consecutive execution on CPU/GPU of stasks.
-
-% RP focuses on High Performance Computing (HPC) resources, enabling the
-% concurrent and consecutive execution of heterogeneous workloads comprised
-% of one or more scalar, MPI, OpenMP, multi-process, and multi-threaded
-% tasks. These tasks can be executed on CPUs, GPUs and other accelerators, on
-% the same pilot or across multiple pilots.
-
-% EnTK promotes ensembles of tasks to a high-level abstraction, providing a
-% programming interface and execution model specific to ensemble-based
-% applications. EnTK is engineered for scale and a diversity of computing
-% platforms and runtime systems, agnostic of the size, type and coupling of
-% the tasks comprising the ensemble.
-
-RCT are designed to work both individually and as an integrated system, with or
-without third party systems. This requires a ``Building Block'' approach to
-their design and development, based on applying the traditional notions of
-modularity at system level~\cite{turilli2019middleware}. The Building Block
-approach derives from the work on Service-oriented Architecture and its
-Microservice variants, and the component-based software development approaches
-where computational and compositional elements are explicitly
+RCT work both individually and as an integrated system, with or without third
+party software systems. This requires a ``Building Block'' approach to their
+design and development, based on applying the traditional notions of modularity
+at system level~\cite{turilli2019middleware}. The Building Block approach
+derives from the work on Service-oriented Architecture and its Microservice
+variants, and the component-based software development approaches where
+computational and compositional elements are explicitly
 separated~\cite{garlan1995architectural,clemens1998component,schneider2000components}.
 
-% batory1992design, lenz1987software,}. \jhanote{Can we reduce the number of
-% references to SOA and CBSE? I'm assuming some of these are in the CCGrid and
-% CISE paper, so "references therein" is acceptable. It is motivated as much by
-% space, as it consistency across other "aspects" not central to this paper or
-% covered elsewhere.}
+RCT is developed following open source best practices, including the use of unit
+and integration tests, Git, git-flow, pull requests, continuous integration and
+release early, release often. Hosted on GitHub, the RCT development team
+developed a tag taxonomy to trace both the development and support processes via
+PRs and tickets. That enables a fine-grained, automated analysis of the
+development activity, uncovering hot-spot in the code base, classes or recurring
+issues, capabilities gap-analysis and effectiveness of the support processes
+(Fig.~\ref{fig:tags}). Together, that insight allows to direct the development
+activity dynamically, where it is actually needed.
 
-% \jhanote{ We should not say the  later part, as I don't think its fully
-% correct.} % AirFlow, Oozie, Azkaban, Spark Streaming, Storm, or Kafka are
-% examples of tools that have a design consistent with the building blocks
-% approach.
+\begin{figure}
+        \centering
+        \subfloat[ ]{{\includegraphics[width=0.45\textwidth]{figures/rp-tickets-year.pdf} }}
+        \qquad
+        \subfloat[ ]{{\includegraphics[width=0.45\textwidth]{figures/entk-tickets-year.pdf}}}
+        \caption{Number of tickets opened by core developers and users for
+        RADICAL-Pilot (a) and RADICAL-EnsembleToolkit (b). One of the data
+        analysis we use to monitor the reliability of a code base and decide
+        when to transition a RCT from active development to
+        maintenance.}\label{fig:tags}
+\end{figure}
 
-% In our adaptation, the Building Block approach is based on four
-% well-understood principles: self-sufficiency, interoperability, composability,
-% and extensibility. This approach does not reinvent modularity, it applies it
-% at system level to enable composability among independent software systems. As
-% an abstraction, modularity enables separation of concerns by encapsulating
-% discrete functions into semantic units exposed by means of a dedicated
-% interface. As such, modularity can be used at function or method level,
-% depending on the programming paradigm and the facilities offered by
-% programming languages, or at system-level, depending on the interface exposed
-% by each system.
 
 % ---------------------------------------------------------------------------
 \subsection{Software Architecture}\label{ssec:architecture}
@@ -207,66 +188,42 @@ separated~\cite{garlan1995architectural,clemens1998component,schneider2000compon
 % pictorial component overview or similar (if possible). If necessary provide
 % implementation details.}
 
-Architecturally, all RCT consist of one or more subsystems, each with several
-components. Some components are used only in specific deployment scenarios,
-depending on both application requirements and resource capabilities. Some
-components can be instantiated concurrently, enabling throughput scaling. A
+Architecturally, all RCT consist of independent building blocks, each with
+several components. Some components are used only in specific deployment
+scenarios, depending on both application requirements and resource capabilities.
+Some components can be instantiated concurrently, enabling throughput scaling. A
 communication overlay enables coordination of concurrent components, improving
 scalability at the cost of infrastructure-specific overheads.
-
-% \vbnote{I think mesh refers to a topology where every component can directly
-% talk to another. I don't think that's true for our systems - I think we have a
-% master-slave comm. model.}\mtnote{The communication mash is among components
-% of subsystems, e.g., RP agent's components, or workflow manager in
-% entk.}\jhanote{I've added to the confusion by using overlay. I think mesh is
-% usually used in topology specific context, and that is not intended. I wanted
-% to use communication subsystem -- which is the canonical approach, but we're
-% talking about subsystems of components, thus subsystem is suboptimal.}
-
-% Concurrent components are coordinated via a dedicated A  communication mesh,
-% which introduces runtime and infrastructure-specific overheads, but improves
-% overall scalability of the system and lowers component complexity. Components
-% can have different implementations; configuration files can tailor each RCT to
-% specific resources types, workloads, or scaling requirements. Components
-% exchange data about the entities specific to each RCT and data about the state
-% of the components and subsystems. Each type of data has dedicated modules and
-% communication channel, separating communication from coordination with
-% explicit states and events for each entity.
-
-% Ref.~\cite{merzky2015saga} details RADICAL-SAGA architecture and capabilities.
-% In the rest of the paper, we focus on RP and EnTK, first introducing each
-% system individually, then showing how RCT as a whole can be composed to serve
-% diverse use cases.
 
 % ------------
 \subsubsection{RADICAL-Pilot}\label{sssec:arch_rp}
 
 RP implements two abstractions: Pilot and Task. Pilots are placeholders for
-computing resources, where resources are represented independent from
-architecture and platform details. Tasks are units of work specified by a
-program's executable or a language-specific function/method, alongside resource
-and execution environment requirements.
-
-Fig.~\ref{fig:archs}a depicts RP's architecture. RP has two subsystems (white
-boxes), each with several components (purple and yellow boxes). Purple
-components manage pilots and tasks while yellow components enable communication
-and coordination. Subsystems can execute locally or remotely, communicating over
-TCP/IP and enabling multiple deployment scenarios.
-% For example, users can run Client locally, and distribute MongoDB and one
-% or more instances of Agent on remote computing infrastructures.
-% Alternatively, users can run all components on a local or remote resource.
-
-% \vbnote{Is 'AgentManager' a communication sub-component? Also, in the
-% figure Queues are either blue or orange but in the legend they are blue and
-% pink.}
+computing resources, where resources are represented independent of architecture
+and platform details. Tasks are units of work specified by a program's
+executable or a language-specific function/method, alongside resource and
+execution environment requirements. Fig.~\ref{fig:archs}a depicts RP's
+architecture with two subsystems (white boxes), each with several components
+(purple and yellow boxes). Purple components manage pilots and tasks while
+yellow components enable communication and coordination. Subsystems can execute
+locally or remotely, communicating over TCP/IP and enabling multiple deployment
+scenarios.
 
 \begin{figure}
     \centering
-    \subfloat[ ]{{\includegraphics[width=0.555\textwidth]{figures/arch_rp.pdf} }}
+    \subfloat[ ]{{\includegraphics[width=0.555\textwidth]{figures/arch_rp_2.pdf}}}
     \qquad
-    \subfloat[ ]{{\includegraphics[width=0.34\textwidth]{figures/arch_entk.pdf}
-    }} \caption{Caption. \mtnote{TODO\@: Fix EnTK AppManager; replace unit with
-    task}}\label{fig:archs}
+    \subfloat[ ]{{\includegraphics[width=0.34\textwidth]{figures/arch_entk.pdf}}}
+    \caption{(a) RADICAL-Pilot (RP) architecture has two main components: Client
+    and Agent. Depending on the deployment scenarios, Client may be executing on
+    an HPC platform's compute node or remotely, e.g., on the user's workstation.
+    Agent always executes on a compute node. Together, the Client and Agent
+    subcomponents manage resource acquisition and task execution on those
+    resources. (b) RADICAL-EnsembleToolkit (EnTK) architecture. EnTK components
+    traverse the data structure used to specify a workflow in terms of
+    pipelines, stages and tasks, orchestrating the execution of the workflow's
+    tasks via a runtime system (currently RP) while respecting their precendece
+    relationships.}\label{fig:archs}
 \end{figure}
 
 % Client has two main components: PilotManager and UnitManager. PilotManager
@@ -291,12 +248,10 @@ TCP/IP and enabling multiple deployment scenarios.
 
 RP's Client has two main components: PilotManager and TaskManager. PilotManager
 manages pilots, using the Launcher and its configuration files to tailor RP's
-Agent to specific platforms. Currently, RP ships with configuration files for
-$N$\mtnote{Andre: pls replace N with the number of platforms supported by RP
-(either current or not)} platforms, including among others all the ACCESS HPC
-machines, TACC Frontera, ALCF Theta/GPU, LLNL Lassen, ORNL Summit and LRZ
-SuperMUC-NG. The TaskManager manages tasks, using the Scheduler to bind and
-launch tasks onto one or more pilots, across one or more platforms. The
+Agent to specific platforms. Currently, RP supports 17
+platforms~\cite{rp-supported-url} across DoE laboratories, NSF ACCESS and
+university campuses. The TaskManager manages tasks, using the Scheduler to bind
+and launch tasks onto one or more pilots, across one or more platforms. The
 StagerInput copies tasks' input files to the machine on which each task was
 scheduled.
 
@@ -316,7 +271,7 @@ on the pilot(s) resources. For performance at scale, multiple instances of the
 Stager and Executer can coexist in multiple sub-agents, placed on MOM/batch
 nodes, compute nodes, virtual machines, depending on the architecture of each
 platform.
-
+%
 % Each component of each subsystem of RP has a dedicated queue to feed
 % entities into that component. Orange Queues in Fig.~\ref{fig:archs}a are
 % dedicated to pilots and CUs, blue Queues to the messages exchanged by
@@ -324,23 +279,23 @@ platform.
 % performance at scale in a distributed systems. Further, queues enable load
 % balancing among concurrent components. Note that concurrent components are
 % used for performance optimization at scale.
-
-Each Agent component has a queue to support the feeding of pilots or tasks
-(Fig.~\ref{fig:archs}a, orange queues) and of control messaging
-(Fig.~\ref{fig:archs}a, blue queues). All queues support bulk communication
-and enable load balancing among concurrent components to obtain performance
-at scale.
+%
+Each Agent component has a queue to support the exchange of pilot or task
+descriptions (Fig.~\ref{fig:archs}a, orange queues), and of control messaging
+(Fig.~\ref{fig:archs}a, blue queues). All queues support bulk communication and
+enable load balancing among concurrent components to obtain performance at
+scale.
 %
 % Data management in RP focuses on providing input files to CUs before their
 % execution, and on moving output files to later CUs, or back into the user
 % environment. On HPC resources which provide both local and network storage,
 % RP can select the most appropriate storage, depending on CUs I/O
 % requirements.  Data can be exclusive to CUs, or can be shared between CUs.
-%
+
 RP moves, copies or links input files to tasks before execution and output files
 from tasks after execution. RP can select the most appropriate storage location,
 depending on resource capabilities and task requirements. Data can be exclusive
-to each task, or shared among a set of tasks.
+to each task, or shared among tasks.
 %
 % A special queue instance is rendered as collection in a MongoDB database.
 % That collection is used to communicate between Client and Agent, while
@@ -353,15 +308,15 @@ RP's Client and Agent communicate via a queue instance rendered as a data
 structure of a database, preserving the semantic of the queues in
 Fig.~\ref{fig:archs}a. Database's data are persistent, contributing to
 \textit{post mortem} profiling and analysis of RP executions via
-RADICAL-Analytics~\cite{radical-analytics}.
+RADICAL-Analytics~\cite{ra-url}.
 
-Fig.~\ref{fig:archs}a's numbers illustrate the resource acquisition and task
-execution process. The PilotManager uses RADICAL-SAGA to queue a pilot as a job
-on an HPC platform's batch system (Fig.~\ref{fig:archs}a.1-2). Once scheduled,
-the job bootstraps RP's Agent and the Agent's Updater notifies RP's Client that
-tasks can be executed (Fig.~\ref{fig:archs}a.3). Upon notification, the client's
+Fig.~\ref{fig:archs}a's numbers show the resource acquisition and task execution
+process. The PilotManager uses RADICAL-SAGA to queue a pilot as a job on an HPC
+platform's batch system (Fig.~\ref{fig:archs}a.1--2). Once scheduled, the job
+bootstraps RP's Agent and the Agent's Updater notifies RP's Client that tasks
+can be executed (Fig.~\ref{fig:archs}a.3). Upon notification, the client's
 TaskManager queues all the available tasks onto the client's Scheduler and,
-after staging files if required, tasks are queued to the agent's Scheduler
+after staging files when required, tasks are queued to the agent's Scheduler
 (Fig.~\ref{fig:archs}a.4-6). The agent's scheduler assigns tasks to suitable
 portions of the available pilot's resources and then queues those tasks to an
 Executor (Fig.~\ref{fig:archs}a.7). The agent's Executor places each task on the
@@ -372,11 +327,11 @@ task for execution (Fig.~\ref{fig:archs}a.8).
 % ------------
 \subsubsection{RADICAL Ensemble Toolkit}\label{sssec:arch_entk}
 
-EnTK implements three abstractions: task, stage and pipeline. EnTK and RP share
+EnTK implements three abstractions: Task, Stage and Pipeline. EnTK and RP share
 the same Task abstraction but, in EnTK, a Stage is a set of tasks which have no
-mutual dependences and thus can execute concurrently; and a Pipeline is a list
-of stages where the ordering of the stages represents the ordering of their
-execution.
+mutual dependencies and thus can execute concurrently; and a Pipeline is a
+sequence of stages where the ordering of the stages represents the ordering of
+their execution.
 
 % As with RP, EnTK enables concurrent and sequential execution of set of
 % executable or function tasks. Each task's program can use parallelism,
@@ -401,12 +356,12 @@ for task execution.
 % implementation detail. The has a wierd shape anyway, which I think is owed
 % to unclarity in it's role?}
 
-EnTK's API enables the development of ensemble-based applications with tasks,
-stages and pipelines, and the specification of resource requirements for the
-application execution. AppManager initializes EnTK and holds the global state
-of the application at runtime. AppManager is the sole stateful component of
-EnTK, allowing to restart other components upon failure, without interrupting
-the execution of the ensemble-based application.
+EnTK's API enables the development of ensemble-based applications
+and the specification of resource requirements for the application execution.
+AppManager initializes EnTK and holds the global state of the application at
+runtime. AppManager is the sole stateful component of EnTK, allowing to restart
+other components upon failure, without interrupting the execution of the
+ensemble-based application.
 
 WFProcessor queues and dequeues tasks pulled to and from the TaskManager in
 accordance with the task order specified by stages and pipelines. TaskManager
@@ -432,9 +387,9 @@ that are ready for execution to TaskManager (Fig.~\ref{fig:archs}b.1).
 Meanwhile, ResManager users the chosen runtime system to acquire the requested
 resources (Fig.~\ref{fig:archs}b.2) and, once available, TaskManager uses those
 resources to execute the queued tasks (Fig.~\ref{fig:archs}b.3) and dequeuing
-them once they have been executed. ExecManager uses queues to communicate the
-state of each task execution to AppManager (Fig.~\ref{fig:archs}b.4). Note that
-AppManager is the only stateful component of EnTK\@: both WFProcessor and
+them once they have been executed. ExecManager uses ZMQ queues to communicate
+the state of each task execution to AppManager (Fig.~\ref{fig:archs}b.4). Note
+that AppManager is the only stateful component of EnTK\@: both WFProcessor and
 ExecManager can fail without loss of information about pending or completed
 tasks, but only about tasks that are executing at the instant of failure.
 
@@ -456,19 +411,24 @@ directly executed on those resources.
 % executions and runtime behavior.
 %
 When compared to other pilot systems or tools that enable the execution of
-many-task applications on HPC systems, RP offers three unique features: (1)
-concurrent execution of heterogeneous executable and function tasks on one or
-more pilots. Tasks can be single/multi core/GPU and MPI/OpenMP and execute
-across one or more compute nodes. Each task executes into a dedicated process,
-enabling independent and concurrent execution. (2) Support of the major HPC
-batch systems and (3) of twelve methods to launch tasks.
+many-task applications on HPC systems, RP offers four distinctive features: (1)
+concurrent execution of heterogeneous (single/multi core/GPU/node and
+MPI/OpenMP) executable and function tasks on one or more pilots, across one or
+more HPC platforms;
+% Tasks can be single/multi core/GPU/node and MPI/OpenMP. Each task executes
+% into a dedicated process, enabling independent and concurrent execution.
+% (2) support of the major HPC batch systems;
+(2) twelve methods to launch tasks; (3) multiple runtime implementations,
+including RAPTOR~\cite{merzky2022raptor} and
+PRRTE~\cite{turilli2019characterizing,titov2022radical}; and (5) integration
+with many other third-party software systems~\cite{turilli2019middleware}.
 
 % EnTK EnTK is a workflow engine specifically designed to execute
 % ensemble-based applications. These applications are composed by ensemble of
 % tasks that may have dependences both among tasks and ensembles.
 
-EnTK is a workflow engine that, compared to similar systems, allows to codify
-ensemble applications as pipelines of stages of tasks. Task interdependences
+EnTK is a workflow engine that, compared to similar systems, allows codifying
+ensemble applications as pipelines of stages of tasks. Task interdependencies
 may be determined by input/output data or control flow requirements.
 %
 % For example, two tasks may have to be executed sequentially when the output
@@ -483,16 +443,7 @@ Further, pipelines can be paused while waiting to perform \textit{ad hoc}
 computations. This enables the implementation of high-level application
 patterns as, for example,
 simulation-analysis~\cite{balasubramanian2016extasy} or replica
-exchange~\cite{treikalis2016repex}.
-
-% Execution Model
-
-% \mtnote{Describe BB and individual + aggregated execution models}
-
-
-% ---------------------------------------------------------------------------
-% \subsection{Sample code snippets analysis (optional)}\label{ssec:code}
-
+exchange~\cite{treikalis2016repex,mushnoori2018repex}.
 
 % ---------------------------------------------------------------------------
 % Section III
@@ -516,33 +467,53 @@ exchange~\cite{treikalis2016repex}.
 % workflow system developers be provided with the necessary abstractions and
 % capabilities to prevent the need to develop \textit{ab initio}.
 
-An increasing trend is to develop single-point software solutions, tailored to
-the requirements of a specific use case. The case of software tools that support
-similar but not identical workflow applications provides a paradigmatic example.
-Ref.~\cite{workflow-systems-url} enumerates in excess of 230 workflow systems,
-all implementing overlapping if not equal abstractions and capabilities, each
-with slightly different tailoring, often undocumented performance and actual
-state of availability and active development.
+Both RP and EnTK expose an application programming interface
+(API)~\cite{rp-api-url,entk-api-url} designed to support three classes of use
+cases: (1) user-facing applications; (2) application-facing frameworks; and (3)
+integrating with third-party middleware tools to serve use cases that require
+aggregated capabilities.
 
-RCT avoids many of the pitfalls of reimplementing existing tools by offering
-logically self-contained software blocks that can be easily composed with
-independently designed third-party software tools, composed among themselves or
-individually used as stand-alone tools. Consistently, RCT offers two large
-classes of use cases: those that require middleware to build application-facing
-frameworks and those that require well-defined interfaces and capabilities to
-develop a user-facing application.
+RCT has been used to develop dozens of applications executing between few tens
+of tasks to hundreds of thousand on workstations, clusters and leadership-class
+machines~\cite{radical-pub-url}. Among those, the IMPECCABLE virtual drug
+discovery pipeline~\cite{saadi2021impeccable} (Fig.~\ref{fig:impeccable}) is a
+paradigmatic example. First utilized to promote the discovery of new drugs for
+the SARS-CoV-2 virus, IMPECCABLE executed multiple workflows coded against RCT
+APIs. For example, RP+RAPTOR executed the Docking of $6.6\times10^6$ ligands on
+31 proteins, concurrently utilizing the 8836 nodes of
+Frontera~\cite{stanzione2020frontera}, reaching a throughput of
+$~17.4\times10^6$ docks/h; on Summit~\cite{luo2020pre}, RP docked $57\times10^6$
+ligands on 6000 GPUs, reaching $11\times10^6$ docks/h. EnTK was used to
+implement all the other stages of IMPECCABLE\@.
 
-% , lowers the technical barriers to their composability and thus allows
-% designing domain-specific tools.
+\begin{figure}[h]
+        \centering
+        \subfloat[ ]{{\includegraphics[width=0.45\textwidth]{figures/impeccable-gb20-level-1-v3}}}
+        \qquad
+        \subfloat[ ]{{\includegraphics[width=0.45\textwidth]{figures/impeccable-gb20-execution-architecture.pdf}}}
+        \caption{(a) IMPECCABLE virtual drug discovery pipeline. The constituent
+        components are deep-learning based surrogate model for docking (ML1),
+        Autodock-GPU~\cite{legrand2020gpu} (S1), coarse and fine-grained binding
+        free energies (S3-CG and S3-FG) and S2 (DeepDriveMD). (b) Programming
+        and execution view: Each stage of the (S3-CG)-(S2)-(S3-FG) pipeline
+        comprises multiple heterogeneous tasks; each stage executes for varying
+        durations.}\label{fig:impeccable}
+\end{figure}
 
-% RCT can be extended to support multiple domain-specific tools.
-EnTK has enabled the development of workflow tools which provide domain-specific
-functionalities. Each tool is characterized by a unique execution and
-coordination pattern and can serve multiple applications. The four
-ensemble-based workflow frameworks developed using EnTK and other RCT are:
-EXTASY~\cite{balasubramanian2016extasy}, RepEx~\cite{treikalis2016repex},
-HTBAC~\cite{dakka2018high}, and ICEBERG~\cite{iceberg_paper}. Details can be
-found in Ref.~\citep{turilli2019middleware}.
+RCT enabled the development of EXTASY~\cite{balasubramanian2016extasy},
+RepEx~\cite{treikalis2016repex}, HTBAC~\cite{dakka2018high},
+ICEBERG~\cite{paraskevakos2019workflow} and
+DeepDriveMD~\cite{lee2019deepdrivemd}. Those are ensemble-based frameworks
+% % workflow tools which provide domain-specific
+% % functionalities. Each tool is
+characterized by a unique execution and coordination patterns and which serve
+multiple applications. ICEBERG, FACTS, IMPECCABLE are three paradigmatic example
+of user-facing applications developed with RCT to address the difficult
+challenges of our time: climate change, rising seas levels and the COVID-19
+pandemic. Finally, RCT have been integrated with several third-party tools, like
+Parsl~\cite{alsaadi2022radical}, Flux~\cite{rp-flux-url},
+Hadoop~\cite{luckow2016hadoop}, Spark~\cite{paraskevakos2018task},
+swift/T~\cite{turilli2016integrating} and PanDA~\cite{merzky2019panda}.
 
 % EnTK has enabled the development of domain-specific workflow (DSW) tools.
 % Driven by specific application needs, each DSW is characterized by a unique
@@ -552,17 +523,20 @@ found in Ref.~\citep{turilli2019middleware}.
 % HTBAC~\cite{dakka2018high}, and ICEBERG~\cite{web-iceberg}. Details can be
 % found in Ref.~\cite{turilli2019middleware}.
 
-ExTASY, RepEx, HTBAC represent three adaptive ensemble based domain-specific
-tools. They have benefited by using EnTK by not having to re-implement
-workflow processing, efficient task management and interoperable task
-execution capabilities on distinct and heterogeneous platforms. In turn, eight
-distinct adaptive ensemble workflows have been implemented using EnTK, which
-suggests that the ``last mile customization'' capability of the RCT-based
-building block approach.
+% ExTASY, RepEx, HTBAC and DeepDriveMD represent four adaptive ensemble-based,
+% domain-specific tools. EnTK allowed them not to have to re-implement workflow
+% processing, efficient task management and interoperable task execution
+% capabilities on distinct and heterogeneous platforms. In turn, eight adaptive
+% ensemble workflows have been directly implemented using EnTK, and RP and its
+% RAPTOR subsystem supported the development of a docking application that scaled
+% up to $\approx$224,000 cores on Frontera~\cite{merzky2022raptor}, as part of the
+% IMPECCABLE campaign to find viable molecules to fight
+% COVID-19~\cite{saadi2021impeccable}. Finally, RP has been integrated with
+% several third-party tools, like Parsl~\cite{alsaadi2021radical},
+% swift/T~\cite{turilli2017evaluating}, PanDA~\cite{merzky2019panda},
+% Hadoop~\cite{luckow2016hadoop} and Spark~\cite{paraskevakos2018task}
 
-% provides circumstantial evidence, if not weak validation, of
-
-\mtnote{TODO: Add details about RP and RAPTOR for IMPECCABLE and friends.}
+% \mtnote{TODO: Add details about RP and RAPTOR for IMPECCABLE and friends.}
 
 % ---------------------------------------------------------------------------
 % Section IV
@@ -721,9 +695,10 @@ The impact of RCT spans domain science, high-performance computing and software
 systems design. RCT serves a worldwide community of domain scientists and system
 engineers that actively contribute to the open source development of RCT\@.
 Currently, RCT supports a dozen active science projects across the USA and
-Europe. The size of projects varies from single PIs to very large international
-collaborations. Thus, there is intrinsic uncertainty in the number of both
-direct and indirect RCT users.
+Europe. The size of projects varies from single PIs to large international
+collaborations.
+% Thus, there is intrinsic uncertainty in the number of both
+% direct and indirect RCT users.
 
 % paraskevakos2018task,
 %oleynik2017high}
@@ -735,20 +710,22 @@ biophysics~\cite{shkurti2016coco,dakka2018high}; materials~\cite{dakka2018high},
 earth and climate
 science~\cite{paraskevakos2019workflow,balasubramanian2018harnessing}; particle
 physics\cite{oleynik2017high}; and drug discovery~\cite{bfe-jctc-2014}.
-RADICAL-SAGA has mostly been integrated into end-to-end middleware solutions,
-RADICAL-Pilot has been used both as standalone system and integrated with other
-systems, while EnTK has served as workflow engine for domain-specific
-applications.
+% RADICAL-SAGA has mostly been integrated into end-to-end middleware solutions,
+% RADICAL-Pilot has been used both as standalone system and integrated with other
+% systems, while EnTK has served as workflow engine for domain-specific
+% applications.
 
-RADICAL-SAGA enables the Production ANd Distributed Analysis (PanDA) system to
-submit batch jobs to Titan and Summit, the two leadership class machines
-managed at the ORNL~\cite{web-olcf-resources}. PanDA is the workload
-management system used by the ATLAS experiment to execute hundred of millions
-of jobs a year on both grid and HPC infrastructures~\cite{maeno2008panda}. The
-usage of ORNL resources constitutes $\approx 2-3$\% of all of ATLAS computing.
-There are several thousand researchers that directly or indirectly use PanDA,
-and thereby RADICAL-SAGA. RADICAL-Pilot will be part of the PanDA workload
-management ecosystem on multiple HPC platforms.
+% RCT enables the Production ANd Distributed Analysis (PanDA) system to submit
+% batch jobs to Summit~\cite{megino2017integration}, one of the leadership class
+% machine managed by ORNL~\cite{web-olcf-resources}. PanDA is the workload
+% management system used by the ATLAS experiment to execute hundreds of millions
+% of jobs a year, on both grid and HPC infrastructures~\cite{maeno2008panda}. The
+% usage of ORNL resources constituted $\approx 2-3$\% of all of ATLAS computing.
+% There are several thousand researchers that directly or indirectly use PanDA,
+% and thereby RCT.
+
+% RADICAL-Pilot will be part of the PanDA workload management ecosystem on
+% multiple HPC platforms.
 
 % \amnote{That's planned, but not sure?}\jhanote{better? addressed the subtletly
 % of Harvester too}
@@ -767,8 +744,8 @@ management ecosystem on multiple HPC platforms.
 % RADICAL-SAGA based approach to job submission to distributed computing
 % systems.
 
-Since its first release in 2013, RP has supported around two dozen projects
-and 100 direct users. Half of these projects used RP has a standalone system
+Since its first release in 2013, RP has supported around three dozen projects
+and 150 direct users. Half of these projects used RP has a stand-alone system
 to execute applications comprised of multiple tasks. Supporting distinct
 applications contributed to realize the growing importance of the
 ensemble computational model: HPC applications were replacing single task
@@ -779,7 +756,7 @@ As seen in Sec.~\ref{sec:examples}, EnTK has enabled the development of four
 ensemble-based workflow tools which provide domain specific functionalities.
 ExTASY and RepEx implement advanced sampling algorithms using biomolecular
 simulations. Both use the EnTK API to implement  diverse coordination patterns
-amongst ensembles of biomolecular simulations and analysis. HTBAC supports
+among ensembles of biomolecular simulations and analysis. HTBAC supports
 multiple algorithms that compute free-energy calculations that are critical to
 drug design and resistance studies. HTBAC allows the runtime adaptation at
 multiple levels: algorithms, pipelines and tasks within a pipeline. This
@@ -793,7 +770,7 @@ both individually and as integrated, end-to-end
 solution~\cite{turilli2019middleware}. This is important when supporting
 projects with multiple, distinct use cases. For example, ICEBERG has to support
 five use cases, each investigating a specific problem in the domain of polar
-science. Four of these use cases require the concurrent execution of pipelines
+science. Four of these use cases require the concurrent execution of pipelines,
 but one requires only the execution of bag of tasks. The first four cases can
 use EnTK while the latter only RADICAL-Pilot. Importantly, all use cases can be
 served by the ICEBERG framework with a minor change in the private API to call
@@ -806,19 +783,19 @@ overheads.
 % platforms. This, in turn, enables both a focus on and ease of ``last mile
 % customization''.
 
-RCT are also a testbed for engineering research, mostly focused on foundational
+RCT are also a test bed for engineering research, mostly focused on foundational
 abstractions~\cite{turilli2017evaluating}, architectural
 paradigms~\cite{turilli2018comprehensive}, application
 patterns~\cite{balasubramanian2016extasy,balasubramanian2018harnessing}, and
 performance analysis of distributed middleware on diverse computing
 infrastructures~\cite{turilli2017evaluating,dakka2018high}. Among the most
-representative projects supported by RP as a standalone system, the Abstractions
+representative projects supported by RP as a stand-alone system, the Abstractions
 and Integrated Middleware for Extreme-Scale Science (AIMES) project enabled
 extreme-scale distributed computing via dynamic federation of heterogeneous
 computing infrastructures. We used RP to execute millions of tasks on both HPC
 and HTC resources, studying the federated behavior of multiple infrastructures,
 establishing the importance of integrating task and resource information in
-scheduling and placement decision making for federated
+scheduling and placement decision-making for federated
 supercomputers~\cite{turilli2016integrating}.
 
 
