@@ -10,7 +10,7 @@
 
 \title{RADICAL-Cybertools: Middleware Building Blocks for Scalable Science}
 
-\author{Aymen Al Saadi$^1$, Shantenu Jha$^{1,2}$, Andre Merzky$^1$, Mikhail Titov$^2$ and Matteo Turilli$^{1,2}$}
+\author{Matteo Turilli$^{1,2}$, Andre Merzky$^1$, Mikhail Titov$^2$ and Shantenu Jha$^{1,2}$}
 \address{$^1$Electrical \& Computer Engineering, Rutgers University, Piscataway, NJ 08854, USA, $^2$Brookhaven National Laboratory}
 
 \begin{abstract}
@@ -167,7 +167,7 @@ development activity, uncovering hot-spot in the code base, classes or recurring
 issues, capabilities gap-analysis and effectiveness of the support processes
 (Fig.~\ref{fig:tags}). Together, that insight allows to direct the development
 activity dynamically, where it is actually needed.
-
+\jhanote{Isn't the paragraph above meant to be a significant part of this ``software-x'' paper?}
 \begin{figure}
         \centering
         \subfloat[ ]{{\includegraphics[width=0.45\textwidth]{figures/rp-tickets-year.pdf} }}
@@ -177,7 +177,7 @@ activity dynamically, where it is actually needed.
         RADICAL-Pilot (a) and RADICAL-EnsembleToolkit (b). One of the data
         analysis we use to monitor the reliability of a code base and decide
         when to transition a RCT from active development to
-        maintenance.}\label{fig:tags}
+        maintenance.\jhanote{Figure quality needs addressing}}\label{fig:tags}
 \end{figure}
 
 
@@ -471,7 +471,9 @@ Both RP and EnTK expose an application programming interface
 (API)~\cite{rp-api-url,entk-api-url} designed to support three classes of use
 cases: (1) user-facing applications; (2) application-facing frameworks; and (3)
 integrating with third-party middleware tools to serve use cases that require
-aggregated capabilities.
+aggregated capabilities. \jhanote{I think the classification should be moved upstream and promoted. It should replace a lot of the current text for RP and EnTK (~3 pages), which exists and should be referenced, not replicated}
+
+\jhanote{Illustrative examples should illustrate not science impact but }
 
 RCT has been used to develop dozens of applications executing between few tens
 of tasks to hundreds of thousand on workstations, clusters and leadership-class
@@ -479,7 +481,7 @@ machines~\cite{radical-pub-url}. Among those, the IMPECCABLE virtual drug
 discovery pipeline~\cite{saadi2021impeccable} (Fig.~\ref{fig:impeccable}) is a
 paradigmatic example. First utilized to promote the discovery of new drugs for
 the SARS-CoV-2 virus, IMPECCABLE executed multiple workflows coded against RCT
-APIs. For example, RP+RAPTOR executed the Docking of $6.6\times10^6$ ligands on
+APIs. For example, RP+RAPTOR executed the docking of $6.6\times10^6$ ligands on
 31 proteins, concurrently utilizing the 8836 nodes of
 Frontera~\cite{stanzione2020frontera}, reaching a throughput of
 $~17.4\times10^6$ docks/h; on Summit~\cite{luo2020pre}, RP docked $57\times10^6$
@@ -507,10 +509,15 @@ DeepDriveMD~\cite{lee2019deepdrivemd}. Those are ensemble-based frameworks
 % % workflow tools which provide domain-specific
 % % functionalities. Each tool is
 characterized by a unique execution and coordination patterns and which serve
-multiple applications. ICEBERG, FACTS, IMPECCABLE are three paradigmatic example
-of user-facing applications developed with RCT to address the difficult
-challenges of our time: climate change, rising seas levels and the COVID-19
-pandemic. Finally, RCT have been integrated with several third-party tools, like
+multiple applications. ICEBERG, FACTS \jhanote{Not introduced or mentioned before} IMPECCABLE are three paradigmatic examples
+of user-facing applications developed with RCT.
+\jhanote{ICEBERG is conflated across class 1 and class 2. ICEBERG is class 2, not 1}
+
+% to address the difficult
+% challenges of our time: climate change, rising seas levels and the COVID-19
+% pandemic. 
+
+Finally, RCT have been integrated with several third-party tools, like
 Parsl~\cite{alsaadi2022radical}, Flux~\cite{rp-flux-url},
 Hadoop~\cite{luckow2016hadoop}, Spark~\cite{paraskevakos2018task},
 swift/T~\cite{turilli2016integrating} and PanDA~\cite{merzky2019panda}.
@@ -697,6 +704,8 @@ engineers that actively contribute to the open source development of RCT\@.
 Currently, RCT supports a dozen active science projects across the USA and
 Europe. The size of projects varies from single PIs to large international
 collaborations.
+
+\jhanote{I would organize impact around the three classes used in illustrative examples}
 % Thus, there is intrinsic uncertainty in the number of both
 % direct and indirect RCT users.
 
