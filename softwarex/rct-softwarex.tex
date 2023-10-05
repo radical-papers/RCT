@@ -476,11 +476,11 @@ aggregated capabilities.
 % should replace a lot of the current text for RP and EnTK (~3 pages), which
 % exists and should be referenced, not replicated}
 
-\jhanote{Illustrative examples should illustrate not science impact but }\mtnote{I think your comment was truncated but I considered in the context of our previous discussion. Better?}
+\jhanote{Illustrative examples should illustrate not science impact but}\mtnote{I think your comment was truncated but I considered in the context of our previous discussion. Better?}
 
-RCT has been used to develop dozens of applications executing between few tens
-of tasks to hundreds of thousand on workstations, clusters and leadership-class
-machines~\cite{radical-pub-url}. RCT support such applications by abstracting
+RCT has been used to develop dozens of applications executing between a few tens
+of tasks to hundreds of thousands on workstations, clusters and leadership-class
+machines~\cite{radical-pub-url}. RCT supports such applications by abstracting
 away resource acquisition and exposing classes to specify tasks and pilots. That
 promotes portability across different resources (e.g., CPU/GPU) and platforms
 (e.g., DOE and NSF HPC platforms); rapid configurability of applications in
@@ -506,12 +506,18 @@ promote the discovery of new drugs for the SARS-CoV-2 virus. IMPECCABLE executed
 on Frontera~\cite{stanzione2020frontera},
 % with
 reaching 98.3\% of steady state resource utilization with just $\sim$3\% task
-failure~\cite{merzky2022raptor}. RCT allowed to develop a docking application
-that used 8836 compute nodes on Frontera with between 1 and 31 concurrent
-pilots, depending on different platform resource management policies. The same
-application was ported to Summit~\cite{luo2020pre}, executing a different
-docking kernel with minimal reconfiguration and a new task description on 1000
-nodes with 6000 GPUs.
+failure~\cite{merzky2022raptor}. RCT allowed the development of a docking
+application that used 8836 compute nodes on Frontera with between 1 and 31
+concurrent pilots, depending on different platform resource management
+policies. The same application was ported to Summit~\cite{luo2020pre},
+executing a different docking kernel with minimal reconfiguration and a new
+task description on 1000 nodes with 6000 GPUs.\jhanote{I'm not sure I
+understand. Furthermore, the reference luo2020pre  confused me}\jhanote{I
+would consider IMPECCABLE to be in the second category, (possibly even a
+framework of frameworks, but that is for later) and not a single application.
+More apropos here, IMPECCABLE -- the end-to-end pipeline -- did not run as
+suggested. Or do you mean the first stage of the IMPECCABLE pipeline, viz.,
+docking?}
 
 % $~17.4\times10^6$ docks/h on Frontera~\cite{stanzione2020frontera} and
 % $11\times10^6$ docks/h on Summit~\cite{luo2020pre}. On frontera, RCT allowed to
@@ -752,10 +758,9 @@ swift/T~\cite{turilli2016integrating} and PanDA~\cite{merzky2019panda}.
 % ---------
 % VERSION 2
 % ---------
-The impact of RCT spans high performance and throughput computing, scientific
+The impact of RCT spans high-performance and throughput computing, scientific
 workflows and software systems design. RCT serves a worldwide community of
-domain scientists and system engineers that actively contribute to the open
-source development of RCT\@. Currently, RCT supports a dozen active science
+domain scientists and system engineers that actively contribute to the open source development of RCT\@. Currently, RCT supports a dozen active science
 projects across the USA and Europe. The size of projects varies from single PIs
 to large international collaborations.
 
@@ -768,9 +773,9 @@ to large international collaborations.
 
 RCT has been built on the advancements made in software
 engineering~\cite{merzky2018synapse,merzky2021design,merzky2022raptor,turilli2018comprehensive,turilli2019middleware,luckow2012p},
-allowing to support the computational requirements of diverse scientific domain
+allowing to support the computational requirements of the diverse scientific domain
 applications at unprecedented scale, efficiency and effectiveness. RCT enabled
-the of applications for chemical~\cite{sampat2018parallel} and
+applications for chemical~\cite{sampat2018parallel} and
 biophysics~\cite{shkurti2016coco,dakka2018high}; materials~\cite{dakka2018high},
 earth and climate
 science~\cite{paraskevakos2019workflow,balasubramanian2018harnessing}; particle
@@ -780,13 +785,12 @@ Specifically, RCT enabled the concurrent execution of a variety of executable
 and function tasks across NSF, DOE and European HPC platforms, including Titan,
 Summit, Frontier, the largest supercomputers available worldwide in the past 11
 years. Further, RCT supported a variety of scientific application patterns
-(e.g., bag of tasks, ensemble, pipelines and workflows), offering
+(e.g., a bag of tasks, ensemble, pipelines and workflows), offering
 fault-tolerance, resilience, tracing, profiling and adaptive capabilities.
 Crucially, RCT has implemented a clean separation between middleware and tasks,
 making them agnostic towards the type of computation executed. That allowed
 scientists working on the most pressing issues of our time (e.g., COVID-19
-pandemic, polar science, seas level rise) to utilize RCT without needed any
-tailoring.
+pandemic, polar science, sea-level rise) to utilize RCT without needing any tailoring.
 
 % RADICAL-SAGA has mostly been integrated into end-to-end middleware solutions,
 % RADICAL-Pilot has been used both as standalone system and integrated with other
@@ -830,8 +834,9 @@ tailoring.
 % applications with ensembles of tasks to achieve significant performance gains
 % on large-scale parallel machines.
 
-Beyond the application layer, as seen in \S\ref{sec:examples} RCT has enabled
-the development of frameworks which provide domain specific functionalities.
+Beyond the application layer, as seen in 
+\S\ref{sec:examples} RCT has enabled
+the development of frameworks that provide domain-specific functionalities.
 ExTASY and RepEx implement advanced sampling algorithms using biomolecular
 simulations. Both use the EnTK API to implement diverse coordination patterns
 among ensembles of biomolecular simulations and analysis. HTBAC supports
@@ -850,17 +855,17 @@ solution~\cite{turilli2019middleware}. This is important when supporting
 projects with multiple, distinct use cases. For example, ICEBERG has to support
 five use cases, each investigating a specific problem in the domain of polar
 science. Four of these use cases require the concurrent execution of pipelines,
-but one requires only the execution of bag of tasks. The first four cases can
+but one requires only the execution of a bag of tasks. The first four cases can
 use EnTK while the latter only RADICAL-Pilot. Importantly, all use cases can be
 served by the ICEBERG framework with a minor change in the private API to call
 EnTK or RP, depending on the use cases and therefore without any engineering
 overheads.
 
 Importantly, the Building Block approach allows also the integration with tools
-independently developed by third party development teams. That impacts both the
+independently developed by third-party development teams. That impacts both the
 overall ecosystem for scientific computing and the type of use cases that RCT
 can satisfy. By integrating with existing tools, RCT limits the proliferation of
-functionally-equivalent middleware, but they also allow users to choose among a
+functionally equivalent middleware, but it also allows users to choose among a
 variety of abstractions, capabilities and interfaces. For example, by
 integrating RADICAL-Pilot with Parsl, Colmena---a Python library for combining
 AI and simulation workflows on HPC---was able to execute MPI tasks while still
@@ -872,7 +877,7 @@ using Parsl and its user-facing API~\cite{alsaadi2022radical}.
 % platforms. This, in turn, enables both a focus on and ease of ``last mile
 % customization''.
 
-Finally, RCT are also a test bed for engineering research, mostly focused on
+Finally, RCT is also a test bed for engineering research, mostly focused on
 foundational abstractions~\cite{turilli2017evaluating}, architectural
 paradigms~\cite{turilli2018comprehensive}, application
 patterns~\cite{balasubramanian2016extasy,balasubramanian2018harnessing}, and
