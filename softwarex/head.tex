@@ -22,8 +22,8 @@
 \usepackage{xspace}
 \usepackage{wrapfig}
 \usepackage{subfig}
+\usepackage{tikz}
 \usepackage[export]{adjustbox} % http://ctan.org/pkg/adjustbox
-
 
 \definecolor{listinggray}{gray}{0.95}
 \definecolor{darkgray}{gray}{0.7}
@@ -47,3 +47,7 @@
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% Generate circled numbers
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+    \node[shape=circle,draw,inner sep=1pt] (char) {#1};}}
